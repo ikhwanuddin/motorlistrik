@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Perbandingan motor listrik di bawah Rp 20 juta untuk pasar Indonesia — harga, jarak tempuh, spesifikasi, dan subsidi pemerintah."
+        />
+        <title>⚡ Motor Listrik Rp 6–20 Juta — Indonesia 2026</title>
+        <link
+            rel="icon"
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>"
+        />
+        <link rel="stylesheet" href="assets/css/style.css" />
+    </head>
+    <body>
+        <!-- ═══════════════════════════════════════════════════════
+     HERO HEADER
+═══════════════════════════════════════════════════════════ -->
+        <header class="hero">
+            <div class="container">
+                <div class="hero-inner">
+                    <div class="hero-title">
+                        <span class="hero-icon" aria-hidden="true">⚡</span>
+                        <div>
+                            <h1>Motor Listrik Entry Level</h1>
+                            <p class="hero-sub">
+                                Perbandingan harga &amp; spesifikasi di bawah
+                                Rp&nbsp;20 juta<br />
+                                Khusus pasar Indonesia · Pulau Jawa · Edisi 2026
+                            </p>
+                        </div>
+                    </div>
+                    <div class="hero-stats" id="heroStats" aria-live="polite">
+                        <!-- diisi oleh JS -->
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════════════════════ -->
+        <main>
+            <div class="container">
+                <!-- ── FILTER PANEL ── -->
+                <div class="filter-panel">
+                    <div class="filter-controls">
+                        <div class="filter-group">
+                            <label for="searchInput">🔍 Cari</label>
+                            <input
+                                type="search"
+                                id="searchInput"
+                                placeholder="Merek atau model…"
+                                autocomplete="off"
+                            />
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="selPrice">💰 Harga Maksimum</label>
+                            <select id="selPrice">
+                                <option value="20000000" selected>
+                                    Semua (≤ Rp 20 juta)
+                                </option>
+                                <option value="10000000">≤ Rp 10 juta</option>
+                                <option value="13000000">≤ Rp 13 juta</option>
+                                <option value="15000000">≤ Rp 15 juta</option>
+                                <option value="17000000">≤ Rp 17 juta</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="selRange">🛣️ Jarak Tempuh Min.</label>
+                            <select id="selRange">
+                                <option value="0" selected>Semua</option>
+                                <option value="50">≥ 50 km</option>
+                                <option value="60">≥ 60 km</option>
+                                <option value="80">≥ 80 km</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group filter-check">
+                            <label class="check-label">
+                                <input type="checkbox" id="chkSubsidi" />
+                                <span>⭐ Subsidi pemerintah saja</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="filter-meta">
+                        <span id="countLabel" class="count-label"></span>
+                        <button id="btnReset" class="btn-ghost">
+                            ↺ Reset filter
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ── TABLE ── -->
+                <div class="table-card">
+                    <div
+                        class="table-scroller"
+                        role="region"
+                        aria-label="Tabel perbandingan motor listrik"
+                        tabindex="0"
+                    >
+                        <table id="motorTable">
+                            <thead>
+                                <tr>
+                                    <th
+                                        class="col-check"
+                                        title="Pilih untuk dibandingkan (maks. 3)"
+                                    >
+                                        ⚖️
+                                    </th>
+                                    <th
+                                        class="col-sort"
+                                        data-col="brand"
+                                        data-type="str"
+                                    >
+                                        Merek <b></b>
+                                    </th>
+                                    <th
+                                        class="col-sort"
+                                        data-col="model"
+                                        data-type="str"
+                                    >
+                                        Model <b></b>
+                                    </th>
+                                    <th
+                                        class="col-sort col-num"
+                                        data-col="price"
+                                        data-type="num"
+                                    >
+                                        Harga OTR* <b></b>
+                                    </th>
+                                    <th class="col-ctr col-subsidi">
+                                        Subsidi ⭐
+                                    </th>
+                                    <th
+                                        class="col-sort col-num"
+                                        data-col="range"
+                                        data-type="num"
+                                    >
+                                        Jarak Tempuh <b></b>
+                                    </th>
+                                    <th
+                                        class="col-sort col-num"
+                                        data-col="speed"
+                                        data-type="num"
+                                    >
+                                        Kec. Maks <b></b>
+                                    </th>
+                                    <th
+                                        class="col-sort col-num col-hide-sm"
+                                        data-col="power"
+                                        data-type="num"
+                                    >
+                                        Daya Motor <b></b>
+                                    </th>
+                                    <th class="col-hide-md">Baterai</th>
+                                    <th class="col-hide-md">Garansi Baterai</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
+                    <p class="table-foot">
+                        * Harga OTR Jakarta — dapat berbeda per wilayah &amp;
+                        waktu pembelian. &nbsp; ⭐ <strong>Subsidi</strong>:
+                        memenuhi syarat program bantuan pemerintah (~Rp&nbsp;7
+                        juta, kuota &amp; syarat berlaku). &nbsp;
+                        <strong>Klik baris</strong> untuk membuka website resmi
+                        produsen. Centang ⚖️ untuk
+                        <strong>membandingkan</strong> 2–3 motor secara
+                        berdampingan.
+                    </p>
+                </div>
+
+                <!-- ── INFO CARDS ── -->
+                <div class="card-grid">
+                    <article class="card">
+                        <h2>💡 Tips Sebelum Membeli</h2>
+                        <ul>
+                            <li>
+                                Pilih motor dengan range
+                                <strong>≥ 1,5×</strong> jarak harian Anda
+                            </li>
+                            <li>
+                                Pastikan jaringan servis resmi tersedia di kota
+                                Anda
+                            </li>
+                            <li>
+                                Cek apakah baterai bisa <em>swap</em> atau hanya
+                                diisi di rumah
+                            </li>
+                            <li>
+                                Tanyakan harga penggantian baterai setelah masa
+                                garansi berakhir
+                            </li>
+                            <li>
+                                Verifikasi kelengkapan surat (STNK, BPKB) ke
+                                dealer resmi
+                            </li>
+                        </ul>
+                    </article>
+
+                    <article class="card">
+                        <h2>🏛️ Subsidi Pemerintah</h2>
+                        <p>
+                            Pemerintah Indonesia menyediakan subsidi pembelian
+                            motor listrik sebesar
+                            <strong>Rp&nbsp;7.000.000</strong> untuk merek yang
+                            memenuhi syarat TKDN ≥ 40%. Program bersifat kuota.
+                            Hubungi dealer resmi untuk informasi ketersediaan
+                            subsidi terkini.
+                        </p>
+                    </article>
+
+                    <article class="card">
+                        <h2>🔋 SLA vs Li-ion</h2>
+                        <p>
+                            Baterai <strong>Li-ion (Lithium)</strong> lebih
+                            ringan, tahan lama (500–1.000 siklus), dan lebih
+                            cepat diisi dibanding
+                            <strong>SLA (aki kering/basah)</strong>. SLA lebih
+                            murah di awal tapi lebih berat &amp; biaya
+                            penggantian lebih sering. Untuk pemakaian harian,
+                            Li-ion sangat direkomendasikan.
+                        </p>
+                    </article>
+
+                    <article class="card">
+                        <h2>📍 Infrastruktur Jawa</h2>
+                        <p>
+                            Pulau Jawa memiliki SPLU (Stasiun Pengisian Listrik
+                            Umum) terlengkap di Indonesia. Jakarta, Surabaya,
+                            Bandung, Semarang &amp; Yogyakarta sudah memiliki
+                            banyak titik pengisian. PLN juga mendukung pengisian
+                            di rumah dengan tarif khusus EV.
+                        </p>
+                    </article>
+                </div>
+                <!-- /card-grid -->
+            </div>
+            <!-- /container -->
+        </main>
+
+        <!-- ═══════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════════ -->
+        <footer class="site-footer">
+            <div class="container">
+                <p>
+                    Data dikumpulkan dari sumber publik dan merupakan perkiraan
+                    pada waktu penulisan. Selalu verifikasi harga &amp;
+                    spesifikasi ke dealer resmi atau website produsen sebelum
+                    membeli.
+                </p>
+                <p>
+                    Open source &middot;
+                    <a
+                        href="https://github.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >GitHub Pages</a
+                    >
+                </p>
+            </div>
+        </footer>
+
+        <!-- ── COMPARISON BAR (fixed bottom) ── -->
+        <div id="compareBar" class="compare-bar" hidden>
+            <div class="compare-bar-inner container">
+                <span class="compare-bar-label">Bandingkan:</span>
+                <div id="compareChips" class="compare-chips"></div>
+                <div class="compare-bar-actions">
+                    <button id="btnCompare" class="btn-compare" disabled>
+                        ⚖️ Bandingkan
+                    </button>
+                    <button id="btnClearCompare" class="btn-ghost-white">
+                        ✕ Hapus pilihan
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── COMPARISON MODAL ── -->
+        <div
+            id="compareOverlay"
+            class="compare-overlay"
+            hidden
+            role="dialog"
+            aria-modal="true"
+            aria-label="Perbandingan motor listrik"
+        >
+            <div class="compare-modal" role="document">
+                <div class="compare-modal-header">
+                    <h2>⚖️ Perbandingan Motor Listrik</h2>
+                    <button
+                        id="btnCloseCompare"
+                        class="compare-close"
+                        aria-label="Tutup perbandingan"
+                    >
+                        ✕
+                    </button>
+                </div>
+                <div class="compare-modal-body" id="compareBody">
+                    <!-- diisi oleh JS -->
+                </div>
+            </div>
+        </div>
+
+        <script src="assets/js/app.js"></script>
+    </body>
+</html>

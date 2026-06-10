@@ -507,7 +507,13 @@ function render() {
                  ${isChecked ? "checked" : ""}
                  ${isDisabled ? "disabled" : ""} />
         </td>
-        <td class="td-brand">${esc(m.brand)}</td>
+        <td class="td-brand">
+          <div class="brand-thumb-cell">
+            <img src="${motorThumb(m, "sm")}" class="motor-thumb-sm"
+                 alt="${esc(m.brand)} ${esc(m.model)}" loading="lazy" />
+            <span class="brand-name-text">${esc(m.brand)}</span>
+          </div>
+        </td>
         <td class="td-model">${esc(m.model)}</td>
         <td class="td-price ${pCls}">${IDR.format(m.price)}</td>
         <td class="td-ctr">
@@ -690,6 +696,8 @@ function renderCompareModal() {
     .map(
       (m) => `
     <th class="cmp-motor-th">
+      <img src="${motorThumb(m, "lg")}" class="motor-thumb-lg"
+           alt="${esc(m.brand)} ${esc(m.model)}" />
       <div class="cmp-brand">${esc(m.brand)}</div>
       <div class="cmp-model">${esc(m.model)}</div>
     </th>`,
@@ -788,6 +796,48 @@ function dealerBadge(level) {
   };
   const [cls, label] = map[level] || ["dealer-terbatas", esc(level)];
   return `<span class="dealer-badge ${cls}">${label}</span>`;
+}
+
+/** Generate a color-coded SVG thumbnail data URI for a motor.
+ *  sm = 52×39 px (table row)  |  lg = 120×85 px (comparison modal)
+ *  Color scheme matches battery type badges.
+ *  Swap with real product image URLs in MOTORS[].thumbnail once available.
+ */
+function motorThumb(m, size) {
+  const palette = {
+    LFP: { bg: "#f0fdf4", border: "#16a34a", fg: "#14532d" },
+    "Li-ion": { bg: "#eff6ff", border: "#2563eb", fg: "#1e3a8a" },
+    Li: { bg: "#eff6ff", border: "#2563eb", fg: "#1e3a8a" },
+    SLA: { bg: "#fefce8", border: "#ca8a04", fg: "#713f12" },
+    "SLA/Li-ion": { bg: "#fffbeb", border: "#d97706", fg: "#78350f" },
+    "Li/SLA": { bg: "#fffbeb", border: "#d97706", fg: "#78350f" },
+  };
+  const c = palette[m.batteryType] || {
+    bg: "#f9fafb",
+    border: "#9ca3af",
+    fg: "#374151",
+  };
+  const w = size === "lg" ? 120 : 52;
+  const h = size === "lg" ? 85 : 39;
+  const init = m.brand
+    .split(/\s+/)
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+  const iFs = size === "lg" ? 36 : 15;
+  const lFs = size === "lg" ? 8.5 : 5;
+  const batt = (m.batteryType || "").replace(/[<>&"']/g, "");
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">` +
+    `<rect width="${w}" height="${h}" rx="6" fill="${c.bg}"/>` +
+    `<rect width="${w}" height="${h}" rx="6" fill="none" stroke="${c.border}" stroke-width="1.5" stroke-opacity=".45"/>` +
+    `<text x="${w / 2}" y="${h * 0.44}" text-anchor="middle" dominant-baseline="middle"` +
+    ` font-family="system-ui,-apple-system,sans-serif" font-size="${iFs}" font-weight="900" fill="${c.border}">${init}</text>` +
+    `<text x="${w / 2}" y="${h * 0.8}" text-anchor="middle" dominant-baseline="middle"` +
+    ` font-family="system-ui,-apple-system,sans-serif" font-size="${lFs}" fill="${c.fg}" opacity=".8">${batt}</text>` +
+    `</svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
 /** Escape HTML special chars */

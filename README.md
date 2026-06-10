@@ -33,29 +33,26 @@ sepeda-motor-listrik-entry-level/
 
 ## Deploy ke GitHub Pages
 
-### Langkah 1 — Buat repository di GitHub
-1. Buka [github.com/new](https://github.com/new)
-2. Nama repo: `motor-listrik-entry-level` (atau nama lain)
-3. Set **Public** (wajib untuk GitHub Pages gratis)
-4. Jangan centang "Add a README" (kita sudah punya)
-5. Klik **Create repository**
+**⚡ TL;DR:** Baca [docs/SETUP_GITHUB_PAGES.md](docs/SETUP_GITHUB_PAGES.md) untuk instruksi lengkap & checklist.
 
-### Langkah 2 — Hubungkan repo lokal ke GitHub
-Ganti `USERNAME` dan `REPO_NAME` sesuai akun kamu:
-```bash
-cd sepeda-motor-listrik-entry-level
-git remote add origin https://github.com/USERNAME/REPO_NAME.git
-git push -u origin main
-```
+### Quick Setup
 
-### Langkah 3 — Aktifkan GitHub Pages
-1. Di halaman repo GitHub, buka **Settings → Pages**
-2. Di bawah **Build and deployment**, pilih:
-   - Source: **Deploy from a branch**
-   - Branch: **main** / **(root)**
-3. Klik **Save**
-4. Tunggu ~1–2 menit
-5. Website live di: `https://USERNAME.github.io/REPO_NAME/`
+Repo ini sudah siap deploy dengan GitHub Actions workflow (`/.github/workflows/pages.yml`):
+
+1. **Pastikan repo adalah PUBLIC**
+   - GitHub Settings → Visibility → Public
+
+2. **Enable GitHub Pages**
+   - GitHub Settings → Pages
+   - Source: **GitHub Actions**
+   - Save
+
+3. **Push code** (sudah ada, tapi bisa manual trigger)
+   - Workflow otomatis jalan setiap push ke `main`
+   - Cek di repo **Actions** tab
+
+4. **Live di** → `https://ikhwanuddin.github.io/motorlistrik/`
+   - (Ganti URL sesuai username/repo kamu)
 
 ### Update data setelah deploy
 Setiap kali update data atau tampilan:
@@ -64,7 +61,8 @@ git add -A
 git commit -m "update: deskripsi perubahan"
 git push
 ```
-GitHub Pages otomatis rebuild setelah setiap push.
+
+Workflow otomatis jalan setiap push → site update dalam ~2 menit.
 
 ## Cara Update / Tambah Data Motor
 

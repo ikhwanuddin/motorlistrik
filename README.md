@@ -33,11 +33,38 @@ sepeda-motor-listrik-entry-level/
 
 ## Deploy ke GitHub Pages
 
-1. Buat repository baru di GitHub (contoh: `motor-listrik-entry-level`)
-2. Push semua file ke branch `main`
-3. Buka **Settings → Pages → Deploy from branch → main / (root)**
-4. Tunggu ~1 menit, lalu akses:
-   `https://username.github.io/motor-listrik-entry-level/`
+### Langkah 1 — Buat repository di GitHub
+1. Buka [github.com/new](https://github.com/new)
+2. Nama repo: `motor-listrik-entry-level` (atau nama lain)
+3. Set **Public** (wajib untuk GitHub Pages gratis)
+4. Jangan centang "Add a README" (kita sudah punya)
+5. Klik **Create repository**
+
+### Langkah 2 — Hubungkan repo lokal ke GitHub
+Ganti `USERNAME` dan `REPO_NAME` sesuai akun kamu:
+```bash
+cd sepeda-motor-listrik-entry-level
+git remote add origin https://github.com/USERNAME/REPO_NAME.git
+git push -u origin main
+```
+
+### Langkah 3 — Aktifkan GitHub Pages
+1. Di halaman repo GitHub, buka **Settings → Pages**
+2. Di bawah **Build and deployment**, pilih:
+   - Source: **Deploy from a branch**
+   - Branch: **main** / **(root)**
+3. Klik **Save**
+4. Tunggu ~1–2 menit
+5. Website live di: `https://USERNAME.github.io/REPO_NAME/`
+
+### Update data setelah deploy
+Setiap kali update data atau tampilan:
+```bash
+git add -A
+git commit -m "update: deskripsi perubahan"
+git push
+```
+GitHub Pages otomatis rebuild setelah setiap push.
 
 ## Cara Update / Tambah Data Motor
 
@@ -73,7 +100,29 @@ Contoh menambah motor baru:
 },
 ```
 
-## Data Motor yang Tersedia
+## Mengganti Thumbnail Placeholder dengan Foto Produk Asli
+
+Saat ini thumbnail dibuat otomatis dari kode JS (SVG berwarna berdasarkan tipe baterai).
+Untuk mengganti dengan foto produk asli:
+
+1. Simpan foto ke `assets/images/` (format `.jpg` atau `.webp`, ukuran ideal ~320×240 px)
+2. Tambah field `thumbnail` ke objek motor di `app.js`:
+```javascript
+{
+  brand: 'Polytron',
+  model: 'Fox-200',
+  // ...
+  thumbnail: 'assets/images/polytron-fox200.jpg',  // ← tambahkan ini
+}
+```
+3. Di fungsi `motorThumb(m, size)` dalam `app.js`, tambah logika prioritas:
+```javascript
+// Di awal fungsi motorThumb(), sebelum baris 'const palette':
+if (m.thumbnail) {
+  return m.thumbnail;
+}
+```
+Hasil: motor yang punya `thumbnail` akan tampil foto asli; yang belum punya tetap pakai SVG placeholder.
 
 | Merek | Model | Harga* |
 |-------|-------|--------|

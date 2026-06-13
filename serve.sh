@@ -6,7 +6,7 @@ PORT=${1:-8000}
 
 echo "🚀 Starting local server on http://localhost:$PORT"
 echo "   Press Ctrl+C to stop"
-echo ""
+echo ""d h3bve d
 
 # Check if we're in the right directory
 if [ ! -f "index.html" ]; then

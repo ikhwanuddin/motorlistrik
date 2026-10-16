@@ -31,6 +31,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Versi aset (cache-busting)
+        # ganti ?v=dev di index.html dengan hash commit, jadi browser selalu ambil CSS/JS terbaru
+        run: sed -i "s/?v=dev/?v=${GITHUB_SHA::7}/g" index.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact

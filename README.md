@@ -7,14 +7,15 @@ Live: http://motorlistrik.ikhwanuddin.com/
 
 ## Fitur
 
-- Peta harga vs jarak tempuh (SVG): titik di kiri-atas = murah & jauh, klik titik untuk detail
-- Filter: cari, budget (slider), jarak tempuh minimal, tipe baterai, pasti bisa STNK, harga sudah termasuk baterai
+- Peta harga vs jarak tempuh (SVG): titik di kiri-atas = murah & jauh, besar titik = kecepatan, klik titik untuk detail
+- Filter: cari, budget (slider), jarak tempuh minimal, kecepatan maks minimal, tipe baterai, pasti bisa STNK, harga sudah termasuk baterai
 - Urutkan harga / jarak / kecepatan / daya
 - Klik motor → panel detail: keterangan harga, baterai, garansi, catatan, sumber, link resmi
 - Pilih 2–3 motor → panel bandingkan, nilai terbaik ditandai
 - Responsif (HP: kartu & bottom sheet) dan dark mode otomatis
 
-Murni HTML + CSS + vanilla JS, tanpa build. Font Plus Jakarta Sans dari Google Fonts.
+Murni HTML + CSS + vanilla JS, tanpa build. Font Plus Jakarta Sans di-host sendiri (tanpa request ke Google).
+Tanpa analytics, cookie, atau localStorage. CSP ketat di `index.html` (hanya aset sendiri).
 
 ## Struktur
 
@@ -23,6 +24,7 @@ index.html              halaman utama
 assets/css/style.css    styling
 assets/js/data.js       data MOTORS + CHECKED_AT
 assets/js/app.js        UI: peta, filter/sort, detail, bandingkan
+assets/fonts/           Plus Jakarta Sans (latin, variable)
 serve.sh                server lokal (python3)
 ```
 
@@ -64,6 +66,8 @@ node --check assets/js/data.js
 ## Deploy
 
 Push ke `main` → GitHub Actions deploy ke GitHub Pages (~1–2 menit).
+Saat deploy, `?v=dev` di `index.html` diganti hash commit, jadi pengunjung
+langsung dapat CSS/JS terbaru tanpa hard reload.
 
 ## Disclaimer
 

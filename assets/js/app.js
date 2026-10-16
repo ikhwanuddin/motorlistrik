@@ -78,6 +78,7 @@ function visible() {
   const q = $("q").value.trim().toLowerCase();
   const budget = Number($("budget").value) * 1e6;
   const minRange = Number(radio("range"));
+  const minSpeed = Number(radio("speed"));
   const batt = radio("batt");
   const onlyStnk = $("onlyStnk").checked;
   const ownBattery = $("ownBattery").checked;
@@ -89,6 +90,7 @@ function visible() {
       if (q && !`${m.brand} ${m.model}`.toLowerCase().includes(q)) return false;
       if (m.price > budget) return false;
       if (m.range < minRange) return false;
+      if (m.speed < minSpeed) return false;
       if (batt === "li" && !isLithium(m)) return false;
       if (batt === "sla" && isLithium(m)) return false;
       if (onlyStnk && m.stnk !== true) return false;
@@ -103,6 +105,7 @@ function activeFilterCount() {
   if ($("q").value.trim()) n++;
   if ($("budget").value !== "20") n++;
   if (radio("range") !== "0") n++;
+  if (radio("speed") !== "0") n++;
   if (radio("batt") !== "all") n++;
   if ($("onlyStnk").checked) n++;
   if ($("ownBattery").checked) n++;
@@ -211,14 +214,19 @@ function renderChart(shown) {
     ].join(" ");
     return `
       <g class="${cls}" data-i="${i}" tabindex="0" transform="translate(${px.toFixed(1)} ${py.toFixed(1)})">
-        <title>${esc(m.brand)} ${esc(m.model)}: ${IDR.format(m.price)}, ${m.range} km</title>
+        <title>${esc(m.brand)} ${esc(m.model)}: ${IDR.format(m.price)}, ${m.range} km, ${m.speed} km/j</title>
         <circle class="hit" r="14"/>
-        <circle class="dot" r="6.5"/>
-        <text x="${right ? -12 : 12}" y="4" text-anchor="${right ? "end" : "start"}">${esc(m.brand)} ${esc(m.model.split(" (")[0])}</text>
+        <circle class="dot" r="${dotR(m.speed).toFixed(1)}"/>
+        <text x="${right ? -14 : 14}" y="4" text-anchor="${right ? "end" : "start"}">${esc(m.brand)} ${esc(m.model.split(" (")[0])}</text>
       </g>`;
   }).join("");
 
   el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Grafik harga terhadap jarak tempuh">${grid}${points}</svg>`;
+}
+
+/** Jari-jari titik peta dari kecepatan: 40 km/j → 3,5 px, 85 km/j → 10 px */
+function dotR(speed) {
+  return 3.5 + ((speed - 40) / 45) * 6.5;
 }
 
 /* ── BANDINGKAN ───────────────────────────────────────────────────────── */
@@ -388,6 +396,7 @@ function resetFilters() {
   $("q").value = "";
   $("budget").value = "20";
   document.querySelector('input[name="range"][value="0"]').checked = true;
+  document.querySelector('input[name="speed"][value="0"]').checked = true;
   document.querySelector('input[name="batt"][value="all"]').checked = true;
   $("onlyStnk").checked = false;
   $("ownBattery").checked = false;
@@ -446,5 +455,5 @@ function esc(str) {
 /** Hanya izinkan URL http/https */
 function safeUrl(str) {
   const s = String(str || "").trim();
-  return /^https?:\/\//.test(s) ? s : "#";
+  return /^https?:\/\//.test(s) ? esc(s) : "#";
 }

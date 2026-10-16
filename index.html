@@ -6,10 +6,11 @@
   <meta name="description" content="Perbandingan motor listrik di bawah Rp 20 juta di Indonesia: harga normal tanpa promo, jarak tempuh, kecepatan, baterai, STNK, dan sumber resmi." />
   <title>Motor Listrik di Bawah Rp 20 Juta</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <link rel="preload" href="assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <!-- ?v=dev diganti hash commit saat deploy (static.yml) supaya tidak perlu hard reload -->
+  <link rel="stylesheet" href="assets/css/style.css?v=dev" />
 </head>
 <body>
 
@@ -33,12 +34,13 @@
         <figcaption>
           <div>
             <h2>Peta harga vs jarak tempuh</h2>
-            <p>Makin ke kiri-atas, makin murah dan makin jauh. Klik titik untuk detail.</p>
+            <p>Makin ke kiri-atas, makin murah dan makin jauh. Besar titik = kecepatan maks. Klik titik untuk detail.</p>
           </div>
           <ul class="legend">
             <li><i class="dot dot-li"></i>Lithium</li>
             <li><i class="dot dot-sla"></i>Aki (SLA)</li>
             <li><i class="dot dot-rent"></i>Harga tanpa baterai (sewa)</li>
+            <li><i class="dot dot-sz s"></i><i class="dot dot-sz l"></i>Makin besar = makin kencang</li>
           </ul>
         </figcaption>
         <div id="chart" class="chart"></div>
@@ -68,6 +70,16 @@
             <label><input type="radio" name="range" value="60" /><span>60+</span></label>
             <label><input type="radio" name="range" value="80" /><span>80+</span></label>
             <label><input type="radio" name="range" value="100" /><span>100+</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend class="field-label">Kecepatan maks minimal</legend>
+          <div class="seg">
+            <label><input type="radio" name="speed" value="0" checked /><span>Semua</span></label>
+            <label><input type="radio" name="speed" value="50" /><span><i class="sz sz-50"></i>50+</span></label>
+            <label><input type="radio" name="speed" value="60" /><span><i class="sz sz-60"></i>60+</span></label>
+            <label><input type="radio" name="speed" value="70" /><span><i class="sz sz-70"></i>70+</span></label>
           </div>
         </fieldset>
 
@@ -181,7 +193,7 @@
     <div class="sheet-inner" id="compareBody"></div>
   </dialog>
 
-  <script src="assets/js/data.js"></script>
-  <script src="assets/js/app.js"></script>
+  <script src="assets/js/data.js?v=dev"></script>
+  <script src="assets/js/app.js?v=dev"></script>
 </body>
 </html>

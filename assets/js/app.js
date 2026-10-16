@@ -11,7 +11,7 @@ let near = []; // indeks motor di sekitar titik yang di-tap di peta (kalau lebih
 let chartPts = []; // posisi piksel tiap titik peta, untuk hit-test tap
 
 const NEAR_PX = 22; // radius tap di peta
-let chartKey = null; // sumbu yang terakhir digambar, untuk tahu kapan garis depan digambar ulang
+let chartKey = null; // sumbu yang terakhir digambar, untuk tahu kapan garis paling worth it digambar ulang
 
 /* Sumbu tegak peta, key = field di data.js. better: kalimat "lebih unggul" untuk sumbu itu */
 const AXES = {
@@ -213,7 +213,7 @@ function tags(m) {
 
 /* ── PETA HARGA vs SUMBU TEGAK (SVG) ──────────────────────────────────── */
 // Titik pindah dari posisi lama ke posisi baru lewat transisi CSS (pertama kali: naik dari bawah).
-// Garis depan digambar ulang tiap kali sumbu berganti.
+// Garis paling worth it digambar ulang tiap kali sumbu berganti.
 function renderChart(shown) {
   const el = $("chart");
   const W = el.clientWidth;
@@ -237,7 +237,7 @@ function renderChart(shown) {
     grid += `<text class="axis" x="${pad.l - 8}" y="${y(v) + 4}" text-anchor="end">${v.toLocaleString("id-ID")} ${ax.unit}</text>`;
   }
 
-  // garis depan bertangga: naik dari sumbu bawah, tiap motor garis depan jadi anak tangga, lalu datar sampai kanan
+  // garis paling worth it bertangga: naik dari sumbu bawah, tiap motor paling worth it jadi anak tangga, lalu datar sampai kanan
   const fr = frontier(yKey).map((i) => MOTORS[i]);
   let d = `M${x(fr[0].price)} ${H - pad.b}`;
   for (const m of fr) d += `H${x(m.price)}V${y(m[yKey])}`;
@@ -277,7 +277,7 @@ function renderChart(shown) {
   renderChartPick();
 }
 
-/** Indeks motor garis depan untuk sumbu `key`, urut harga: tidak ada motor lain yang harganya sama atau lebih murah
+/** Indeks motor paling worth it untuk sumbu `key`, urut harga: tidak ada motor lain yang harganya sama atau lebih murah
  *  sekaligus nilainya lebih tinggi. Baterai sewa tidak ikut karena harganya belum termasuk baterai. */
 function frontier(key) {
   const own = MOTORS.map((m, i) => i).filter((i) => !isRent(MOTORS[i]));
@@ -304,13 +304,13 @@ function betterCheaper(i, key) {
     .sort((a, b) => MOTORS[a].price - MOTORS[b].price);
 }
 
-/** Kalimat garis depan di panel detail, ikut sumbu peta yang sedang dipilih */
+/** Kalimat paling worth it di panel detail, ikut sumbu peta yang sedang dipilih */
 function frontText(i) {
   const m = MOTORS[i];
   const ax = AXES[yKey];
-  if (isRent(m)) return `Harga belum termasuk baterai (sewa), jadi tidak ikut garis depan di peta.`;
+  if (isRent(m)) return `Harga belum termasuk baterai (sewa), jadi tidak ikut garis paling worth it di peta.`;
   const b = betterCheaper(i, yKey);
-  if (!b.length) return `<b>Di garis depan</b> untuk ${ax.title}: tidak ada motor lain yang harganya sama atau lebih murah sekaligus ${ax.better}.`;
+  if (!b.length) return `<b>Paling worth it</b> untuk ${ax.title}: tidak ada motor lain yang harganya sama atau lebih murah sekaligus ${ax.better}.`;
   const names = b.slice(0, 3).map((j) => `<b>${esc(MOTORS[j].brand)} ${esc(MOTORS[j].model.split(" (")[0])}</b> (${jt(MOTORS[j].price)}, ${axisVal(MOTORS[j])})`);
   return `${cap(ax.title)} motor ini ${axisVal(m)}. Ada yang harganya sama atau lebih murah dan ${ax.better}: ${names.join(", ")}${b.length > 3 ? `, dan ${b.length - 3} lagi` : ""}.`;
 }

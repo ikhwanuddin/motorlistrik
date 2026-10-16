@@ -12,6 +12,7 @@ Live: https://motorlistrik.ikhwanuddin.com/
 - Urutkan harga / jarak / kecepatan / daya
 - Klik motor → panel detail: keterangan harga, baterai, garansi, catatan, sumber, link resmi
 - Pilih 2–3 motor → panel bandingkan, nilai terbaik ditandai
+- Link bisa dibagikan: filter, motor yang dipilih untuk dibandingkan, dan detail yang dibuka tersimpan di URL (`?bandingkan=volta-401,uwinfly-m90e`, `?motor=volta-401`); tombol **Bagikan** di detail & bandingkan. Preview WA/medsos pakai `assets/img/og.jpg`
 - Responsif (HP: kartu ringkas, filter nempel saat scroll, bottom sheet dengan tombol aksi tetap di bawah) dan dark mode otomatis
 
 Murni HTML + CSS + vanilla JS, tanpa build. Font Plus Jakarta Sans di-host sendiri (tanpa request ke Google).
@@ -25,6 +26,7 @@ assets/css/style.css    styling
 assets/js/data.js       data MOTORS + CHECKED_AT
 assets/js/app.js        UI: peta, filter/sort, detail, bandingkan
 assets/fonts/           Plus Jakarta Sans (latin, variable)
+assets/img/og.jpg       gambar preview link (1200×630)
 serve.sh                server lokal (python3)
 ```
 
@@ -41,7 +43,7 @@ Edit array `MOTORS` di `assets/js/data.js`. Tanggal cek ada di `CHECKED_AT`.
 
 | Field | Isi |
 |-------|-----|
-| `brand`, `model` | Nama merek & model |
+| `brand`, `model` | Nama merek & model. Id di URL dibuat dari keduanya (`Volta` + `401` → `volta-401`), jadi ganti nama = link lama ke motor itu tidak jalan lagi |
 | `price` | Harga normal (Rp), OTR Jakarta/Jadetabek kalau ada |
 | `priceNote` | Keterangan harga lengkap (sumber, wilayah, promo) — tampil di detail |
 | `priceTag` | Label pendek di bawah harga, mis. `"OTR Jakarta"`, `"Off-the-road"` |

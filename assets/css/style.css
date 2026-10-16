@@ -578,6 +578,19 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
   font-size: 15px;
 }
 .close:hover { background: var(--line); }
+.sheet-head-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.btn-share {
+  height: 36px;
+  padding: 0 14px;
+  background: var(--paper);
+  border: 0;
+  border-radius: 18px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.btn-share:hover { background: var(--line); }
 
 .detail-price { padding: 20px 0 4px; }
 .detail-price .price { font-size: 28px; }

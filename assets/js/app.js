@@ -11,6 +11,10 @@ let near = []; // indeks motor di sekitar titik yang di-tap di peta (kalau lebih
 let chartPts = []; // posisi piksel tiap titik peta, untuk hit-test tap
 
 const NEAR_PX = 22; // radius tap di peta
+let detailI = null; // motor yang sedang dibuka di panel detail
+
+// id motor di URL, mis. "volta-401"
+const SLUGS = MOTORS.map((m) => `${m.brand} ${m.model.split(" (")[0]}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""));
 
 const MAX = {
   range: Math.max(...MOTORS.map((m) => m.range)),
@@ -50,10 +54,12 @@ const NUMBERS = [
 ];
 
 /* ── INIT ─────────────────────────────────────────────────────────────── */
+readUrl();
 renderIntro();
 render();
 bindEvents();
 if (matchMedia("(min-width: 960px)").matches) $("filters").open = true;
+openFromUrl();
 
 function renderIntro() {
   $("nModels").textContent = MOTORS.length;
@@ -135,6 +141,7 @@ function render() {
   near = [];
   renderChart(shown);
   renderTray();
+  writeUrl();
 }
 
 function row(i, sortKey) {
@@ -315,7 +322,7 @@ function openCompare() {
   $("compareBody").innerHTML = `
     <header class="sheet-head">
       <h2>Bandingkan</h2>
-      <button type="button" class="close" data-close aria-label="Tutup">✕</button>
+      <div class="sheet-head-actions">${shareBtn()}<button type="button" class="close" data-close aria-label="Tutup">✕</button></div>
     </header>
     <div class="cmp" style="--n:${ms.length}">
       <div class="cmp-names">${names}</div>
@@ -342,7 +349,7 @@ function fillDetail(i) {
         <p class="brand">${esc(m.brand)}</p>
         <h2 id="detailTitle" class="model">${esc(m.model)}</h2>
       </div>
-      <button type="button" class="close" data-close aria-label="Tutup">✕</button>
+      <div class="sheet-head-actions">${shareBtn()}<button type="button" class="close" data-close aria-label="Tutup">✕</button></div>
     </header>
     <div class="detail-price">
       <p class="price">${IDR.format(m.price)}</p>
@@ -368,8 +375,10 @@ function tile(label, v, unit) {
 }
 
 function openDetail(i) {
+  detailI = i;
   fillDetail(i);
   $("detail").showModal();
+  writeUrl();
 }
 
 /* ── EVENTS ───────────────────────────────────────────────────────────── */
@@ -431,8 +440,14 @@ function bindEvents() {
   for (const dlg of [$("detail"), $("compare")]) {
     dlg.addEventListener("click", (e) => {
       if (e.target === dlg || e.target.closest("[data-close]")) dlg.close();
+      const share = e.target.closest("[data-share]");
+      if (share) shareLink(share);
     });
   }
+  $("detail").addEventListener("close", () => {
+    detailI = null;
+    writeUrl();
+  });
   $("detail").addEventListener("click", (e) => {
     const pick = e.target.closest("[data-pick]");
     if (!pick) return;
@@ -460,6 +475,64 @@ function resetFilters() {
   $("ownBattery").checked = false;
   $("sort").value = "price:1";
   render();
+}
+
+/* ── URL: filter, pilihan bandingkan & motor yang dibuka disimpan di query string supaya link bisa dibagikan ── */
+function readUrl() {
+  const p = new URLSearchParams(location.search);
+  $("q").value = p.get("cari") || "";
+  $("budget").value = p.get("budget") || "20";
+  setRadio("range", p.get("jarak"));
+  setRadio("speed", p.get("kecepatan"));
+  setRadio("batt", p.get("baterai"));
+  $("onlyStnk").checked = p.get("stnk") === "1";
+  $("ownBattery").checked = p.get("baterai-dibeli") === "1";
+  if ([...$("sort").options].some((o) => o.value === p.get("urut"))) $("sort").value = p.get("urut");
+  for (const s of (p.get("bandingkan") || "").split(",")) {
+    const i = SLUGS.indexOf(s);
+    if (i >= 0 && !compare.includes(i) && compare.length < MAX_COMPARE) compare.push(i);
+  }
+  const d = SLUGS.indexOf(p.get("motor"));
+  if (d >= 0) detailI = d;
+}
+
+/** Link dengan ?motor= membuka detail, link dengan 2–3 motor di ?bandingkan= langsung membuka perbandingan */
+function openFromUrl() {
+  if (detailI !== null) openDetail(detailI);
+  else if (compare.length >= 2) openCompare();
+}
+
+function writeUrl() {
+  const p = new URLSearchParams();
+  if ($("q").value.trim()) p.set("cari", $("q").value.trim());
+  if ($("budget").value !== "20") p.set("budget", $("budget").value);
+  if (radio("range") !== "0") p.set("jarak", radio("range"));
+  if (radio("speed") !== "0") p.set("kecepatan", radio("speed"));
+  if (radio("batt") !== "all") p.set("baterai", radio("batt"));
+  if ($("onlyStnk").checked) p.set("stnk", "1");
+  if ($("ownBattery").checked) p.set("baterai-dibeli", "1");
+  if ($("sort").value !== "price:1") p.set("urut", $("sort").value);
+  if (compare.length) p.set("bandingkan", compare.map((i) => SLUGS[i]).join(","));
+  if (detailI !== null) p.set("motor", SLUGS[detailI]);
+  const q = p.toString().replace(/%2C/g, ",").replace(/%3A/g, ":");
+  history.replaceState(null, "", (q ? `?${q}` : location.pathname) + location.hash);
+}
+
+function setRadio(name, v) {
+  const el = [...document.querySelectorAll(`input[name="${name}"]`)].find((r) => r.value === v);
+  if (el) el.checked = true;
+}
+
+function shareBtn() {
+  return `<button type="button" class="btn-share" data-share>Bagikan</button>`;
+}
+
+/** HP: menu share bawaan (WA dll). Desktop: salin link. */
+async function shareLink(btn) {
+  if (navigator.share) return navigator.share({ title: document.title, url: location.href }).catch(() => {});
+  await navigator.clipboard.writeText(location.href);
+  btn.textContent = "✓ Link disalin";
+  setTimeout(() => (btn.textContent = "Bagikan"), 2000);
 }
 
 /* ── HELPERS ──────────────────────────────────────────────────────────── */

@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f4f3ee" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0e0f12" media="(prefers-color-scheme: dark)" />
   <meta name="description" content="Perbandingan motor listrik di bawah Rp 20 juta di Indonesia: harga normal tanpa promo, jarak tempuh, kecepatan, baterai, STNK, dan sumber resmi." />
   <title>Motor Listrik di Bawah Rp 20 Juta</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
@@ -109,6 +111,8 @@
         </label>
 
         <button type="button" id="reset" class="btn-text">Reset filter</button>
+        <!-- hanya tampil di HP: tutup filter lalu loncat ke daftar -->
+        <button type="button" id="showResults" class="btn-primary show-results"></button>
       </div>
     </details>
 

@@ -122,6 +122,7 @@ function render() {
   $("filterCount").textContent = n ? n : "";
   $("count").textContent =
     shown.length === MOTORS.length ? `Semua ${MOTORS.length} motor` : `${shown.length} dari ${MOTORS.length} motor`;
+  $("showResults").textContent = shown.length ? `Lihat ${shown.length} motor` : "Tidak ada yang cocok";
 
   $("list").innerHTML = shown.length
     ? shown.map((i) => row(i, sortKey)).join("")
@@ -339,6 +340,10 @@ function openDetail(i) {
 function bindEvents() {
   $("filters").addEventListener("input", render);
   $("reset").addEventListener("click", resetFilters);
+  $("showResults").addEventListener("click", () => {
+    $("filters").open = false;
+    $("count").scrollIntoView({ behavior: "smooth" });
+  });
 
   $("list").addEventListener("click", (e) => {
     if (e.target.closest("[data-reset]")) return resetFilters();
@@ -389,7 +394,13 @@ function bindEvents() {
     fillDetail(i);
   });
 
-  addEventListener("resize", () => renderChart(visible()));
+  // di HP, scroll yang menyembunyikan address bar juga memicu resize: gambar ulang hanya kalau lebar berubah
+  let chartW = $("chart").clientWidth;
+  addEventListener("resize", () => {
+    if ($("chart").clientWidth === chartW) return;
+    chartW = $("chart").clientWidth;
+    renderChart(visible());
+  });
 }
 
 function resetFilters() {

@@ -12,7 +12,7 @@ Live: https://motorlistrik.ikhwanuddin.com/
 - Urutkan harga / jarak / kecepatan / daya
 - Klik motor → panel detail: keterangan harga, baterai, garansi, catatan, sumber, link resmi
 - Pilih 2–3 motor → panel bandingkan, nilai terbaik ditandai
-- Responsif (HP: kartu & bottom sheet) dan dark mode otomatis
+- Responsif (HP: kartu ringkas, filter nempel saat scroll, bottom sheet dengan tombol aksi tetap di bawah) dan dark mode otomatis
 
 Murni HTML + CSS + vanilla JS, tanpa build. Font Plus Jakarta Sans di-host sendiri (tanpa request ke Google).
 Tanpa analytics, cookie, atau localStorage. CSP ketat di `index.html` (hanya aset sendiri).

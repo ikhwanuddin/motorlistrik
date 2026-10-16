@@ -138,7 +138,7 @@ button { cursor: pointer; }
 /* ilustrasi motor ngecas di ruang kosong kanan atas; warna ikut dark mode di dalam svg */
 .hero-art {
   position: absolute;
-  top: 78px;
+  top: 107px;
   right: 24px;
   width: min(440px, 34vw);
   height: auto;
@@ -713,7 +713,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 /* ── RESPONSIVE ─────────────────────────────────────────── */
 @media (max-width: 1100px) {
   /* layar sempit: ilustrasi pindah ke atas judul */
-  .hero-art { position: static; display: block; width: min(360px, 85%); margin-top: 16px; }
+  .hero-art { position: static; display: block; width: min(220px, 60%); margin-top: 20px; }
   .hero h1 { margin-top: 16px; }
   .moto {
     grid-template-columns: 1fr auto;

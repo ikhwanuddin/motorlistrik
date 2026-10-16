@@ -277,9 +277,10 @@ const MOTORS = [
     batteryScheme: "Beli/Swap",
     swapCost: "Rp 1.000–5.000 per swap (sesuai % isi)",
     notes:
-      "Hingga 130 km dengan 2 baterai (65 km = setengahnya). Belum jelas harga termasuk 1 atau 2 baterai. 300+ titik swap. Beban maks 180 kg",
+      "65 km per baterai, hingga 130 km dengan baterai kedua. Toko resmi tidak tulis isi paket eX, tapi 401 dari toko yang sama sudah termasuk 1 baterai + charger. 300+ titik swap. Beban maks 180 kg",
     url: "https://www.voltaindonesia.com",
     sources: [
+      { label: "Toko resmi Volta di Shopee (Okt 2026)", url: "https://shopee.co.id/VOLTA-EX-OTR-JABODETABEK-i.834348333.22486776697" },
       { label: "Kontan, Agu 2026", url: "https://nasional.kontan.co.id/news/insentif-motor-listrik-paling-cepat-mulai-september-2026-cek-harga-sebelum-subsidi" },
       { label: "Volta SGB (tarif swap)", url: "https://www.voltaindonesia.com/sgb" },
       { label: "Volta garansi baterai", url: "https://www.voltaindonesia.com/battery-volta" },
@@ -324,9 +325,10 @@ const MOTORS = [
     batteryScheme: "Beli/Swap",
     swapCost: "Rp 1.000–5.000 per swap (sesuai % isi)",
     notes:
-      "60 km per baterai, hingga 120 km dengan 2 baterai. Belum jelas harga termasuk 1 atau 2 baterai. Beban maks 150 kg",
+      "Harga termasuk 1 baterai + charger (toko resmi). 60 km per baterai, hingga 120 km kalau beli baterai kedua. Beban maks 150 kg",
     url: "https://www.voltaindonesia.com/volta-reguler/volta-reguler-401",
     sources: [
+      { label: "Toko resmi Volta di Shopee (Okt 2026)", url: "https://shopee.co.id/VOLTA-REGULER-401-OTR-JABODETABEK-i.834348333.28112251575" },
       { label: "Situs resmi Volta", url: "https://www.voltaindonesia.com/volta-reguler/volta-reguler-401" },
       { label: "Kontan, Agu 2026", url: "https://nasional.kontan.co.id/news/insentif-motor-listrik-paling-cepat-mulai-september-2026-cek-harga-sebelum-subsidi" },
       { label: "Volta SGB (tarif swap)", url: "https://www.voltaindonesia.com/sgb" },
@@ -426,9 +428,10 @@ const MOTORS = [
     batteryScheme: "Beli/Swap",
     swapCost: "Rp 1.000–5.000 per swap (sesuai % isi)",
     notes:
-      "Hingga 130 km dengan 2 baterai (65 km = setengahnya). Belum jelas harga termasuk 1 atau 2 baterai. Beban maks 150 kg",
+      "Toko resmi: 65 km (1 baterai) / 130 km (2 baterai); 401 dari toko yang sama sudah termasuk 1 baterai + charger. Beban maks 150 kg",
     url: "https://www.voltaindonesia.com/volta-reguler/volta-reguler-virgo",
     sources: [
+      { label: "Toko resmi Volta di Shopee (Okt 2026)", url: "https://shopee.co.id/VOLTA-VIRGO-OTR-JABODETABEK-i.834348333.29962210983" },
       { label: "Situs resmi Volta", url: "https://www.voltaindonesia.com/volta-reguler/volta-reguler-virgo" },
       { label: "Kontan, Agu 2026", url: "https://nasional.kontan.co.id/news/insentif-motor-listrik-paling-cepat-mulai-september-2026-cek-harga-sebelum-subsidi" },
     ],

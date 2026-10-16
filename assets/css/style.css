@@ -994,6 +994,36 @@ tbody tr.row-selected {
     border: 1px solid #fcd34d;
 }
 
+/* ── Status STNK ── */
+.stnk-badge {
+    display: inline-block;
+    margin-top: 0.2rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.td-model .stnk-badge {
+    display: block;
+    width: fit-content;
+}
+.stnk-yes {
+    background: #dcfce7;
+    color: #14532d;
+    border: 1px solid #86efac;
+}
+.stnk-no {
+    background: #fee2e2;
+    color: #7f1d1d;
+    border: 1px solid #fca5a5;
+}
+.stnk-unknown {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+}
+
 /* ── Daftar sumber (modal) & sumber kartu info ── */
 .cmp-sources {
     list-style: none;

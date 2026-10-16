@@ -134,6 +134,17 @@ button { cursor: pointer; }
   border-bottom: 1px solid var(--hero-line);
 }
 
+.hero > .wrap { position: relative; }
+/* ilustrasi motor ngecas di ruang kosong kanan atas; warna ikut dark mode di dalam svg */
+.hero-art {
+  position: absolute;
+  top: 78px;
+  right: 24px;
+  width: min(440px, 34vw);
+  height: auto;
+  pointer-events: none;
+}
+
 .topbar {
   display: flex;
   align-items: center;
@@ -701,6 +712,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 
 /* ── RESPONSIVE ─────────────────────────────────────────── */
 @media (max-width: 1100px) {
+  .hero-art { display: none; }
   .moto {
     grid-template-columns: 1fr auto;
     grid-template-areas: "id price" "stats pick";

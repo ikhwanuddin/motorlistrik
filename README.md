@@ -26,10 +26,11 @@ index.html              halaman utama
 assets/css/style.css    styling
 assets/js/data.js       data MOTORS + CHECKED_AT
 assets/js/app.js        UI: peta, filter/sort, detail, bandingkan
-assets/fonts/           Plus Jakarta Sans (latin, variable)
+assets/fonts/           Plus Jakarta Sans (latin, variable) + OFL.txt
 assets/img/og.jpg       gambar preview link (1200×630)
 assets/img/motor.svg    ilustrasi hero (kanan atas di layar ≥1100px, di atas judul di layar sempit), warna dark mode diatur di dalam svg
 serve.sh                server lokal (python3)
+.github/ISSUE_TEMPLATE/ form issue "Data motor"
 ```
 
 ## Jalankan lokal
@@ -70,11 +71,49 @@ Cek sintaks setelah edit:
 node --check assets/js/data.js
 ```
 
+## Sumbang data
+
+Ada harga berubah, data salah, atau motor baru di bawah Rp 20 juta? Ada dua cara:
+
+1. **Issue** (paling gampang, tanpa coding): buka
+   [issue baru → Data motor](https://github.com/ikhwanuddin/motorlistrik/issues/new?template=data-motor.yml),
+   isi motor, data, link sumber, dan tanggal cek.
+2. **Pull request**: edit `assets/js/data.js` (lihat tabel field di atas), jalankan
+   `node --check assets/js/data.js`, lalu buka PR. Satu motor per PR, link sumber
+   masuk ke `sources`.
+
+Aturannya:
+
+- **Sumber harus bisa dicek orang lain**: situs resmi produsen, toko resmi
+  (official store) di marketplace, atau dealer resmi. Unggahan medsos, forum, atau
+  chat dealer tidak dipakai.
+- **Harga normal**, bukan harga promo, flash sale, voucher, atau setelah subsidi.
+  Sebutkan wilayah OTR kalau ada.
+- **Spesifikasi pakai klaim resmi pabrik.** Hasil tes sendiri boleh ditulis di
+  catatan issue, tapi tidak menggantikan angka resmi.
+- **Tidak ketemu di sumber = kosong (`null`).** Jangan menebak.
+
+Setiap usulan dicek ulang ke sumbernya sebelum masuk. Kalau sumber tidak bisa
+dibuka atau angkanya beda, usulan ditahan sampai jelas. Dengan mengirim data, kamu
+setuju data itu dirilis dengan lisensi CC BY 4.0 (lihat Lisensi).
+
 ## Deploy
 
 Push ke `main` → GitHub Actions deploy ke GitHub Pages (~1–2 menit).
 Saat deploy, `?v=dev` di `index.html` diganti hash commit, jadi pengunjung
 langsung dapat CSS/JS terbaru tanpa hard reload.
+
+## Lisensi
+
+- **Kode** (HTML, CSS, JS): [MIT](LICENSE).
+- **Data** (`assets/js/data.js`), **ilustrasi** (`assets/img/`), dan teks:
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.id). Bebas dipakai
+  ulang, termasuk untuk komersial, asal mencantumkan
+  "motorlistrik.ikhwanuddin.com" sebagai sumber.
+- **Font** Plus Jakarta Sans: [SIL Open Font License 1.1](assets/fonts/OFL.txt),
+  milik The Plus Jakarta Sans Project Authors.
+- Nama merek dan model adalah milik pemiliknya masing-masing. Situs ini tidak
+  terafiliasi dengan produsen mana pun.
 
 ## Disclaimer
 

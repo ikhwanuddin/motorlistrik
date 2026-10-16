@@ -7,20 +7,22 @@ Live: http://motorlistrik.ikhwanuddin.com/
 
 ## Fitur
 
-- Tabel bisa diurutkan (klik header; di HP lewat pilihan **Urutkan**)
-- Cari merek/model, filter harga maksimum, jarak tempuh minimum, baterai lithium saja
-- Klik baris → panel detail: keterangan harga lengkap, garansi, catatan, sumber, link resmi
-- Centang 2–3 motor → modal perbandingan berdampingan
-- Di HP (≤ 640px) tabel tampil sebagai kartu
+- Peta harga vs jarak tempuh (SVG): titik di kiri-atas = murah & jauh, klik titik untuk detail
+- Filter: cari, budget (slider), jarak tempuh minimal, tipe baterai, pasti bisa STNK, harga sudah termasuk baterai
+- Urutkan harga / jarak / kecepatan / daya
+- Klik motor → panel detail: keterangan harga, baterai, garansi, catatan, sumber, link resmi
+- Pilih 2–3 motor → panel bandingkan, nilai terbaik ditandai
+- Responsif (HP: kartu & bottom sheet) dan dark mode otomatis
 
-Murni HTML + CSS + vanilla JS, tanpa dependency.
+Murni HTML + CSS + vanilla JS, tanpa build. Font Plus Jakarta Sans dari Google Fonts.
 
 ## Struktur
 
 ```
 index.html              halaman utama
 assets/css/style.css    styling
-assets/js/app.js        data MOTORS + filter/sort/render
+assets/js/data.js       data MOTORS + CHECKED_AT
+assets/js/app.js        UI: peta, filter/sort, detail, bandingkan
 serve.sh                server lokal (python3)
 ```
 
@@ -33,7 +35,7 @@ serve.sh                server lokal (python3)
 
 ## Update data
 
-Edit array `MOTORS` di `assets/js/app.js`. Tanggal cek ada di `CHECKED_AT`.
+Edit array `MOTORS` di `assets/js/data.js`. Tanggal cek ada di `CHECKED_AT`.
 
 | Field | Isi |
 |-------|-----|
@@ -55,7 +57,7 @@ Isi `null` kalau data tidak ketemu di sumber. Jangan menebak.
 Cek sintaks setelah edit:
 
 ```bash
-node --check assets/js/app.js
+node --check assets/js/data.js
 ```
 
 ## Deploy

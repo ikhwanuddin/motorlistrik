@@ -2,6 +2,15 @@
    Motor Listrik di Bawah Rp 20 Juta — style.css
    ========================================================= */
 
+/* Font di-host sendiri (latin, variable 400–800) supaya tidak ada request ke Google */
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(../fonts/plus-jakarta-sans-latin.woff2) format("woff2");
+}
+
 /* ── TOKENS ─────────────────────────────────────────────── */
 :root {
   --paper: #f4f3ee;
@@ -185,6 +194,9 @@ button { cursor: pointer; }
 .dot-li { background: var(--dot-li); }
 .dot-sla { background: var(--dot-sla); }
 .dot-rent { border: 2px solid var(--hero-ink-2); }
+.dot-sz { background: var(--hero-ink-2); }
+.dot-sz.s { width: 7px; height: 7px; }
+.dot-sz.l { width: 15px; height: 15px; margin-left: -2px; }
 
 .chart { margin-top: 8px; }
 .chart svg { display: block; overflow: visible; }
@@ -207,7 +219,7 @@ button { cursor: pointer; }
   stroke-width: 4px;
 }
 .pt:hover text, .pt:focus-visible text, .pt.is-picked text { display: block; }
-.pt:hover .dot, .pt:focus-visible .dot { r: 9; }
+.pt:hover .dot, .pt:focus-visible .dot { stroke-width: 6; }
 .pt.is-picked .dot { stroke: var(--hero-ink); }
 .pt.is-out { opacity: .16; }
 
@@ -303,6 +315,12 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
 }
 .seg input:checked + span { background: var(--ink); color: var(--paper); }
 .seg input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 1px; }
+
+/* titik kecil di filter kecepatan = ukuran titik di peta */
+.sz { display: inline-block; margin-right: 4px; border-radius: 50%; background: currentColor; vertical-align: -1px; }
+.sz-50 { width: 8px; height: 8px; }
+.sz-60 { width: 11px; height: 11px; vertical-align: -2px; }
+.sz-70 { width: 14px; height: 14px; vertical-align: -3px; }
 
 .check { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; cursor: pointer; }
 .check input { width: 18px; height: 18px; margin: 0; accent-color: var(--ink); }

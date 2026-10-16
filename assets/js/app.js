@@ -420,12 +420,20 @@ function fillDetail(i) {
       ${tile("Daya maks", m.power.toLocaleString("id-ID"), "W")}
     </div>
     <dl class="specs">${DETAILS.map(([label, fn]) => `<dt>${label}</dt><dd>${fn(m)}</dd>`).join("")}</dl>
+    <p class="report">Data salah atau sudah berubah? <a href="${reportUrl(m)}" target="_blank" rel="noopener noreferrer">Laporkan ↗</a></p>
     <div class="sheet-actions">
       <a class="btn-primary" href="${safeUrl(m.url)}" target="_blank" rel="noopener noreferrer">Situs resmi ↗</a>
       <button type="button" class="btn-secondary" data-pick="${i}" ${full ? "disabled" : ""}>
         ${picked ? "✓ Dipilih untuk dibandingkan" : full ? "Maks. 3 motor dibandingkan" : "+ Bandingkan"}
       </button>
     </div>`;
+}
+
+// form issue "Data motor" di GitHub, nama motor sudah terisi
+function reportUrl(m) {
+  const name = `${m.brand} ${m.model}`;
+  const q = new URLSearchParams({ template: "data-motor.yml", title: `[data] ${name}`, motor: name });
+  return `https://github.com/ikhwanuddin/motorlistrik/issues/new?${q}`;
 }
 
 function tile(label, v, unit) {

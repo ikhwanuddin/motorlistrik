@@ -68,12 +68,12 @@ Tarif listrik & default kalkulator (harga Pertalite, konsumsi BeAT) ada di input
 Isi `null` kalau data tidak ketemu di sumber. Jangan menebak.
 
 Link sumber dicek otomatis tiap Senin 08.00 WIB (`cek-link.yml`). Kalau ada yang
-mati, muncul issue **Link sumber bermasalah** (label `link-mati`) berisi daftar link
+mati, muncul issue **Link sumber mati** (label `link-mati`) berisi daftar link (cuma yang pasti mati: 404/410/domain hilang; yang diblokir atau timeout tidak dihitung)
 dan statusnya; issue itu diperbarui tiap minggu dan tertutup sendiri kalau semua
 normal lagi. Jalankan manual dari tab Actions, atau lokal:
 
 ```bash
-node scripts/check-links.mjs   # exit 1 kalau ada yang bermasalah
+node scripts/check-links.mjs   # exit 1 kalau ada link mati
 ```
 
 Cek sintaks setelah edit:

@@ -194,7 +194,10 @@ function renderChart(shown) {
     grid += `<text class="axis" x="${pad.l - 8}" y="${y(r) + 4}" text-anchor="end">${r} km</text>`;
   }
 
-  const points = MOTORS.map((m, i) => {
+  // motor yang dipilih digambar terakhir supaya labelnya di atas titik lain
+  const order = MOTORS.map((m, i) => i).sort((a, b) => compare.includes(a) - compare.includes(b));
+  const points = order.map((i) => {
+    const m = MOTORS[i];
     const px = x(m.price);
     const py = y(m.range);
     const right = px > W - 150;

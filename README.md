@@ -30,6 +30,8 @@ assets/fonts/           Plus Jakarta Sans (latin, variable) + OFL.txt
 assets/img/og.jpg       gambar preview link (1200×630)
 assets/img/motor.svg    ilustrasi hero (kanan atas di layar ≥1100px, di atas judul di layar sempit), warna dark mode diatur di dalam svg
 serve.sh                server lokal (python3)
+scripts/check-links.mjs cek semua link sumber di data.js
+.github/workflows/      static.yml (deploy), cek-link.yml (cek link tiap Senin)
 .github/ISSUE_TEMPLATE/ form issue "Data motor"
 ```
 
@@ -64,6 +66,15 @@ Tarif listrik & default kalkulator (harga Pertalite, konsumsi BeAT) ada di input
 | `checkedAt` | Pakai `CHECKED_AT` |
 
 Isi `null` kalau data tidak ketemu di sumber. Jangan menebak.
+
+Link sumber dicek otomatis tiap Senin 08.00 WIB (`cek-link.yml`). Kalau ada yang
+mati, muncul issue **Link sumber bermasalah** (label `link-mati`) berisi daftar link
+dan statusnya; issue itu diperbarui tiap minggu dan tertutup sendiri kalau semua
+normal lagi. Jalankan manual dari tab Actions, atau lokal:
+
+```bash
+node scripts/check-links.mjs   # exit 1 kalau ada yang bermasalah
+```
 
 Cek sintaks setelah edit:
 

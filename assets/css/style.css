@@ -232,7 +232,7 @@ button { cursor: pointer; }
 .map .axis-note { flex-basis: 100%; margin: -4px 0 0; color: var(--hero-ink-2); font-size: 12.5px; }
 
 .chart { position: relative; margin-top: 8px; }
-/* garis depan: putus-putus mengalir dari murah ke mahal; muncul pelan saat sumbu berganti */
+/* garis paling worth it (Pareto): putus-putus mengalir dari murah ke mahal; muncul pelan saat sumbu berganti */
 .chart .front { fill: none; stroke: var(--hero-ink); stroke-width: 2; stroke-linejoin: round; stroke-dasharray: 6 5; opacity: .6; animation: march 1s linear infinite; }
 .chart .front.is-draw { animation: march 1s linear infinite, fade .6s ease-out backwards; }
 @keyframes march { to { stroke-dashoffset: -11; } }

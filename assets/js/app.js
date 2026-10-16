@@ -178,7 +178,7 @@ const MOTORS = [
     power: 2700,
     battery: "Lithium 72V 26Ah (1,87 kWh)",
     batteryType: "Li-ion",
-    warranty: null,
+    warranty: "Baterai 1 thn/10.000 km; dinamo, controller, charger 1 thn; rangka 5 thn",
     chargeTime: "0–80% 2,5 jam (butuh listrik rumah min. 2200 VA)",
     batteryScheme: "Beli",
     swapCost: null,
@@ -186,6 +186,7 @@ const MOTORS = [
     url: "https://unitedmotor.co.id/product/mt-1500li/",
     sources: [
       { label: "Situs resmi United", url: "https://unitedmotor.co.id/product/mt-1500li/" },
+      { label: "Blog resmi United, garansi (Agu 2026)", url: "https://unitedmotor.co.id/ini-dia-detail-garansi-united-e-motor-yang-wajib-kamu-tahu/" },
     ],
     stnk: true,
     checkedAt: CHECKED_AT,
@@ -200,7 +201,7 @@ const MOTORS = [
     power: 2200,
     battery: "72V 20Ah (1,44 kWh), bukan lithium (graphene/SLA)",
     batteryType: "SLA",
-    warranty: null,
+    warranty: "Baterai 1 thn/10.000 km; dinamo, controller, charger 1 thn; rangka 5 thn",
     chargeTime: "0–80% 5–6,5 jam",
     batteryScheme: "Beli",
     swapCost: null,
@@ -209,6 +210,7 @@ const MOTORS = [
     sources: [
       { label: "Situs resmi United", url: "https://unitedmotor.co.id/product/mx-1200/" },
       { label: "detikOto, Feb 2023", url: "https://oto.detik.com/motor/d-6577067/murah-banget-harga-motor-listrik-united-rp-7-jutaan" },
+      { label: "Blog resmi United, garansi (Agu 2026)", url: "https://unitedmotor.co.id/ini-dia-detail-garansi-united-e-motor-yang-wajib-kamu-tahu/" },
     ],
     stnk: true,
     checkedAt: CHECKED_AT,

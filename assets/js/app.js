@@ -7,6 +7,10 @@
 
 const MAX_COMPARE = 3;
 const compare = []; // indeks MOTORS yang dipilih untuk dibandingkan
+let near = []; // indeks motor di sekitar titik yang di-tap di peta (kalau lebih dari satu)
+let chartPts = []; // posisi piksel tiap titik peta, untuk hit-test tap
+
+const NEAR_PX = 22; // radius tap di peta
 
 const MAX = {
   range: Math.max(...MOTORS.map((m) => m.range)),
@@ -128,6 +132,7 @@ function render() {
     ? shown.map((i) => row(i, sortKey)).join("")
     : `<div class="empty"><p>Tidak ada motor yang cocok.</p><button type="button" class="btn-text" data-reset>Reset filter</button></div>`;
 
+  near = [];
   renderChart(shown);
   renderTray();
 }
@@ -199,12 +204,12 @@ function renderChart(shown) {
     grid += `<text class="axis" x="${pad.l - 8}" y="${y(r) + 4}" text-anchor="end">${r} km</text>`;
   }
 
-  // motor yang dipilih digambar terakhir supaya labelnya di atas titik lain
-  const order = MOTORS.map((m, i) => i).sort((a, b) => compare.includes(a) - compare.includes(b));
-  const points = order.map((i) => {
+  // motor yang dipilih / di sekitar tap digambar terakhir supaya di atas titik lain
+  const front = (i) => compare.includes(i) || near.includes(i);
+  const order = MOTORS.map((m, i) => i).sort((a, b) => front(a) - front(b));
+  chartPts = order.map((i) => ({ i, x: x(MOTORS[i].price), y: y(MOTORS[i].range) }));
+  const points = chartPts.map(({ i, x: px, y: py }) => {
     const m = MOTORS[i];
-    const px = x(m.price);
-    const py = y(m.range);
     const right = px > W - 150;
     const cls = [
       "pt",
@@ -212,6 +217,7 @@ function renderChart(shown) {
       isRent(m) ? "pt-rent" : "",
       shown.includes(i) ? "" : "is-out",
       compare.includes(i) ? "is-picked" : "",
+      near.includes(i) ? "is-near" : "",
     ].join(" ");
     return `
       <g class="${cls}" data-i="${i}" tabindex="0" transform="translate(${px.toFixed(1)} ${py.toFixed(1)})">
@@ -223,6 +229,36 @@ function renderChart(shown) {
   }).join("");
 
   el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Grafik harga terhadap jarak tempuh">${grid}${points}</svg>`;
+  renderChartPick();
+}
+
+/** Daftar pilihan saat tap kena beberapa titik yang berdempetan */
+function renderChartPick() {
+  $("chartPick").hidden = near.length === 0;
+  $("chartPick").innerHTML = `
+    <div class="chart-pick-head">
+      <span>${near.length} motor di sini</span>
+      <button type="button" class="close" data-close-pick aria-label="Tutup">✕</button>
+    </div>
+    <div class="chart-pick-list">
+      ${near
+        .map((i) => {
+          const m = MOTORS[i];
+          return `<button type="button" data-i="${i}"><b>${esc(m.brand)} ${esc(m.model.split(" (")[0])}</b><span>${jt(m.price)} · ${m.range} km · ${m.speed} km/j</span></button>`;
+        })
+        .join("")}
+    </div>`;
+}
+
+/** Motor dalam radius NEAR_PX dari titik tap, terdekat dulu. Titik yang tersaring diabaikan kalau ada yang aktif. */
+function pointsNear(px, py) {
+  const shown = visible();
+  const hits = chartPts
+    .map((p) => ({ i: p.i, d: Math.hypot(p.x - px, p.y - py) }))
+    .filter((p) => p.d <= NEAR_PX)
+    .sort((a, b) => a.d - b.d);
+  const active = hits.filter((p) => shown.includes(p.i));
+  return (active.length ? active : hits).map((p) => p.i);
 }
 
 /** Jari-jari titik peta dari kecepatan: 40 km/j → 3,5 px, 85 km/j → 10 px */
@@ -363,8 +399,19 @@ function bindEvents() {
   });
 
   $("chart").addEventListener("click", (e) => {
-    const pt = e.target.closest(".pt");
-    if (pt) openDetail(Number(pt.dataset.i));
+    const box = $("chart").querySelector("svg").getBoundingClientRect();
+    const hits = pointsNear(e.clientX - box.left, e.clientY - box.top);
+    near = hits.length > 1 ? hits : [];
+    renderChart(visible());
+    if (hits.length === 1) openDetail(hits[0]);
+  });
+  $("chartPick").addEventListener("click", (e) => {
+    if (e.target.closest("[data-close-pick]")) {
+      near = [];
+      return renderChart(visible());
+    }
+    const b = e.target.closest("[data-i]");
+    if (b) openDetail(Number(b.dataset.i));
   });
   $("chart").addEventListener("keydown", (e) => {
     const pt = e.target.closest(".pt");

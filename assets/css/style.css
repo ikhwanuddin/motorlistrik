@@ -1046,3 +1046,138 @@ body.modal-open {
 body.compare-active main {
     padding-bottom: 5rem;
 }
+
+/* ── Spek ringkas (khusus kartu HP) & select urutan ── */
+.td-mspecs,
+.filter-sort {
+    display: none;
+}
+
+/* ── Detail modal (klik baris) ── */
+.detail-modal {
+    max-width: 640px;
+}
+
+.detail-list {
+    display: grid;
+    grid-template-columns: minmax(110px, 32%) 1fr;
+    font-size: 0.875rem;
+}
+
+.detail-list dt,
+.detail-list dd {
+    padding: 0.6rem 1.25rem;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.detail-list dt {
+    background: var(--gray-50);
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.detail-list dd {
+    line-height: 1.5;
+}
+
+.detail-actions {
+    padding: 1rem 1.25rem 0;
+}
+
+/* ── HP: tabel jadi kartu ── */
+@media (max-width: 640px) {
+    .filter-sort {
+        display: block;
+    }
+
+    .table-scroller {
+        overflow-x: visible;
+    }
+
+    #motorTable thead {
+        display: none;
+    }
+
+    #motorTable,
+    #tableBody {
+        display: block;
+    }
+
+    #tableBody tr {
+        display: grid;
+        grid-template-columns: 1.6rem 1fr auto;
+        grid-template-areas:
+            "check brand price"
+            "check model price"
+            "check specs specs";
+        column-gap: 0.7rem;
+        row-gap: 0.25rem;
+        padding: 0.8rem 0.9rem;
+    }
+
+    #tableBody td {
+        display: none;
+        padding: 0;
+        width: auto;
+    }
+
+    #tableBody .td-check {
+        display: block;
+        grid-area: check;
+        text-align: left;
+        padding-top: 0.1rem;
+    }
+    #tableBody .td-brand {
+        display: block;
+        grid-area: brand;
+    }
+    #tableBody .td-model {
+        display: block;
+        grid-area: model;
+    }
+    #tableBody .td-price {
+        display: block;
+        grid-area: price;
+        font-size: 1rem;
+    }
+    #tableBody .td-mspecs {
+        display: flex;
+        grid-area: specs;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.35rem 0.9rem;
+        margin-top: 0.3rem;
+        font-size: 0.82rem;
+        color: var(--gray-700);
+    }
+
+    /* baris "tidak ada hasil" */
+    #tableBody tr:only-child:not([data-idx]) {
+        display: block;
+    }
+    #tableBody tr:only-child:not([data-idx]) td {
+        display: block;
+    }
+
+    .motor-thumb-sm {
+        display: none;
+    }
+
+    .price-note {
+        max-width: 140px;
+    }
+
+    .detail-list {
+        grid-template-columns: 1fr;
+    }
+    .detail-list dt {
+        border-bottom: none;
+        padding-bottom: 0.15rem;
+    }
+    .detail-list dd {
+        padding-top: 0.15rem;
+    }
+}

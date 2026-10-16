@@ -81,6 +81,17 @@
                             </select>
                         </div>
 
+                        <div class="filter-group filter-sort">
+                            <label for="selSort">↕️ Urutkan</label>
+                            <select id="selSort">
+                                <option value="price:asc">Harga termurah</option>
+                                <option value="price:desc">Harga termahal</option>
+                                <option value="range:desc">Jarak tempuh terjauh</option>
+                                <option value="speed:desc">Kecepatan tertinggi</option>
+                                <option value="power:desc">Daya terbesar</option>
+                            </select>
+                        </div>
+
                         <div class="filter-group filter-check">
                             <label class="check-label">
                                 <input type="checkbox" id="chkLithium" />
@@ -164,15 +175,15 @@
                     </div>
                     <p class="table-foot">
                         * Harga normal tanpa promo &amp; tanpa subsidi, OTR
-                        Jakarta/Jadetabek kalau tersedia. Keterangan di bawah
-                        harga menjelaskan skema (mis. baterai sewa) &amp;
-                        wilayah. Sumber tiap motor ada di menu perbandingan.
+                        Jakarta/Jadetabek kalau tersedia. Label di bawah harga
+                        menunjukkan status OTR &amp; skema baterai.
                         &nbsp; Label <strong>Tanpa STNK</strong> /
                         <strong>STNK belum jelas</strong> di kolom Model:
                         motor itu tidak (atau belum pasti) bisa dapat plat
                         nomor.
-                        &nbsp; <strong>Klik baris</strong> untuk membuka website resmi
-                        produsen. Centang ⚖️ untuk
+                        &nbsp; <strong>Klik baris</strong> untuk detail lengkap:
+                        keterangan harga, garansi, catatan, sumber &amp; link
+                        resmi. Centang ⚖️ untuk
                         <strong>membandingkan</strong> 2–3 motor secara
                         berdampingan.
                     </p>
@@ -326,6 +337,32 @@
                     </button>
                 </div>
                 <div class="compare-modal-body" id="compareBody">
+                    <!-- diisi oleh JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ── DETAIL MODAL (klik baris) ── -->
+        <div
+            id="detailOverlay"
+            class="compare-overlay"
+            hidden
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="detailTitle"
+        >
+            <div class="compare-modal detail-modal" role="document">
+                <div class="compare-modal-header">
+                    <h2 id="detailTitle"></h2>
+                    <button
+                        id="btnCloseDetail"
+                        class="compare-close"
+                        aria-label="Tutup detail"
+                    >
+                        ✕
+                    </button>
+                </div>
+                <div class="compare-modal-body" id="detailBody">
                     <!-- diisi oleh JS -->
                 </div>
             </div>

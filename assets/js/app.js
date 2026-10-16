@@ -38,6 +38,7 @@ const DETAILS = [
   ["Skema baterai", (m) => val(m.batteryScheme)],
   ["Biaya sewa / swap", (m) => (m.batteryScheme === "Beli" ? "Tidak ada, baterai dibeli" : val(m.swapCost))],
   ["Harga baterai baru", (m) => val(m.batteryPrice)],
+  ["Biaya per bulan", (m) => costText(m)],
   ["STNK & plat", (m) => stnkText(m.stnk)],
   ["Garansi", (m) => val(m.warranty)],
   ["Catatan", (m) => val(m.notes)],
@@ -47,10 +48,11 @@ const DETAILS = [
 
 /* Baris angka di bandingkan; better: 1 = makin besar makin baik, -1 = makin kecil */
 const NUMBERS = [
-  ["Harga", "price", -1, (m) => IDR.format(m.price)],
-  ["Jarak tempuh", "range", 1, (m) => `${m.range} km`],
-  ["Kecepatan maks", "speed", 1, (m) => `${m.speed} km/j`],
-  ["Daya maks", "power", 1, (m) => `${m.power.toLocaleString("id-ID")} W`],
+  ["Harga", (m) => m.price, -1, (m) => IDR.format(m.price)],
+  ["Jarak tempuh", (m) => m.range, 1, (m) => `${m.range} km`],
+  ["Kecepatan maks", (m) => m.speed, 1, (m) => `${m.speed} km/j`],
+  ["Daya maks", (m) => m.power, 1, (m) => `${m.power.toLocaleString("id-ID")} W`],
+  ["Biaya per bulan", (m) => Math.round(monthlyCost(m).total), -1, (m) => rp(monthlyCost(m).total)],
 ];
 
 /* ── INIT ─────────────────────────────────────────────────────────────── */
@@ -140,6 +142,7 @@ function render() {
 
   near = [];
   renderChart(shown);
+  renderCost(shown);
   renderTray();
   writeUrl();
 }
@@ -273,6 +276,59 @@ function dotR(speed) {
   return 3.5 + ((speed - 40) / 45) * 6.5;
 }
 
+/* ── BIAYA PER BULAN ────────────────────────────────────────────────────── */
+function costInputs() {
+  const km = num("kmDay") * num("days");
+  return { km, tariff: num("tariff"), fuel: (km / Math.max(num("fuelKm"), 1)) * num("fuelPrice") };
+}
+
+/** Listrik cas di rumah (pakai jarak tempuh klaim) + sewa baterai */
+function monthlyCost(m, c = costInputs()) {
+  const power = (c.km / m.range) * m.kwh * c.tariff;
+  const rent = m.batteryRent || 0;
+  return { power, rent, total: power + rent };
+}
+
+function costText(m) {
+  const c = costInputs();
+  const { power, rent, total } = monthlyCost(m, c);
+  return `${rp(total)} untuk ${c.km.toLocaleString("id-ID")} km (listrik ${rp(power)}${rent ? ` + sewa baterai ${rp(rent)}` : ""}). Motor bensin: ${rp(c.fuel)}. Atur di bagian Biaya per bulan.`;
+}
+
+function renderCost(shown) {
+  const c = costInputs();
+  $("costRef").innerHTML = `${c.km.toLocaleString("id-ID")} km/bulan. Motor bensin: <strong>${rp(c.fuel)}</strong>/bulan (garis hitam di tiap bar). Termurah dulu.`;
+  const rows = shown.map((i) => ({ i, ...monthlyCost(MOTORS[i], c) })).sort((a, b) => a.total - b.total);
+  const max = Math.max(c.fuel, ...rows.map((r) => r.total)) || 1;
+  $("costList").innerHTML = rows.length
+    ? rows.map((r) => costRow(r, c, max)).join("")
+    : `<div class="empty"><p>Tidak ada motor yang cocok dengan filter.</p></div>`;
+}
+
+function costRow({ i, power, rent, total }, c, max) {
+  const m = MOTORS[i];
+  const diff = c.fuel - total;
+  const warn = [];
+  if (num("kmDay") > m.range) warn.push(`Jarak harian lebih dari ${m.range} km sekali cas`);
+  if (m.rentKmCap && c.km > m.rentKmCap) warn.push(`Lewat ${m.rentKmCap} km/bulan ada biaya sewa tambahan`);
+  return `
+  <article class="cost-row" tabindex="0" data-i="${i}">
+    <div class="cost-name">
+      <p class="brand">${esc(m.brand)}</p>
+      <h3 class="model">${esc(m.model.split(" (")[0])}</h3>
+      ${warn.map((w) => `<p class="cost-warn">${w}</p>`).join("")}
+    </div>
+    <div class="cost-parts">
+      ${rent ? `<span>Listrik ${rp(power)}</span><span>Sewa baterai ${rp(rent)}</span>` : `<span>Listrik saja, baterai dibeli</span>`}
+    </div>
+    <div class="cost-total">
+      <strong>${rp(total)}</strong>
+      <span class="${diff >= 0 ? "text-good" : "text-bad"}">${diff >= 0 ? "Hemat" : "Lebih mahal"} ${rp(Math.abs(diff))}</span>
+    </div>
+    <span class="cost-bar"><i style="width:${(total / max) * 100}%"></i><b style="left:${(c.fuel / max) * 100}%" title="Motor bensin"></b></span>
+  </article>`;
+}
+
 /* ── BANDINGKAN ───────────────────────────────────────────────────────── */
 function togglePick(i) {
   const k = compare.indexOf(i);
@@ -301,12 +357,12 @@ function openCompare() {
     .map((m) => `<div><p class="brand">${esc(m.brand)}</p><p class="model">${esc(m.model)}</p></div>`)
     .join("");
 
-  const numRows = NUMBERS.map(([label, key, better, fmt]) => {
-    const vals = ms.map((m) => m[key]);
+  const numRows = NUMBERS.map(([label, get, better, fmt]) => {
+    const vals = ms.map(get);
     const best = better > 0 ? Math.max(...vals) : Math.min(...vals);
     const allSame = vals.every((v) => v === vals[0]);
     const cells = ms
-      .map((m) => `<div class="${!allSame && m[key] === best ? "best" : ""}">${fmt(m)}</div>`)
+      .map((m, k) => `<div class="${!allSame && vals[k] === best ? "best" : ""}">${fmt(m)}</div>`)
       .join("");
     return cmpRow(label, cells);
   }).join("");
@@ -427,6 +483,18 @@ function bindEvents() {
     if (pt && e.key === "Enter") openDetail(Number(pt.dataset.i));
   });
 
+  $("costInputs").addEventListener("input", () => {
+    renderCost(visible());
+    writeUrl();
+  });
+  $("costList").addEventListener("click", (e) => {
+    const row = e.target.closest(".cost-row");
+    if (row) openDetail(Number(row.dataset.i));
+  });
+  $("costList").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && e.target.classList.contains("cost-row")) openDetail(Number(e.target.dataset.i));
+  });
+
   $("trayItems").addEventListener("click", (e) => {
     const b = e.target.closest("[data-unpick]");
     if (b) togglePick(Number(b.dataset.unpick));
@@ -488,6 +556,7 @@ function readUrl() {
   $("onlyStnk").checked = p.get("stnk") === "1";
   $("ownBattery").checked = p.get("baterai-dibeli") === "1";
   if ([...$("sort").options].some((o) => o.value === p.get("urut"))) $("sort").value = p.get("urut");
+  if (Number(p.get("km")) > 0) $("kmDay").value = p.get("km");
   for (const s of (p.get("bandingkan") || "").split(",")) {
     const i = SLUGS.indexOf(s);
     if (i >= 0 && !compare.includes(i) && compare.length < MAX_COMPARE) compare.push(i);
@@ -512,6 +581,7 @@ function writeUrl() {
   if ($("onlyStnk").checked) p.set("stnk", "1");
   if ($("ownBattery").checked) p.set("baterai-dibeli", "1");
   if ($("sort").value !== "price:1") p.set("urut", $("sort").value);
+  if ($("kmDay").value !== "30") p.set("km", $("kmDay").value);
   if (compare.length) p.set("bandingkan", compare.map((i) => SLUGS[i]).join(","));
   if (detailI !== null) p.set("motor", SLUGS[detailI]);
   const q = p.toString().replace(/%2C/g, ",").replace(/%3A/g, ":");
@@ -546,6 +616,15 @@ function isRent(m) {
 
 function radio(name) {
   return document.querySelector(`input[name="${name}"]:checked`).value;
+}
+
+function num(id) {
+  return Number($(id).value) || 0;
+}
+
+/** dibulatkan ke ribuan: 20312 → "Rp 20.000" */
+function rp(n) {
+  return IDR.format(Math.round(n / 1000) * 1000);
 }
 
 /** 9699000 → "Rp 9,7 jt" */

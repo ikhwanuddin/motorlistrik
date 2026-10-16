@@ -124,6 +124,7 @@ button { cursor: pointer; }
 .muted { color: var(--ink-3); }
 .text-bad { color: var(--bad); font-weight: 600; }
 .text-warn { color: var(--warn); font-weight: 600; }
+.text-good { color: var(--li); font-weight: 600; }
 
 /* ── HERO ───────────────────────────────────────────────── */
 .hero {
@@ -460,6 +461,52 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 
 .fineprint { margin-top: 16px; color: var(--ink-3); font-size: 12.5px; }
 
+/* ── BIAYA PER BULAN ────────────────────────────────────── */
+.cost { padding: 56px 0 8px; border-top: 1px solid var(--line); scroll-margin-top: 8px; }
+.cost-head h2 { font-size: 28px; font-weight: 800; letter-spacing: -.025em; }
+.cost-head p { color: var(--ink-2); font-size: 14px; }
+.cost-inputs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 20px; }
+.num {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  background: var(--card);
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+}
+.num:focus-within { outline: 2px solid var(--ink); outline-offset: -1px; }
+.num input { width: 100%; min-width: 0; height: 100%; padding: 0 0 0 12px; background: none; border: 0; outline: none; font-weight: 700; font-variant-numeric: tabular-nums; }
+.num small { padding: 0 12px 0 6px; color: var(--ink-3); font-size: 12.5px; white-space: nowrap; }
+.cost-ref { margin: 18px 0 10px; color: var(--ink-2); font-size: 14px; }
+.cost-ref strong { color: var(--ink); }
+.cost-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 8px; }
+.cost-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "name total" "parts parts" "bar bar";
+  gap: 6px 16px;
+  padding: 12px 16px 12px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) {
+  .cost-row:hover { border-color: var(--line-2); }
+}
+.cost-name { grid-area: name; }
+.cost-name .model { font-size: 16px; }
+.cost-warn { margin-top: 2px; color: var(--warn); font-size: 12.5px; font-weight: 600; }
+.cost-parts { grid-area: parts; display: flex; flex-wrap: wrap; gap: 4px 16px; color: var(--ink-2); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.cost-total { grid-area: total; align-self: start; display: grid; justify-items: end; font-variant-numeric: tabular-nums; }
+.cost-total strong { font-size: 18px; font-weight: 800; letter-spacing: -.02em; white-space: nowrap; }
+.cost-total span { font-size: 12.5px; white-space: nowrap; }
+/* garis tipis = biaya motor bensin */
+.cost-bar { grid-area: bar; position: relative; height: 6px; background: var(--paper); border-radius: 3px; }
+.cost-bar i { display: block; height: 100%; background: var(--dot-li); border-radius: 3px; }
+.cost-bar b { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; background: var(--ink); border-radius: 1px; }
+
 /* ── SEBELUM BELI ───────────────────────────────────────── */
 .guide { padding: 56px 0; border-top: 1px solid var(--line); }
 .guide h2 { font-size: 28px; font-weight: 800; letter-spacing: -.025em; }
@@ -673,6 +720,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
   .filters-body { grid-template-columns: repeat(2, 1fr); }
   .show-results { display: flex; grid-column: 1 / -1; }
   .guide-grid { grid-template-columns: 1fr; }
+  .cost-inputs { grid-template-columns: repeat(3, 1fr); }
   .facts { grid-template-columns: repeat(2, 1fr); }
 }
 
@@ -697,6 +745,14 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
   .check { min-height: 36px; }
 
   .moto { padding: 14px; gap: 12px; }
+  .cost { padding-top: 40px; }
+  .cost-head h2 { font-size: 24px; }
+  .cost-inputs { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .num { height: 44px; }
+  .num input { font-size: 16px; }
+  .cost-list { grid-template-columns: 1fr; }
+  .cost-row { padding: 12px 14px 10px; }
+  .cost-parts { font-size: 12.5px; }
   .moto .tags { margin-top: 6px; }
   .model { font-size: 16px; }
   .price { font-size: 16px; }

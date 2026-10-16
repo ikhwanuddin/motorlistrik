@@ -242,7 +242,7 @@ function renderChart(shown) {
   let d = `M${x(fr[0].price)} ${H - pad.b}`;
   for (const m of fr) d += `H${x(m.price)}V${y(m[yKey])}`;
   d += `H${W - pad.r}`;
-  const line = `<path class="front${newAxis ? " is-draw" : ""}" style="animation-delay:${intro ? 1 : 0.5}s" pathLength="1" d="${d}"/>`;
+  const line = `<path class="front${newAxis ? " is-draw" : ""}" style="animation-delay:${intro ? 0.8 : 0.4}s" d="${d}"/>`;
 
   // motor yang dipilih / di sekitar tap digambar terakhir supaya di atas titik lain
   const prev = new Map(chartPts.map((p) => [p.i, p]));
@@ -263,15 +263,14 @@ function renderChart(shown) {
       near.includes(i) ? "is-near" : "",
     ].join(" ");
     return `
-      <g class="${cls}" data-i="${i}" tabindex="0" style="transform:translate(${from.x.toFixed(1)}px,${from.y.toFixed(1)}px);transition-delay:${delay}ms">
-        <title>${esc(m.brand)} ${esc(m.model)}: ${IDR.format(m.price)}, ${dec(m.kwh)} kWh, ${m.range} km, ${m.speed} km/j</title>
+      <g class="${cls}" data-i="${i}" tabindex="0" aria-label="${esc(m.brand)} ${esc(m.model)}: ${IDR.format(m.price)}, ${dec(m.kwh)} kWh, ${m.range} km, ${m.speed} km/j" style="transform:translate(${from.x.toFixed(1)}px,${from.y.toFixed(1)}px);transition-delay:${delay}ms">
         <circle class="hit" r="14"/>
         <circle class="dot" r="${dotR(m.speed).toFixed(1)}"/>
         <text x="${right ? -14 : 14}" y="4" text-anchor="${right ? "end" : "start"}">${esc(m.brand)} ${esc(m.model.split(" (")[0])}</text>
       </g>`;
   }).join("");
 
-  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Grafik harga terhadap ${ax.title}">${grid}${line}${points}</svg>`;
+  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Grafik harga terhadap ${ax.title}">${grid}${line}${points}</svg><div id="chartTip" class="chart-tip" hidden></div>`;
   // baca layout dulu supaya posisi awal terpasang, baru pindah ke posisi baru (transisi CSS)
   el.getBoundingClientRect();
   for (const p of chartPts) el.querySelector(`.pt[data-i="${p.i}"]`).style.transform = `translate(${p.x.toFixed(1)}px,${p.y.toFixed(1)}px)`;
@@ -318,6 +317,24 @@ function frontText(i) {
 
 function axisVal(m) {
   return `${dec(m[yKey])} ${AXES[yKey].unit}`;
+}
+
+/** Label motor di atas titik saat hover (mouse) atau fokus (keyboard). Kotak HTML di atas SVG supaya tidak ketutup titik lain. */
+function showTip(g) {
+  const i = Number(g.dataset.i);
+  const m = MOTORS[i];
+  const p = chartPts.find((q) => q.i === i);
+  const tip = $("chartTip");
+  tip.innerHTML = `<b>${esc(m.brand)} ${esc(m.model.split(" (")[0])}</b><span>${jt(m.price)} · ${axisVal(m)}</span>`;
+  tip.hidden = false;
+  // di tepi kiri/kanan kotak digeser supaya tidak keluar peta
+  const half = tip.offsetWidth / 2;
+  tip.style.left = `${Math.min(Math.max(p.x, half), $("chart").clientWidth - half)}px`;
+  tip.style.top = `${p.y - dotR(m.speed) - 8}px`;
+}
+
+function hideTip() {
+  if ($("chartTip")) $("chartTip").hidden = true;
 }
 
 /** Daftar pilihan saat tap kena beberapa titik yang berdempetan */
@@ -559,6 +576,18 @@ function bindEvents() {
     renderChart(visible());
     if (hits.length === 1) openDetail(hits[0]);
   });
+  $("chart").addEventListener("pointerover", (e) => {
+    if (e.pointerType !== "mouse") return;
+    const g = e.target.closest(".pt");
+    if (g) showTip(g);
+    else hideTip();
+  });
+  $("chart").addEventListener("pointerleave", hideTip);
+  $("chart").addEventListener("focusin", (e) => {
+    const g = e.target.closest(".pt");
+    if (g) showTip(g);
+  });
+  $("chart").addEventListener("focusout", hideTip);
   $("yAxis").addEventListener("change", (e) => {
     yKey = e.target.value;
     near = [];
@@ -727,9 +756,9 @@ function rp(n) {
   return IDR.format(Math.round(n / 1000) * 1000);
 }
 
-/** 9699000 → "Rp 9,7 jt" */
+/** 9699000 → "Rp 9,7 jt", 19950000 → "Rp 19,95 jt" */
 function jt(n) {
-  return `Rp ${(n / 1e6).toLocaleString("id-ID", { maximumFractionDigits: 1 })} jt`;
+  return `Rp ${(n / 1e6).toLocaleString("id-ID", { maximumFractionDigits: 2 })} jt`;
 }
 
 function cap(t) {

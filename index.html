@@ -1,373 +1,188 @@
 <!doctype html>
 <html lang="id">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta
-            name="description"
-            content="Perbandingan motor listrik di bawah Rp 20 juta untuk pasar Indonesia — harga, jarak tempuh, spesifikasi, dan subsidi pemerintah."
-        />
-        <title>⚡ Motor Listrik di Bawah Rp 20 Juta — Indonesia 2026</title>
-        <link
-            rel="icon"
-            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>"
-        />
-        <link rel="stylesheet" href="assets/css/style.css" />
-    </head>
-    <body>
-        <!-- ═══════════════════════════════════════════════════════
-     HERO HEADER
-═══════════════════════════════════════════════════════════ -->
-        <header class="hero">
-            <div class="container">
-                <div class="hero-inner">
-                    <div class="hero-title">
-                        <span class="hero-icon" aria-hidden="true">⚡</span>
-                        <div>
-                            <h1>Motor Listrik Entry Level</h1>
-                            <p class="hero-sub">
-                                Perbandingan harga &amp; spesifikasi di bawah
-                                Rp&nbsp;20 juta<br />
-                                Khusus pasar Indonesia · Pulau Jawa · Edisi 2026
-                            </p>
-                        </div>
-                    </div>
-                    <div class="hero-stats" id="heroStats" aria-live="polite">
-                        <!-- diisi oleh JS -->
-                    </div>
-                </div>
-            </div>
-        </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Perbandingan motor listrik di bawah Rp 20 juta di Indonesia: harga normal tanpa promo, jarak tempuh, kecepatan, baterai, STNK, dan sumber resmi." />
+  <title>Motor Listrik di Bawah Rp 20 Juta</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
 
-        <!-- ═══════════════════════════════════════════════════════
-     MAIN CONTENT
-═══════════════════════════════════════════════════════════ -->
-        <main>
-            <div class="container">
-                <!-- ── FILTER PANEL ── -->
-                <div class="filter-panel">
-                    <div class="filter-controls">
-                        <div class="filter-group">
-                            <label for="searchInput">🔍 Cari</label>
-                            <input
-                                type="search"
-                                id="searchInput"
-                                placeholder="Merek atau model…"
-                                autocomplete="off"
-                            />
-                        </div>
+  <!-- HERO: judul + peta harga vs jarak -->
+  <header class="hero">
+    <div class="wrap">
+      <nav class="topbar">
+        <a href="#" class="logo">⚡ motorlistrik</a>
+        <div class="topbar-links">
+          <a href="#daftar">Daftar</a>
+          <a href="#sebelum-beli">Sebelum beli</a>
+        </div>
+      </nav>
 
-                        <div class="filter-group">
-                            <label for="selPrice">💰 Harga Maksimum</label>
-                            <select id="selPrice">
-                                <option value="20000000" selected>
-                                    Semua (≤ Rp 20 juta)
-                                </option>
-                                <option value="10000000">≤ Rp 10 juta</option>
-                                <option value="13000000">≤ Rp 13 juta</option>
-                                <option value="15000000">≤ Rp 15 juta</option>
-                                <option value="17000000">≤ Rp 17 juta</option>
-                            </select>
-                        </div>
+      <h1><span id="nModels"></span> motor listrik di bawah <mark>Rp&nbsp;20&nbsp;juta</mark>, dibandingkan apa adanya.</h1>
+      <p class="lede">Harga normal tanpa promo &amp; tanpa subsidi. Spesifikasi klaim pabrik, dicek ke situs resmi dan toko resmi. Data per <strong id="checkedAt"></strong>.</p>
 
-                        <div class="filter-group">
-                            <label for="selRange">🛣️ Jarak Tempuh Min.</label>
-                            <select id="selRange">
-                                <option value="0" selected>Semua</option>
-                                <option value="50">≥ 50 km</option>
-                                <option value="60">≥ 60 km</option>
-                                <option value="80">≥ 80 km</option>
-                                <option value="100">≥ 100 km</option>
-                            </select>
-                        </div>
+      <div class="facts" id="facts"></div>
 
-                        <div class="filter-group filter-sort">
-                            <label for="selSort">↕️ Urutkan</label>
-                            <select id="selSort">
-                                <option value="price:asc">Harga termurah</option>
-                                <option value="price:desc">Harga termahal</option>
-                                <option value="range:desc">Jarak tempuh terjauh</option>
-                                <option value="speed:desc">Kecepatan tertinggi</option>
-                                <option value="power:desc">Daya terbesar</option>
-                            </select>
-                        </div>
+      <figure class="map">
+        <figcaption>
+          <div>
+            <h2>Peta harga vs jarak tempuh</h2>
+            <p>Makin ke kiri-atas, makin murah dan makin jauh. Klik titik untuk detail.</p>
+          </div>
+          <ul class="legend">
+            <li><i class="dot dot-li"></i>Lithium</li>
+            <li><i class="dot dot-sla"></i>Aki (SLA)</li>
+            <li><i class="dot dot-rent"></i>Harga tanpa baterai (sewa)</li>
+          </ul>
+        </figcaption>
+        <div id="chart" class="chart"></div>
+      </figure>
+    </div>
+  </header>
 
-                        <div class="filter-group filter-check">
-                            <label class="check-label">
-                                <input type="checkbox" id="chkLithium" />
-                                <span>🔋 Baterai lithium saja (tanpa SLA)</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="filter-meta">
-                        <span id="countLabel" class="count-label"></span>
-                        <button id="btnReset" class="btn-ghost">
-                            ↺ Reset filter
-                        </button>
-                    </div>
-                </div>
+  <!-- DAFTAR + FILTER -->
+  <main id="daftar" class="wrap layout">
+    <details class="filters" id="filters">
+      <summary>Filter &amp; urutkan <span id="filterCount" class="filter-count"></span></summary>
+      <div class="filters-body">
+        <label class="field">
+          <span class="field-label">Cari</span>
+          <input type="search" id="q" placeholder="Merek atau model" autocomplete="off" />
+        </label>
 
-                <!-- ── TABLE ── -->
-                <div class="table-card">
-                    <div
-                        class="table-scroller"
-                        role="region"
-                        aria-label="Tabel perbandingan motor listrik"
-                        tabindex="0"
-                    >
-                        <table id="motorTable">
-                            <thead>
-                                <tr>
-                                    <th
-                                        class="col-check"
-                                        title="Pilih untuk dibandingkan (maks. 3)"
-                                    >
-                                        ⚖️
-                                    </th>
-                                    <th
-                                        class="col-sort"
-                                        data-col="brand"
-                                        data-type="str"
-                                    >
-                                        Merek <b></b>
-                                    </th>
-                                    <th
-                                        class="col-sort"
-                                        data-col="model"
-                                        data-type="str"
-                                    >
-                                        Model <b></b>
-                                    </th>
-                                    <th
-                                        class="col-sort col-num"
-                                        data-col="price"
-                                        data-type="num"
-                                    >
-                                        Harga* <b></b>
-                                    </th>
-                                    <th
-                                        class="col-sort col-num"
-                                        data-col="range"
-                                        data-type="num"
-                                    >
-                                        Jarak Tempuh <b></b>
-                                    </th>
-                                    <th
-                                        class="col-sort col-num"
-                                        data-col="speed"
-                                        data-type="num"
-                                    >
-                                        Kec. Maks <b></b>
-                                    </th>
-                                    <th
-                                        class="col-sort col-num col-hide-sm"
-                                        data-col="power"
-                                        data-type="num"
-                                    >
-                                        Daya Maks <b></b>
-                                    </th>
-                                    <th class="col-hide-md">Baterai</th>
-                                    <th class="col-hide-md">Garansi Baterai</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody"></tbody>
-                        </table>
-                    </div>
-                    <p class="table-foot">
-                        * Harga normal tanpa promo &amp; tanpa subsidi, OTR
-                        Jakarta/Jadetabek kalau tersedia. Label di bawah harga
-                        menunjukkan status OTR &amp; skema baterai.
-                        &nbsp; Label <strong>Tanpa STNK</strong> /
-                        <strong>STNK belum jelas</strong> di kolom Model:
-                        motor itu tidak (atau belum pasti) bisa dapat plat
-                        nomor.
-                        &nbsp; <strong>Klik baris</strong> untuk detail lengkap:
-                        keterangan harga, garansi, catatan, sumber &amp; link
-                        resmi. Centang ⚖️ untuk
-                        <strong>membandingkan</strong> 2–3 motor secara
-                        berdampingan.
-                    </p>
-                </div>
+        <label class="field">
+          <span class="field-label">Budget maksimal <output id="budgetOut"></output></span>
+          <input type="range" id="budget" min="9" max="20" step="0.5" value="20" />
+        </label>
 
-                <!-- ── INFO CARDS ── -->
-                <div class="card-grid">
-                    <article class="card">
-                        <h2>💡 Tips Sebelum Membeli</h2>
-                        <ul>
-                            <li>
-                                Pilih motor dengan range
-                                <strong>≥ 1,5×</strong> jarak harian Anda
-                            </li>
-                            <li>
-                                Pastikan jaringan servis resmi tersedia di kota
-                                Anda
-                            </li>
-                            <li>
-                                Cek skema baterai: beli putus, sewa bulanan,
-                                atau <em>swap</em>. Harga murah sering belum
-                                termasuk baterai
-                            </li>
-                            <li>
-                                Tanyakan harga penggantian baterai setelah masa
-                                garansi berakhir
-                            </li>
-                            <li>
-                                Pastikan motor bisa dapat STNK, BPKB &amp; plat.
-                                Ada model "semi-motor" dan unit marketplace
-                                yang dijual tanpa surat
-                            </li>
-                        </ul>
-                    </article>
+        <fieldset class="field">
+          <legend class="field-label">Jarak tempuh minimal</legend>
+          <div class="seg">
+            <label><input type="radio" name="range" value="0" checked /><span>Semua</span></label>
+            <label><input type="radio" name="range" value="60" /><span>60+</span></label>
+            <label><input type="radio" name="range" value="80" /><span>80+</span></label>
+            <label><input type="radio" name="range" value="100" /><span>100+</span></label>
+          </div>
+        </fieldset>
 
-                    <article class="card">
-                        <h2>🏛️ Subsidi Pemerintah</h2>
-                        <p>
-                            Per <strong>16 Oktober 2026</strong> belum ada
-                            subsidi pemerintah yang aktif. Bantuan Rp&nbsp;7
-                            juta berakhir Desember 2024, dan sepanjang 2025
-                            tidak ada program. Rencana 2026 sebesar
-                            <strong>Rp&nbsp;3 juta/unit</strong> masih menunggu
-                            PMK dari Kemenkeu. Kalau dealer menyebut
-                            "subsidi", itu biasanya promo merek, bukan program
-                            pemerintah.
-                        </p>
-                        <p class="card-source">
-                            Sumber:
-                            <a
-                                href="https://www.cnnindonesia.com/otomotif/20260925133807-603-1408140/menperin-sebut-teknis-siap-insentif-motor-listrik-tergantung-menkeu"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                >CNN Indonesia, 25 Sep 2026</a
-                            >,
-                            <a
-                                href="https://www.otodream.com/ev/38444-2026-mau-habis-nasib-insentif-motor-listrik-masih-terombang-ambing"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                >OtoDream, 3 Okt 2026</a
-                            >
-                        </p>
-                    </article>
+        <fieldset class="field">
+          <legend class="field-label">Tipe baterai</legend>
+          <div class="seg">
+            <label><input type="radio" name="batt" value="all" checked /><span>Semua</span></label>
+            <label><input type="radio" name="batt" value="li" /><span>Lithium</span></label>
+            <label><input type="radio" name="batt" value="sla" /><span>Aki</span></label>
+          </div>
+        </fieldset>
 
-                    <article class="card">
-                        <h2>🔋 SLA vs Li-ion</h2>
-                        <p>
-                            Baterai <strong>Li-ion (Lithium)</strong> lebih
-                            ringan, tahan lama (500–1.000 siklus), dan lebih
-                            cepat diisi dibanding
-                            <strong>SLA (aki kering/basah)</strong>. SLA lebih
-                            murah di awal tapi lebih berat &amp; biaya
-                            penggantian lebih sering. Untuk pemakaian harian,
-                            Li-ion sangat direkomendasikan.
-                        </p>
-                    </article>
-
-                    <article class="card">
-                        <h2>📍 Infrastruktur Jawa</h2>
-                        <p>
-                            Pulau Jawa memiliki SPLU (Stasiun Pengisian Listrik
-                            Umum) terlengkap di Indonesia. Jakarta, Surabaya,
-                            Bandung, Semarang &amp; Yogyakarta sudah memiliki
-                            banyak titik pengisian. PLN juga mendukung pengisian
-                            di rumah dengan tarif khusus EV.
-                        </p>
-                    </article>
-                </div>
-                <!-- /card-grid -->
-            </div>
-            <!-- /container -->
-        </main>
-
-        <!-- ═══════════════════════════════════════════════════════
-     FOOTER
-═══════════════════════════════════════════════════════════ -->
-        <footer class="site-footer">
-            <div class="container">
-                <p>
-                    Data dikumpulkan dari sumber publik dan merupakan perkiraan
-                    pada waktu penulisan. Selalu verifikasi harga &amp;
-                    spesifikasi ke dealer resmi atau website produsen sebelum
-                    membeli.
-                </p>
-                <p>
-                    Open source &middot;
-                    <a
-                        href="https://github.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        >GitHub Pages</a
-                    >
-                </p>
-            </div>
-        </footer>
-
-        <!-- ── COMPARISON BAR (fixed bottom) ── -->
-        <div id="compareBar" class="compare-bar" hidden>
-            <div class="compare-bar-inner container">
-                <span class="compare-bar-label">Bandingkan:</span>
-                <div id="compareChips" class="compare-chips"></div>
-                <div class="compare-bar-actions">
-                    <button id="btnCompare" class="btn-compare" disabled>
-                        ⚖️ Bandingkan
-                    </button>
-                    <button id="btnClearCompare" class="btn-ghost-white">
-                        ✕ Hapus pilihan
-                    </button>
-                </div>
-            </div>
+        <div class="field">
+          <label class="check"><input type="checkbox" id="onlyStnk" /><span>Pasti bisa STNK &amp; plat</span></label>
+          <label class="check"><input type="checkbox" id="ownBattery" /><span>Harga sudah termasuk baterai</span></label>
         </div>
 
-        <!-- ── COMPARISON MODAL ── -->
-        <div
-            id="compareOverlay"
-            class="compare-overlay"
-            hidden
-            role="dialog"
-            aria-modal="true"
-            aria-label="Perbandingan motor listrik"
-        >
-            <div class="compare-modal" role="document">
-                <div class="compare-modal-header">
-                    <h2>⚖️ Perbandingan Motor Listrik</h2>
-                    <button
-                        id="btnCloseCompare"
-                        class="compare-close"
-                        aria-label="Tutup perbandingan"
-                    >
-                        ✕
-                    </button>
-                </div>
-                <div class="compare-modal-body" id="compareBody">
-                    <!-- diisi oleh JS -->
-                </div>
-            </div>
-        </div>
+        <label class="field">
+          <span class="field-label">Urutkan</span>
+          <select id="sort">
+            <option value="price:1">Harga termurah</option>
+            <option value="price:-1">Harga termahal</option>
+            <option value="range:-1">Jarak tempuh terjauh</option>
+            <option value="speed:-1">Kecepatan tertinggi</option>
+            <option value="power:-1">Daya terbesar</option>
+          </select>
+        </label>
 
-        <!-- ── DETAIL MODAL (klik baris) ── -->
-        <div
-            id="detailOverlay"
-            class="compare-overlay"
-            hidden
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="detailTitle"
-        >
-            <div class="compare-modal detail-modal" role="document">
-                <div class="compare-modal-header">
-                    <h2 id="detailTitle"></h2>
-                    <button
-                        id="btnCloseDetail"
-                        class="compare-close"
-                        aria-label="Tutup detail"
-                    >
-                        ✕
-                    </button>
-                </div>
-                <div class="compare-modal-body" id="detailBody">
-                    <!-- diisi oleh JS -->
-                </div>
-            </div>
-        </div>
+        <button type="button" id="reset" class="btn-text">Reset filter</button>
+      </div>
+    </details>
 
-        <script src="assets/js/app.js"></script>
-    </body>
+    <section class="results">
+      <div class="results-head">
+        <h2 id="count"></h2>
+        <p>Klik motor untuk detail lengkap. Pilih <strong>+ Bandingkan</strong> di 2–3 motor untuk adu spek.</p>
+      </div>
+      <div id="list" class="list"></div>
+      <p class="fineprint">
+        Harga = harga normal tanpa promo &amp; tanpa subsidi, OTR Jakarta/Jadetabek kalau ada. Label di bawah harga menunjukkan status OTR &amp; skema baterai.
+        Jarak tempuh = klaim pabrik; di jalan bisa turun 20–40%. Daya = daya maksimum klaim pabrik.
+      </p>
+    </section>
+  </main>
+
+  <!-- SEBELUM BELI -->
+  <section id="sebelum-beli" class="guide">
+    <div class="wrap">
+      <h2>Sebelum beli</h2>
+      <div class="guide-grid">
+        <article>
+          <h3>Cek lima hal ini</h3>
+          <ol>
+            <li>Jarak tempuh minimal <strong>1,5×</strong> jarak harian kamu. Angka pabrik biasanya lebih tinggi dari kenyataan.</li>
+            <li>Ada bengkel resmi di kota kamu.</li>
+            <li>Skema baterai: beli putus, sewa bulanan, atau <em>swap</em>. Harga murah sering belum termasuk baterai.</li>
+            <li>Harga ganti baterai setelah garansi habis.</li>
+            <li>Bisa dapat STNK, BPKB &amp; plat. Ada model "semi-motor" dan unit marketplace yang dijual tanpa surat.</li>
+          </ol>
+        </article>
+
+        <article>
+          <h3>Subsidi pemerintah</h3>
+          <p>
+            Per <strong>16 Oktober 2026</strong> belum ada subsidi pemerintah yang aktif. Bantuan Rp&nbsp;7 juta berakhir Desember 2024, dan sepanjang 2025 tidak ada program.
+            Rencana 2026 sebesar <strong>Rp&nbsp;3 juta/unit</strong> masih menunggu PMK dari Kemenkeu. Kalau dealer menyebut "subsidi", itu biasanya promo merek.
+          </p>
+          <p class="source">
+            Sumber:
+            <a href="https://www.cnnindonesia.com/otomotif/20260925133807-603-1408140/menperin-sebut-teknis-siap-insentif-motor-listrik-tergantung-menkeu" target="_blank" rel="noopener noreferrer">CNN Indonesia, 25 Sep 2026</a>,
+            <a href="https://www.otodream.com/ev/38444-2026-mau-habis-nasib-insentif-motor-listrik-masih-terombang-ambing" target="_blank" rel="noopener noreferrer">OtoDream, 3 Okt 2026</a>
+          </p>
+        </article>
+
+        <article>
+          <h3>Lithium vs aki (SLA)</h3>
+          <p>
+            Baterai <strong>lithium</strong> (Li-ion, LFP) lebih ringan, lebih awet (500–1.000 siklus), dan lebih cepat diisi.
+            <strong>Aki SLA</strong> (termasuk "graphene") lebih murah di awal, tapi berat dan lebih cepat perlu diganti.
+            Untuk pemakaian harian, pilih lithium kalau budget cukup.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>Data dari sumber publik dan bisa berubah. Selalu cek harga &amp; spesifikasi ke dealer resmi atau situs produsen sebelum membeli.</p>
+      <p><a href="https://github.com/ikhwanuddin/motorlistrik" target="_blank" rel="noopener noreferrer">Kode &amp; data di GitHub</a></p>
+    </div>
+  </footer>
+
+  <!-- TRAY BANDINGKAN -->
+  <div id="tray" class="tray" hidden>
+    <div class="wrap tray-inner">
+      <div id="trayItems" class="tray-items"></div>
+      <div class="tray-actions">
+        <button type="button" id="trayClear" class="btn-text">Hapus</button>
+        <button type="button" id="trayGo" class="btn-primary">Bandingkan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL -->
+  <dialog id="detail" class="sheet" aria-labelledby="detailTitle">
+    <div class="sheet-inner" id="detailBody"></div>
+  </dialog>
+
+  <!-- BANDINGKAN -->
+  <dialog id="compare" class="sheet sheet-wide" aria-label="Perbandingan motor listrik">
+    <div class="sheet-inner" id="compareBody"></div>
+  </dialog>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
 </html>

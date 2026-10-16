@@ -47,6 +47,7 @@ Edit array `MOTORS` di `assets/js/data.js`. Tanggal cek ada di `CHECKED_AT`.
 | `battery`, `batteryType` | Deskripsi baterai; tipe `LFP` / `Li-ion` / `SLA` |
 | `warranty`, `chargeTime` | Garansi & waktu charge |
 | `batteryScheme`, `swapCost` | `Beli` / `Sewa` / `Beli/Swap` / `Sewa/Beli`; biaya swap/sewa |
+| `batteryPrice` | Harga beli baterai baru (pengganti) |
 | `notes` | Catatan |
 | `url`, `sources` | Link resmi; daftar `{label, url}` sumber data |
 | `stnk` | `true` bisa STNK, `false` tidak bisa, `null` belum jelas |

@@ -1,5 +1,7 @@
-// Cek semua link di data.js (url resmi + sources). Cetak daftar link bermasalah dalam markdown.
-// Pakai: node scripts/check-links.mjs > laporan.md   (exit 1 kalau ada yang bermasalah)
+// Cek semua link di data.js (url resmi + sources). Cetak daftar link mati dalam markdown.
+// Yang dihitung mati cuma yang pasti: 404/410 dan domain tidak ada. 403/429/timeout tidak,
+// karena banyak situs (Tokopedia, Kontan, dll) memblokir IP server GitHub padahal link-nya hidup.
+// Pakai: node scripts/check-links.mjs > laporan.md   (exit 1 kalau ada link mati)
 import fs from "node:fs";
 
 const src = fs.readFileSync(new URL("../assets/js/data.js", import.meta.url), "utf8");
@@ -25,18 +27,22 @@ async function check(url) {
   }
 }
 
+const DEAD = [404, 410, "ENOTFOUND"];
 const bad = [];
+let blocked = 0;
 for (const l of links) {
   let status = await check(l.url);
   if (typeof status !== "number") status = await check(l.url); // gagal koneksi: coba sekali lagi
   console.error(status, l.url);
-  if (status !== 200) bad.push({ ...l, status });
+  if (DEAD.includes(status)) bad.push({ ...l, status });
+  else if (status < 200 || status >= 300 || typeof status !== "number") blocked++;
 }
 
 if (bad.length) {
-  console.log(`${bad.length} dari ${links.length} link sumber bermasalah (cek ${new Date().toISOString().slice(0, 10)}).\n`);
+  console.log(`${bad.length} dari ${links.length} link sumber mati (cek ${new Date().toISOString().slice(0, 10)}).\n`);
   console.log("| Motor | Sumber | Status |\n|---|---|---|");
   for (const b of bad) console.log(`| ${b.name} | [${b.label}](${b.url}) | ${b.status} |`);
-  console.log("\n403/429 biasanya situs memblokir bot, timeout bisa cuma gangguan sementara. Dua-duanya belum tentu link mati, cek manual di browser. Yang pasti bermasalah: 404/410 (halaman hilang) dan ENOTFOUND (domain mati).");
+  console.log(`\n404/410 = halaman hilang, ENOTFOUND = domain tidak ada. ${blocked} link lain tidak bisa dicek dari server (diblokir/timeout), tidak dihitung.`);
 }
+console.error(`${bad.length} mati, ${blocked} tidak bisa dicek, dari ${links.length} link`);
 process.exit(bad.length ? 1 : 0);

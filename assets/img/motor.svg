@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<style>
+.ink{fill:#15171b}.st{stroke:#15171b}.bg{fill:#f4f3ee}.volt{fill:#d4f53c}.vink{fill:#1f2a00}.mute{fill:#d2cfc4}.smute{stroke:#d2cfc4}.tail{fill:#e8870e}
+@media (prefers-color-scheme:dark){.ink{fill:#eeede6}.st{stroke:#eeede6}.bg{fill:#0e0f12}.mute{fill:#363a45}.smute{stroke:#363a45}}
+</style>
+<style>@keyframes p{50%{opacity:.25}}.blink{animation:p 1.6s ease-in-out infinite}@media (prefers-reduced-motion:reduce){.blink{animation:none}}</style>
+<path class="smute" stroke-width="3" d="M14 268H466"/>
+<rect class="mute" x="14" y="128" width="30" height="40" rx="6"/>
+<path class="st" stroke-width="5" d="M29 162V236C29 252 36 260 50 260M86 260C104 260 104 218 96 198"/>
+<rect class="ink" x="46" y="250" width="44" height="20" rx="5"/><circle class="volt" cx="80" cy="260" r="3"/>
+<rect class="ink" x="21" y="150" width="16" height="16" rx="3"/>
+<g transform="translate(40 0)">
+  <g class="ink"><circle cx="128" cy="234" r="34"/><circle cx="366" cy="234" r="34"/></g><circle class="bg" cx="128" cy="234" r="21"/><circle class="ink" cx="128" cy="234" r="14"/><circle class="bg" cx="366" cy="234" r="21"/><circle class="ink" cx="366" cy="234" r="7"/>
+  <path class="ink" d="M60 186C60 168 80 156 112 156H238C252 156 258 166 258 178V196H306V214H169.4A46 46 0 0 0 86.6 214H72C64 210 60 198 60 186Z"/><path class="ink" d="M300 214H318C344 210 356 170 358 118L362 100 338 96C334 146 322 180 300 196Z"/><path class="ink" d="M108 156C108 144 116 138 130 138H222C236 138 244 146 244 156Z"/>
+  <path class="st" stroke-width="7" d="M352 116 366 234M325 219A44 44 0 0 1 404 212M350 98 346 76M330 74 364 71"/>
+  <path class="tail" d="M58 182h8v12h-8z"/><ellipse class="volt" cx="363" cy="128" rx="5" ry="9"/>
+  <circle class="volt" cx="62" cy="200" r="5"/>
+</g>
+<rect class="st" stroke-width="5" x="150" y="40" width="128" height="62" rx="12"/><rect class="ink" x="281" y="59" width="9" height="24" rx="3"/>
+<rect class="volt" x="162" y="52" width="23" height="38" rx="4"/><rect class="volt" x="191" y="52" width="23" height="38" rx="4"/><rect class="volt" x="220" y="52" width="23" height="38" rx="4"/><rect class="volt blink" x="249" y="52" width="17" height="38" rx="4"/>
+</svg>

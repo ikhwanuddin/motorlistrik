@@ -5,7 +5,7 @@
 // dibuka di tab baru Brave yang sedang jalan, lalu judul halamannya dicek ("404", "tidak ditemukan").
 // Kalau Brave tidak jalan, link itu dihitung "tidak bisa dicek".
 import fs from "node:fs";
-import { execFileSync } from "node:child_process";
+import { braveOn, braveTitle } from "./brave.mjs";
 
 const dataPath = process.argv[2] || new URL("../assets/js/data.js", import.meta.url);
 const MOTORS = new Function(`${fs.readFileSync(dataPath, "utf8")}; return MOTORS;`)();
@@ -34,40 +34,6 @@ async function check(url) {
     return e.name === "TimeoutError" ? "timeout" : e.cause?.code || e.message;
   }
 }
-
-// buka url di tab baru jendela Brave terdepan, tunggu selesai, ambil judul, tutup tab, kembalikan tab aktif
-const BRAVE_JS = `
-on run argv
-  tell application "Brave Browser"
-    set w to window 1
-    set prev to active tab index of w
-    set t to make new tab at end of tabs of w with properties {URL:item 1 of argv}
-    delay 1
-    repeat 60 times
-      if not (loading of t) then exit repeat
-      delay 0.5
-    end repeat
-    repeat 15 times
-      if title of t does not start with "Just a moment" then exit repeat
-      delay 1
-    end repeat
-    set r to title of t
-    close t
-    set active tab index of w to prev
-    return r
-  end tell
-end run`;
-
-function braveTitle(url) {
-  try {
-    return execFileSync("osascript", ["-e", BRAVE_JS, url], { encoding: "utf8", timeout: 60000 }).trim();
-  } catch {
-    return null;
-  }
-}
-
-let braveOn = true;
-try { execFileSync("pgrep", ["-x", "Brave Browser"]); } catch { braveOn = false; }
 
 const DEAD = [404, 410, "ENOTFOUND"];
 const DEAD_TITLE = /404|not found|tidak ditemukan|halaman tidak ada/i;

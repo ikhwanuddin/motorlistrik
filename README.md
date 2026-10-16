@@ -12,7 +12,8 @@ Live: https://motorlistrik.ikhwanuddin.com/
 - Urutkan harga / jarak / kecepatan / daya
 - Klik motor → panel detail: keterangan harga, baterai, garansi, catatan, sumber, link resmi
 - Pilih 2–3 motor → panel bandingkan, nilai terbaik ditandai
-- Link bisa dibagikan: filter, motor yang dipilih untuk dibandingkan, dan detail yang dibuka tersimpan di URL (`?bandingkan=volta-401,uwinfly-m90e`, `?motor=volta-401`); tombol **Bagikan** di detail & bandingkan. Preview WA/medsos pakai `assets/img/og.jpg`
+- Biaya per bulan: listrik cas di rumah (jarak ÷ jarak tempuh klaim × kWh × tarif) + sewa baterai, dibandingkan motor bensin. Input jarak harian, hari pakai, tarif listrik, harga & konsumsi bensin; ikut filter. Muncul juga di detail & bandingkan
+- Link bisa dibagikan: filter, motor yang dipilih untuk dibandingkan, dan detail yang dibuka tersimpan di URL (`?bandingkan=volta-401,uwinfly-m90e`, `?motor=volta-401`, jarak harian `?km=50`); tombol **Bagikan** di detail & bandingkan. Preview WA/medsos pakai `assets/img/og.jpg`
 - Responsif (HP: kartu ringkas, filter nempel saat scroll, bottom sheet dengan tombol aksi tetap di bawah) dan dark mode otomatis
 
 Murni HTML + CSS + vanilla JS, tanpa build. Font Plus Jakarta Sans di-host sendiri (tanpa request ke Google).
@@ -40,6 +41,7 @@ serve.sh                server lokal (python3)
 ## Update data
 
 Edit array `MOTORS` di `assets/js/data.js`. Tanggal cek ada di `CHECKED_AT`.
+Default kalkulator (tarif PLN, harga Pertalite, konsumsi BeAT) ada di input `#biaya` di `index.html`, sumbernya di fineprint bawahnya.
 
 | Field | Isi |
 |-------|-----|
@@ -49,8 +51,10 @@ Edit array `MOTORS` di `assets/js/data.js`. Tanggal cek ada di `CHECKED_AT`.
 | `priceTag` | Label pendek di bawah harga, mis. `"OTR Jakarta"`, `"Off-the-road"` |
 | `range`, `speed`, `power` | Jarak tempuh (km), kecepatan maks (km/j), daya maks (W) |
 | `battery`, `batteryType` | Deskripsi baterai; tipe `LFP` / `Li-ion` / `SLA` |
+| `kwh` | Kapasitas baterai (kWh) untuk jarak `range`, angka. Dipakai kalkulator biaya listrik |
 | `warranty`, `chargeTime` | Garansi & waktu charge |
-| `batteryScheme`, `swapCost` | `Beli` / `Sewa` / `Beli/Swap` / `Sewa/Beli`; biaya swap/sewa |
+| `batteryScheme`, `swapCost` | `Beli` / `Sewa` / `Beli/Swap` / `Sewa/Beli`; biaya swap/sewa (teks) |
+| `batteryRent`, `rentKmCap` | Sewa baterai Rp/bulan (angka, `null` kalau beli); batas km/bulan sebelum kena biaya tambahan (opsional) |
 | `batteryPrice` | Harga beli baterai baru (pengganti) |
 | `notes` | Catatan |
 | `url`, `sources` | Link resmi; daftar `{label, url}` sumber data |

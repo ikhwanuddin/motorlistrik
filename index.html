@@ -36,6 +36,7 @@
         <a href="#" class="logo">⚡ motorlistrik</a>
         <div class="topbar-links">
           <a href="#daftar">Daftar</a>
+          <a href="#biaya">Biaya</a>
           <a href="#sebelum-beli">Sebelum beli</a>
         </div>
       </nav>
@@ -143,6 +144,35 @@
       </p>
     </section>
   </main>
+
+  <!-- BIAYA PER BULAN -->
+  <section id="biaya" class="cost">
+    <div class="wrap">
+      <div class="cost-head">
+        <h2>Biaya per bulan</h2>
+        <p>Listrik cas di rumah + sewa baterai, dibandingkan motor bensin. Ikut filter di atas.</p>
+      </div>
+      <div class="cost-inputs" id="costInputs">
+        <label class="field"><span class="field-label">Jarak per hari</span><span class="num"><input type="number" id="kmDay" value="30" min="1" max="300" inputmode="numeric" /><small>km</small></span></label>
+        <label class="field"><span class="field-label">Hari pakai / bulan</span><span class="num"><input type="number" id="days" value="26" min="1" max="31" inputmode="numeric" /><small>hari</small></span></label>
+        <label class="field"><span class="field-label">Tarif listrik</span><span class="num"><input type="number" id="tariff" value="1444.7" min="0" step="0.1" inputmode="decimal" /><small>Rp/kWh</small></span></label>
+        <label class="field"><span class="field-label">Harga bensin</span><span class="num"><input type="number" id="fuelPrice" value="10000" min="0" step="100" inputmode="numeric" /><small>Rp/liter</small></span></label>
+        <label class="field"><span class="field-label">Konsumsi motor bensin</span><span class="num"><input type="number" id="fuelKm" value="60.6" min="1" step="0.1" inputmode="decimal" /><small>km/liter</small></span></label>
+      </div>
+      <p class="cost-ref" id="costRef"></p>
+      <div id="costList" class="cost-list"></div>
+      <p class="fineprint">
+        Listrik = jarak ÷ jarak tempuh klaim × kapasitas baterai × tarif, tanpa rugi-rugi charger (nyata biasanya 10–20% lebih). Bensin = jarak ÷ konsumsi.
+        Belum termasuk servis, pajak, dan ganti baterai setelah garansi (lihat "Harga baterai baru" di detail). Motor Volta juga bisa swap di SGB, Rp 1.000–5.000 per swap.
+        Default: tarif PLN R-1 1.300 VA triwulan IV 2026 Rp 1.444,70/kWh
+        (<a href="https://money.kompas.com/read/2026/10/13/083616126/tarif-listrik-per-kwh-13-18-oktober-2026-untuk-semua-golongan-pelanggan-pln" target="_blank" rel="noopener noreferrer">Kompas, Okt 2026</a>),
+        Pertalite Rp 10.000/liter
+        (<a href="https://ekonomi.bisnis.com/read/20261012/44/2011682/daftar-harga-bbm-terbaru-12-oktober-2026-pertamax-berubah" target="_blank" rel="noopener noreferrer">Bisnis, 12 Okt 2026</a>),
+        konsumsi Honda BeAT klaim pabrik 60,6 km/liter
+        (<a href="https://www.liputan6.com/otomotif/read/4157269/honda-beat-lebih-irit-dibanding-genio-ini-rahasianya" target="_blank" rel="noopener noreferrer">Liputan6</a>), sama-sama klaim pabrik seperti jarak tempuh motor listrik.
+      </p>
+    </div>
+  </section>
 
   <!-- SEBELUM BELI -->
   <section id="sebelum-beli" class="guide">

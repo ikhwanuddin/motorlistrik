@@ -394,23 +394,24 @@ const MOTORS = [
   {
     brand: "Polytron",
     model: "Fox 200",
-    price: 18500000,
+    price: 18600000,
     priceNote:
-      "OTR Jadetabek, baterai sewa Rp 125 rb/bln. Beli putus Rp 20,5 jt. Promo merek sempat Rp 11,5 jt",
+      "Situs resmi Polytron (Okt 2026), OTR Jadetabek, baterai sewa Rp 125 rb/bln. Beli putus Rp 27,6 jt. Promo di situs Rp 12,6 jt",
     range: 85,
     speed: 70,
     power: 1500,
     battery: "LFP 72V 27Ah (1,94 kWh)",
     batteryType: "LFP",
-    warranty: "Baterai: seumur langganan (sewa) / 3 thn (beli). Dinamo & ECU 1 thn",
+    warranty: "Baterai: seumur langganan (sewa, diganti kalau kesehatan < 85%) / 1 thn (beli). Dinamo & ECU 1 thn",
     chargeTime: "4–5 jam (onboard 450 W)",
     batteryScheme: "Sewa/Beli",
     swapCost: "Sewa baterai Rp 125.000/bln",
     notes:
-      "Range 85 km pada kecepatan 40 km/jam. Potongan Rp 7 jt itu promo Polytron, bukan subsidi pemerintah",
+      "Range 85 km pada kecepatan 40 km/jam. Per Okt 2026 semua varian Fox 200 berstatus stok habis di situs resmi. Potongan Rp 6 jt di situs itu promo Polytron, bukan subsidi pemerintah",
     url: "https://2w.polytronev.id/fox200",
     sources: [
       { label: "Situs resmi Polytron", url: "https://2w.polytronev.id/fox200" },
+      { label: "Toko resmi polytron.co.id (OTR Jadetabek)", url: "https://polytron.co.id/produk/polytron-fox-200-electric-sepeda-motor-listrik-otr-jadetabek/" },
       { label: "Liputan6, Jan 2026", url: "https://otosia.liputan6.com/otosia/read/6254315/harga-motor-listrik-polytron-2026-lengkap-dengan-spesifikasi-semua-model" },
       { label: "Kumparan, Agu 2026 (sewa baterai)", url: "https://kumparan.com/kumparanoto/rincian-harga-sewa-baterai-motor-listrik-polytron-mulai-rp-125-ribu-27vty9HlGLI" },
     ],

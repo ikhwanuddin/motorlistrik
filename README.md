@@ -68,12 +68,13 @@ Tarif listrik & default kalkulator (harga Pertalite, konsumsi BeAT) ada di input
 
 Isi `null` kalau data tidak ketemu di sumber. Jangan menebak.
 
-Link sumber dicek otomatis tiap Senin 08.00 WIB dari Mac mini (launchd), bukan
+Link sumber dicek otomatis tiap Senin 08.00 (jam Mac mini) lewat launchd, bukan
 GitHub Actions: banyak situs (Tokopedia, Kontan, situs merek) memblokir IP server
 GitHub. Link yang tetap diblokir dari koneksi rumah dibuka sebentar di tab baru
 Brave, lalu judul halamannya dicek. Kalau ada yang mati (404/410/domain hilang),
 muncul issue **Link sumber mati** (label `link-mati`) berisi daftar link dan
 statusnya; issue itu diperbarui tiap minggu dan tertutup sendiri kalau semua normal lagi.
+Kalau script-nya sendiri gagal (internet mati, node hilang), muncul issue **Cek link gagal**.
 
 ```bash
 node scripts/check-links.mjs   # cek manual (tiap url unik sekali), exit 1 kalau ada link mati

@@ -1,0 +1,57 @@
+name: Data motor
+description: Koreksi data, motor baru, atau harga berubah
+title: "[data] "
+labels: [data]
+body:
+  - type: dropdown
+    id: jenis
+    attributes:
+      label: Jenis
+      options:
+        - Koreksi data motor yang sudah ada
+        - Motor baru (harga normal di bawah Rp 20 juta)
+        - Harga berubah
+        - Motor tidak dijual lagi
+    validations:
+      required: true
+  - type: input
+    id: motor
+    attributes:
+      label: Merek & model
+      placeholder: "Volta 401"
+    validations:
+      required: true
+  - type: textarea
+    id: isi
+    attributes:
+      label: Data yang diusulkan
+      description: Tulis field dan nilainya. Yang tidak ada di sumber, kosongkan saja.
+      placeholder: |
+        price: 9500000 (OTR Jakarta)
+        range: 60
+        speed: 45
+    validations:
+      required: true
+  - type: textarea
+    id: sumber
+    attributes:
+      label: Link sumber
+      description: Situs resmi produsen, toko resmi (official store), atau dealer resmi. Satu link per baris.
+    validations:
+      required: true
+  - type: input
+    id: tanggal
+    attributes:
+      label: Tanggal cek
+      placeholder: "16 Okt 2026"
+    validations:
+      required: true
+  - type: checkboxes
+    id: aturan
+    attributes:
+      label: Konfirmasi
+      options:
+        - label: Harga yang saya tulis harga normal, bukan harga promo, diskon, atau setelah subsidi.
+          required: true
+        - label: Data ini boleh dipakai di bawah lisensi CC BY 4.0.
+          required: true

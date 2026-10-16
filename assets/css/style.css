@@ -227,14 +227,34 @@ button { cursor: pointer; }
 .dot-sz.s { width: 7px; height: 7px; }
 .dot-sz.l { width: 15px; height: 15px; margin-left: -2px; }
 
-.line-front { display: inline-block; width: 16px; height: 0; border-top: 2px solid var(--hero-ink); }
+.line-front { display: inline-block; width: 18px; height: 0; border-top: 2px dashed var(--hero-ink); }
 .seg-axis { flex: 0 1 340px; }
 .map .axis-note { flex-basis: 100%; margin: -4px 0 0; color: var(--hero-ink-2); font-size: 12.5px; }
 
-.chart { margin-top: 8px; }
-.chart .front { fill: none; stroke: var(--hero-ink); stroke-width: 2; stroke-linejoin: round; opacity: .55; }
-.chart .front.is-draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .9s ease-out forwards; }
-@keyframes draw { to { stroke-dashoffset: 0; } }
+.chart { position: relative; margin-top: 8px; }
+/* garis depan: putus-putus mengalir dari murah ke mahal; muncul pelan saat sumbu berganti */
+.chart .front { fill: none; stroke: var(--hero-ink); stroke-width: 2; stroke-linejoin: round; stroke-dasharray: 6 5; opacity: .6; animation: march 1s linear infinite; }
+.chart .front.is-draw { animation: march 1s linear infinite, fade .6s ease-out backwards; }
+@keyframes march { to { stroke-dashoffset: -11; } }
+@keyframes fade { from { opacity: 0; } }
+
+.chart-tip {
+  position: absolute;
+  z-index: 2;
+  transform: translate(-50%, -100%);
+  padding: 6px 10px;
+  background: var(--hero-ink);
+  color: var(--hero-2);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  font-size: 12.5px;
+  line-height: 1.35;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.chart-tip b { display: block; font-size: 13px; }
+.chart-tip span { opacity: .8; font-variant-numeric: tabular-nums; }
 .chart svg { display: block; overflow: visible; }
 .chart .grid { stroke: var(--hero-line); }
 .chart .axis { fill: var(--hero-ink-2); font-size: 11px; font-variant-numeric: tabular-nums; }
@@ -242,7 +262,7 @@ button { cursor: pointer; }
 .pt { cursor: pointer; outline: none; -webkit-tap-highlight-color: transparent; transition: transform .7s cubic-bezier(.2, .8, .2, 1); }
 @media (prefers-reduced-motion: reduce) {
   .pt { transition: none; }
-  .chart .front.is-draw { animation: none; stroke-dashoffset: 0; }
+  .chart .front, .chart .front.is-draw { animation: none; }
 }
 .pt .hit { fill: transparent; }
 .pt .dot { stroke-width: 2.5; transition: r .15s; }
@@ -258,7 +278,7 @@ button { cursor: pointer; }
   stroke: var(--hero-2);
   stroke-width: 4px;
 }
-.pt:hover text, .pt:focus-visible text, .pt.is-picked text { display: block; }
+.pt.is-picked text { display: block; }
 .pt:hover .dot, .pt:focus-visible .dot { stroke-width: 6; }
 .pt.is-picked .dot { stroke: var(--hero-ink); stroke-width: 3.5; }
 .pt.is-out { opacity: .16; }

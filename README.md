@@ -3,7 +3,7 @@
 Perbandingan motor listrik di bawah **Rp 20 juta** (harga normal, tanpa promo &
 subsidi) untuk pasar Indonesia, khususnya Pulau Jawa.
 
-Live: http://motorlistrik.ikhwanuddin.com/
+Live: https://motorlistrik.ikhwanuddin.com/
 
 ## Fitur
 

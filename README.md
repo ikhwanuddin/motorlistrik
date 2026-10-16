@@ -12,7 +12,7 @@ Live: https://motorlistrik.ikhwanuddin.com/
 - Urutkan harga / jarak / kecepatan / daya
 - Klik motor → panel detail: keterangan harga, baterai, garansi, catatan, sumber, link resmi
 - Pilih 2–3 motor → panel bandingkan, nilai terbaik ditandai
-- Biaya per bulan: listrik cas di rumah (jarak ÷ jarak tempuh klaim × kWh × tarif) + sewa baterai, dibandingkan motor bensin. Input jarak harian, hari pakai, tarif listrik, harga & konsumsi bensin; ikut filter. Muncul juga di detail & bandingkan
+- Biaya per bulan: listrik cas di rumah (jarak ÷ jarak tempuh klaim × kWh × tarif) + sewa baterai, dibandingkan motor bensin. Input jarak harian, hari pakai, tarif listrik rumah (dropdown per golongan VA), batas cas (0–100 / 20–100 / 20–80%, mengubah jarak per cas & jumlah cas, bukan biaya per km), harga & konsumsi bensin; ikut filter. Muncul juga di detail & bandingkan
 - Link bisa dibagikan: filter, motor yang dipilih untuk dibandingkan, dan detail yang dibuka tersimpan di URL (`?bandingkan=volta-401,uwinfly-m90e`, `?motor=volta-401`, jarak harian `?km=50`); tombol **Bagikan** di detail & bandingkan. Preview WA/medsos pakai `assets/img/og.jpg`
 - Responsif (HP: kartu ringkas, filter nempel saat scroll, bottom sheet dengan tombol aksi tetap di bawah) dan dark mode otomatis
 
@@ -41,7 +41,7 @@ serve.sh                server lokal (python3)
 ## Update data
 
 Edit array `MOTORS` di `assets/js/data.js`. Tanggal cek ada di `CHECKED_AT`.
-Default kalkulator (tarif PLN, harga Pertalite, konsumsi BeAT) ada di input `#biaya` di `index.html`, sumbernya di fineprint bawahnya.
+Tarif listrik & default kalkulator (harga Pertalite, konsumsi BeAT) ada di input `#biaya` di `index.html`, sumbernya di fineprint bawahnya.
 
 | Field | Isi |
 |-------|-----|

@@ -7,7 +7,7 @@ Live: https://motorlistrik.ikhwanuddin.com/
 
 ## Fitur
 
-- Peta harga vs jarak tempuh (SVG): titik di kiri-atas = murah & jauh, besar titik = kecepatan, klik titik untuk detail
+- Peta harga vs jarak tempuh (SVG): titik di kiri-atas = murah & jauh, besar titik = kecepatan, klik titik untuk detail (kalau kena beberapa titik berdempetan, muncul daftar pilihan)
 - Filter: cari, budget (slider), jarak tempuh minimal, kecepatan maks minimal, tipe baterai, pasti bisa STNK, harga sudah termasuk baterai
 - Urutkan harga / jarak / kecepatan / daya
 - Klik motor → panel detail: keterangan harga, baterai, garansi, catatan, sumber, link resmi

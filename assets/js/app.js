@@ -29,6 +29,7 @@ const DETAILS = [
   ["Waktu charge", (m) => val(m.chargeTime)],
   ["Skema baterai", (m) => val(m.batteryScheme)],
   ["Biaya sewa / swap", (m) => (m.batteryScheme === "Beli" ? "Tidak ada, baterai dibeli" : val(m.swapCost))],
+  ["Harga baterai baru", (m) => val(m.batteryPrice)],
   ["STNK & plat", (m) => stnkText(m.stnk)],
   ["Garansi", (m) => val(m.warranty)],
   ["Catatan", (m) => val(m.notes)],

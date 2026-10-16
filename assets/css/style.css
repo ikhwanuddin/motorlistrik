@@ -1181,3 +1181,83 @@ body.compare-active main {
         padding-top: 0.15rem;
     }
 }
+
+/* ── HP: header ringkas & modal bandingkan tanpa geser ── */
+@media (max-width: 640px) {
+    .hero {
+        padding: 1.1rem 0 1rem;
+    }
+    .hero-icon {
+        display: none;
+    }
+    .hero-inner {
+        gap: 0.8rem;
+    }
+    .hero-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.4rem;
+        width: 100%;
+    }
+    .stat-chip {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 0.4rem;
+        min-width: 0;
+        padding: 0.35rem 0.5rem;
+        text-align: left;
+    }
+    .stat-val {
+        order: 2;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+    .stat-lbl {
+        font-size: 0.6rem;
+        margin-top: 0;
+        white-space: nowrap;
+    }
+
+    .compare-overlay {
+        padding: 0.75rem 0.5rem 5rem;
+    }
+    .cmp-table thead tr,
+    .cmp-table tbody tr {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .cmp-table thead th.cmp-spec-th {
+        display: none;
+    }
+    .cmp-table th,
+    .cmp-table td {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+    .cmp-table tbody th.cmp-spec-th {
+        flex-basis: 100%;
+        width: auto;
+        padding: 0.4rem 0.75rem;
+    }
+    .cmp-motor-th {
+        padding: 0.6rem 0.4rem;
+    }
+    .cmp-table .motor-thumb-lg {
+        display: none;
+    }
+    .cmp-brand {
+        font-size: 0.85rem;
+    }
+    .cmp-model {
+        font-size: 0.75rem;
+    }
+    .cmp-table tbody td {
+        padding: 0.5rem 0.4rem;
+        font-size: 0.8rem;
+        overflow-wrap: anywhere;
+    }
+    .btn-website {
+        white-space: normal;
+    }
+}

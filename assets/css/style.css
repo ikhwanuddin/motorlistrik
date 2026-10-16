@@ -227,12 +227,23 @@ button { cursor: pointer; }
 .dot-sz.s { width: 7px; height: 7px; }
 .dot-sz.l { width: 15px; height: 15px; margin-left: -2px; }
 
+.line-front { display: inline-block; width: 16px; height: 0; border-top: 2px solid var(--hero-ink); }
+.seg-axis { flex: 0 1 340px; }
+.map .axis-note { flex-basis: 100%; margin: -4px 0 0; color: var(--hero-ink-2); font-size: 12.5px; }
+
 .chart { margin-top: 8px; }
+.chart .front { fill: none; stroke: var(--hero-ink); stroke-width: 2; stroke-linejoin: round; opacity: .55; }
+.chart .front.is-draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .9s ease-out forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
 .chart svg { display: block; overflow: visible; }
 .chart .grid { stroke: var(--hero-line); }
 .chart .axis { fill: var(--hero-ink-2); font-size: 11px; font-variant-numeric: tabular-nums; }
 
-.pt { cursor: pointer; outline: none; -webkit-tap-highlight-color: transparent; }
+.pt { cursor: pointer; outline: none; -webkit-tap-highlight-color: transparent; transition: transform .7s cubic-bezier(.2, .8, .2, 1); }
+@media (prefers-reduced-motion: reduce) {
+  .pt { transition: none; }
+  .chart .front.is-draw { animation: none; stroke-dashoffset: 0; }
+}
 .pt .hit { fill: transparent; }
 .pt .dot { stroke-width: 2.5; transition: r .15s; }
 .pt-li .dot { fill: var(--dot-li); stroke: var(--dot-li); }
@@ -252,6 +263,8 @@ button { cursor: pointer; }
 .pt.is-picked .dot { stroke: var(--hero-ink); stroke-width: 3.5; }
 .pt.is-out { opacity: .16; }
 .pt.is-near .dot { stroke: var(--hero-ink); stroke-width: 3; }
+
+.front-note { margin: 16px 0 0; padding: 10px 12px; background: var(--paper); border-radius: 10px; font-size: 13.5px; line-height: 1.45; }
 
 .chart-pick {
   margin: 4px 0 12px;

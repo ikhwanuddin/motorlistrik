@@ -11,6 +11,15 @@ let near = []; // indeks motor di sekitar titik yang di-tap di peta (kalau lebih
 let chartPts = []; // posisi piksel tiap titik peta, untuk hit-test tap
 
 const NEAR_PX = 22; // radius tap di peta
+let chartKey = null; // sumbu yang terakhir digambar, untuk tahu kapan garis depan digambar ulang
+
+/* Sumbu tegak peta, key = field di data.js. better: kalimat "lebih unggul" untuk sumbu itu */
+const AXES = {
+  kwh: { title: "kapasitas baterai", unit: "kWh", min: 1, max: 3.5, step: 0.5, better: "baterainya lebih besar" },
+  range: { title: "jarak tempuh", unit: "km", min: 30, max: 150, step: 30, better: "klaim jaraknya lebih jauh" },
+  speed: { title: "kecepatan maks", unit: "km/j", min: 30, max: 90, step: 15, better: "lebih kencang" },
+};
+let yKey = "kwh";
 let detailI = null; // motor yang sedang dibuka di panel detail
 
 // id motor di URL, mis. "volta-401"
@@ -202,33 +211,49 @@ function tags(m) {
   return t.join("");
 }
 
-/* ── PETA HARGA vs JARAK (SVG) ────────────────────────────────────────── */
+/* ── PETA HARGA vs SUMBU TEGAK (SVG) ──────────────────────────────────── */
+// Titik pindah dari posisi lama ke posisi baru lewat transisi CSS (pertama kali: naik dari bawah).
+// Garis depan digambar ulang tiap kali sumbu berganti.
 function renderChart(shown) {
   const el = $("chart");
   const W = el.clientWidth;
   const H = W < 600 ? 300 : 360;
-  const pad = { l: 46, r: 12, t: 12, b: 34 };
-  const x0 = 8e6, x1 = 20e6, y0 = 30, y1 = 150;
+  const pad = { l: 54, r: 12, t: 12, b: 34 };
+  const ax = AXES[yKey];
+  const x0 = 8e6, x1 = 20e6;
   const x = (p) => pad.l + ((p - x0) / (x1 - x0)) * (W - pad.l - pad.r);
-  const y = (r) => H - pad.b - ((r - y0) / (y1 - y0)) * (H - pad.t - pad.b);
+  const y = (v) => H - pad.b - ((v - ax.min) / (ax.max - ax.min)) * (H - pad.t - pad.b);
+  const intro = chartPts.length === 0;
+  const newAxis = chartKey !== yKey;
+  chartKey = yKey;
 
   let grid = "";
   for (let p = x0; p <= x1; p += 2e6) {
     grid += `<line class="grid" x1="${x(p)}" x2="${x(p)}" y1="${pad.t}" y2="${H - pad.b}"/>`;
     grid += `<text class="axis" x="${x(p)}" y="${H - 12}" text-anchor="middle">${p / 1e6} jt</text>`;
   }
-  for (let r = y0; r <= y1; r += 30) {
-    grid += `<line class="grid" x1="${pad.l}" x2="${W - pad.r}" y1="${y(r)}" y2="${y(r)}"/>`;
-    grid += `<text class="axis" x="${pad.l - 8}" y="${y(r) + 4}" text-anchor="end">${r} km</text>`;
+  for (let v = ax.min; v <= ax.max; v += ax.step) {
+    grid += `<line class="grid" x1="${pad.l}" x2="${W - pad.r}" y1="${y(v)}" y2="${y(v)}"/>`;
+    grid += `<text class="axis" x="${pad.l - 8}" y="${y(v) + 4}" text-anchor="end">${v.toLocaleString("id-ID")} ${ax.unit}</text>`;
   }
 
+  // garis depan bertangga: naik dari sumbu bawah, tiap motor garis depan jadi anak tangga, lalu datar sampai kanan
+  const fr = frontier(yKey).map((i) => MOTORS[i]);
+  let d = `M${x(fr[0].price)} ${H - pad.b}`;
+  for (const m of fr) d += `H${x(m.price)}V${y(m[yKey])}`;
+  d += `H${W - pad.r}`;
+  const line = `<path class="front${newAxis ? " is-draw" : ""}" style="animation-delay:${intro ? 1 : 0.5}s" pathLength="1" d="${d}"/>`;
+
   // motor yang dipilih / di sekitar tap digambar terakhir supaya di atas titik lain
+  const prev = new Map(chartPts.map((p) => [p.i, p]));
   const front = (i) => compare.includes(i) || near.includes(i);
   const order = MOTORS.map((m, i) => i).sort((a, b) => front(a) - front(b));
-  chartPts = order.map((i) => ({ i, x: x(MOTORS[i].price), y: y(MOTORS[i].range) }));
+  chartPts = order.map((i) => ({ i, x: x(MOTORS[i].price), y: y(MOTORS[i][yKey]) }));
   const points = chartPts.map(({ i, x: px, y: py }) => {
     const m = MOTORS[i];
     const right = px > W - 150;
+    const from = prev.get(i) || { x: px, y: H - pad.b };
+    const delay = intro ? Math.round(((px - pad.l) / W) * 500) : 0;
     const cls = [
       "pt",
       isLithium(m) ? "pt-li" : "pt-sla",
@@ -238,16 +263,61 @@ function renderChart(shown) {
       near.includes(i) ? "is-near" : "",
     ].join(" ");
     return `
-      <g class="${cls}" data-i="${i}" tabindex="0" transform="translate(${px.toFixed(1)} ${py.toFixed(1)})">
-        <title>${esc(m.brand)} ${esc(m.model)}: ${IDR.format(m.price)}, ${m.range} km, ${m.speed} km/j</title>
+      <g class="${cls}" data-i="${i}" tabindex="0" style="transform:translate(${from.x.toFixed(1)}px,${from.y.toFixed(1)}px);transition-delay:${delay}ms">
+        <title>${esc(m.brand)} ${esc(m.model)}: ${IDR.format(m.price)}, ${dec(m.kwh)} kWh, ${m.range} km, ${m.speed} km/j</title>
         <circle class="hit" r="14"/>
         <circle class="dot" r="${dotR(m.speed).toFixed(1)}"/>
         <text x="${right ? -14 : 14}" y="4" text-anchor="${right ? "end" : "start"}">${esc(m.brand)} ${esc(m.model.split(" (")[0])}</text>
       </g>`;
   }).join("");
 
-  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Grafik harga terhadap jarak tempuh">${grid}${points}</svg>`;
+  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Grafik harga terhadap ${ax.title}">${grid}${line}${points}</svg>`;
+  // baca layout dulu supaya posisi awal terpasang, baru pindah ke posisi baru (transisi CSS)
+  el.getBoundingClientRect();
+  for (const p of chartPts) el.querySelector(`.pt[data-i="${p.i}"]`).style.transform = `translate(${p.x.toFixed(1)}px,${p.y.toFixed(1)}px)`;
   renderChartPick();
+}
+
+/** Indeks motor garis depan untuk sumbu `key`, urut harga: tidak ada motor lain yang harganya sama atau lebih murah
+ *  sekaligus nilainya lebih tinggi. Baterai sewa tidak ikut karena harganya belum termasuk baterai. */
+function frontier(key) {
+  const own = MOTORS.map((m, i) => i).filter((i) => !isRent(MOTORS[i]));
+  own.sort((a, b) => MOTORS[a].price - MOTORS[b].price || MOTORS[b][key] - MOTORS[a][key]);
+  const out = [];
+  let best = -Infinity;
+  for (const i of own) {
+    if (MOTORS[i][key] > best) {
+      out.push(i);
+      best = MOTORS[i][key];
+    }
+  }
+  return out;
+}
+
+/** Motor (bukan baterai sewa) yang harganya sama atau lebih murah dan nilainya lebih tinggi, termurah dulu */
+function betterCheaper(i, key) {
+  const m = MOTORS[i];
+  return MOTORS.map((o, j) => j)
+    .filter((j) => {
+      const o = MOTORS[j];
+      return j !== i && !isRent(o) && o.price <= m.price && o[key] >= m[key] && (o.price < m.price || o[key] > m[key]);
+    })
+    .sort((a, b) => MOTORS[a].price - MOTORS[b].price);
+}
+
+/** Kalimat garis depan di panel detail, ikut sumbu peta yang sedang dipilih */
+function frontText(i) {
+  const m = MOTORS[i];
+  const ax = AXES[yKey];
+  if (isRent(m)) return `Harga belum termasuk baterai (sewa), jadi tidak ikut garis depan di peta.`;
+  const b = betterCheaper(i, yKey);
+  if (!b.length) return `<b>Di garis depan</b> untuk ${ax.title}: tidak ada motor lain yang harganya sama atau lebih murah sekaligus ${ax.better}.`;
+  const names = b.slice(0, 3).map((j) => `<b>${esc(MOTORS[j].brand)} ${esc(MOTORS[j].model.split(" (")[0])}</b> (${jt(MOTORS[j].price)}, ${axisVal(MOTORS[j])})`);
+  return `${cap(ax.title)} motor ini ${axisVal(m)}. Ada yang harganya sama atau lebih murah dan ${ax.better}: ${names.join(", ")}${b.length > 3 ? `, dan ${b.length - 3} lagi` : ""}.`;
+}
+
+function axisVal(m) {
+  return `${dec(m[yKey])} ${AXES[yKey].unit}`;
 }
 
 /** Daftar pilihan saat tap kena beberapa titik yang berdempetan */
@@ -262,7 +332,7 @@ function renderChartPick() {
       ${near
         .map((i) => {
           const m = MOTORS[i];
-          return `<button type="button" data-i="${i}"><b>${esc(m.brand)} ${esc(m.model.split(" (")[0])}</b><span>${jt(m.price)} · ${m.range} km · ${m.speed} km/j</span></button>`;
+          return `<button type="button" data-i="${i}"><b>${esc(m.brand)} ${esc(m.model.split(" (")[0])}</b><span>${jt(m.price)} · ${dec(m.kwh)} kWh · ${m.range} km · ${m.speed} km/j</span></button>`;
         })
         .join("")}
     </div>`;
@@ -427,6 +497,7 @@ function fillDetail(i) {
       ${tile("Kecepatan maks", m.speed, "km/j")}
       ${tile("Daya maks", m.power.toLocaleString("id-ID"), "W")}
     </div>
+    <p class="front-note">${frontText(i)}</p>
     <dl class="specs">${DETAILS.map(([label, fn]) => `<dt>${label}</dt><dd>${fn(m)}</dd>`).join("")}</dl>
     <p class="report">Data salah atau sudah berubah? <a href="${reportUrl(m)}" target="_blank" rel="noopener noreferrer">Laporkan ↗</a></p>
     <div class="sheet-actions">
@@ -487,6 +558,13 @@ function bindEvents() {
     near = hits.length > 1 ? hits : [];
     renderChart(visible());
     if (hits.length === 1) openDetail(hits[0]);
+  });
+  $("yAxis").addEventListener("change", (e) => {
+    yKey = e.target.value;
+    near = [];
+    $("chartTitle").textContent = AXES[yKey].title;
+    renderChart(visible());
+    writeUrl();
   });
   $("chartPick").addEventListener("click", (e) => {
     if (e.target.closest("[data-close-pick]")) {
@@ -579,6 +657,9 @@ function readUrl() {
     const i = SLUGS.indexOf(s);
     if (i >= 0 && !compare.includes(i) && compare.length < MAX_COMPARE) compare.push(i);
   }
+  if (AXES[p.get("sumbu")]) yKey = p.get("sumbu");
+  setRadio("yaxis", yKey);
+  $("chartTitle").textContent = AXES[yKey].title;
   const d = SLUGS.indexOf(p.get("motor"));
   if (d >= 0) detailI = d;
 }
@@ -600,6 +681,7 @@ function writeUrl() {
   if ($("ownBattery").checked) p.set("baterai-dibeli", "1");
   if ($("sort").value !== "price:1") p.set("urut", $("sort").value);
   if ($("kmDay").value !== "30") p.set("km", $("kmDay").value);
+  if (yKey !== "kwh") p.set("sumbu", yKey);
   if (compare.length) p.set("bandingkan", compare.map((i) => SLUGS[i]).join(","));
   if (detailI !== null) p.set("motor", SLUGS[detailI]);
   const q = p.toString().replace(/%2C/g, ",").replace(/%3A/g, ":");
@@ -648,6 +730,15 @@ function rp(n) {
 /** 9699000 → "Rp 9,7 jt" */
 function jt(n) {
   return `Rp ${(n / 1e6).toLocaleString("id-ID", { maximumFractionDigits: 1 })} jt`;
+}
+
+function cap(t) {
+  return t[0].toUpperCase() + t.slice(1);
+}
+
+/** 1.15 → "1,15" */
+function dec(n) {
+  return n.toLocaleString("id-ID", { maximumFractionDigits: 2 });
 }
 
 function val(v) {

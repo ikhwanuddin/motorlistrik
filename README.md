@@ -28,7 +28,7 @@ assets/js/data.js       data MOTORS + CHECKED_AT
 assets/js/app.js        UI: peta, filter/sort, detail, bandingkan
 assets/fonts/           Plus Jakarta Sans (latin, variable)
 assets/img/og.jpg       gambar preview link (1200×630)
-assets/img/motor.svg    ilustrasi hero (layar ≥1100px), warna dark mode diatur di dalam svg
+assets/img/motor.svg    ilustrasi hero (kanan atas di layar ≥1100px, di atas judul di layar sempit), warna dark mode diatur di dalam svg
 serve.sh                server lokal (python3)
 ```
 

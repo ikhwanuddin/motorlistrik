@@ -155,7 +155,27 @@
       <div class="cost-inputs" id="costInputs">
         <label class="field"><span class="field-label">Jarak per hari</span><span class="num"><input type="number" id="kmDay" value="30" min="1" max="300" inputmode="numeric" /><small>km</small></span></label>
         <label class="field"><span class="field-label">Hari pakai / bulan</span><span class="num"><input type="number" id="days" value="26" min="1" max="31" inputmode="numeric" /><small>hari</small></span></label>
-        <label class="field"><span class="field-label">Tarif listrik</span><span class="num"><input type="number" id="tariff" value="1444.7" min="0" step="0.1" inputmode="decimal" /><small>Rp/kWh</small></span></label>
+        <label class="field cost-wide">
+          <span class="field-label">Tarif listrik rumah</span>
+          <select id="tariff">
+            <option value="415">450 VA subsidi · Rp 415</option>
+            <option value="605">900 VA subsidi · Rp 605</option>
+            <option value="1352">900 VA non-subsidi · Rp 1.352</option>
+            <option value="1444.7" selected>1.300 VA · Rp 1.444,70</option>
+            <option value="1444.7">2.200 VA · Rp 1.444,70</option>
+            <option value="1699.53">3.500–5.500 VA · Rp 1.699,53</option>
+            <option value="1699.53">6.600 VA ke atas · Rp 1.699,53</option>
+          </select>
+        </label>
+        <label class="field cost-wide">
+          <span class="field-label">Batas cas</span>
+          <!-- batas cas tidak mengubah biaya per km, hanya jarak per cas & berapa kali cas -->
+          <select id="soc">
+            <option value="1">0–100% (sesuai klaim)</option>
+            <option value="0.8">20–100%</option>
+            <option value="0.6">20–80%</option>
+          </select>
+        </label>
         <label class="field"><span class="field-label">Harga bensin</span><span class="num"><input type="number" id="fuelPrice" value="10000" min="0" step="100" inputmode="numeric" /><small>Rp/liter</small></span></label>
         <label class="field"><span class="field-label">Konsumsi motor bensin</span><span class="num"><input type="number" id="fuelKm" value="60.6" min="1" step="0.1" inputmode="decimal" /><small>km/liter</small></span></label>
       </div>
@@ -164,8 +184,10 @@
       <p class="fineprint">
         Listrik = jarak ÷ jarak tempuh klaim × kapasitas baterai × tarif, tanpa rugi-rugi charger (nyata biasanya 10–20% lebih). Bensin = jarak ÷ konsumsi.
         Belum termasuk servis, pajak, dan ganti baterai setelah garansi (lihat "Harga baterai baru" di detail). Motor Volta juga bisa swap di SGB, Rp 1.000–5.000 per swap.
-        Default: tarif PLN R-1 1.300 VA triwulan IV 2026 Rp 1.444,70/kWh
-        (<a href="https://money.kompas.com/read/2026/10/13/083616126/tarif-listrik-per-kwh-13-18-oktober-2026-untuk-semua-golongan-pelanggan-pln" target="_blank" rel="noopener noreferrer">Kompas, Okt 2026</a>),
+        Batas cas tidak mengubah biaya per km (energi per km sama), hanya jarak per sekali cas dan berapa kali cas sebulan.
+        Beberapa charger butuh listrik rumah minimal 1.300–2.200 VA (lihat catatan tiap motor).
+        Tarif listrik per kWh, golongan rumah tangga triwulan IV 2026
+        (<a href="https://money.kompas.com/read/2026/10/13/083616126/tarif-listrik-per-kwh-13-18-oktober-2026-untuk-semua-golongan-pelanggan-pln" target="_blank" rel="noopener noreferrer">Kompas, 13 Okt 2026</a>),
         Pertalite Rp 10.000/liter
         (<a href="https://ekonomi.bisnis.com/read/20261012/44/2011682/daftar-harga-bbm-terbaru-12-oktober-2026-pertamax-berubah" target="_blank" rel="noopener noreferrer">Bisnis, 12 Okt 2026</a>),
         konsumsi Honda BeAT klaim pabrik 60,6 km/liter

@@ -279,7 +279,7 @@ function dotR(speed) {
 /* ── BIAYA PER BULAN ────────────────────────────────────────────────────── */
 function costInputs() {
   const km = num("kmDay") * num("days");
-  return { km, tariff: num("tariff"), fuel: (km / Math.max(num("fuelKm"), 1)) * num("fuelPrice") };
+  return { km, tariff: num("tariff"), soc: num("soc"), fuel: (km / Math.max(num("fuelKm"), 1)) * num("fuelPrice") };
 }
 
 /** Listrik cas di rumah (pakai jarak tempuh klaim) + sewa baterai */
@@ -308,8 +308,9 @@ function renderCost(shown) {
 function costRow({ i, power, rent, total }, c, max) {
   const m = MOTORS[i];
   const diff = c.fuel - total;
+  const perCharge = Math.floor(m.range * c.soc); // km per sekali cas dalam batas cas
   const warn = [];
-  if (num("kmDay") > m.range) warn.push(`Jarak harian lebih dari ${m.range} km sekali cas`);
+  if (num("kmDay") > perCharge) warn.push(`Jarak harian lebih dari ${perCharge} km sekali cas`);
   if (m.rentKmCap && c.km > m.rentKmCap) warn.push(`Lewat ${m.rentKmCap} km/bulan ada biaya sewa tambahan`);
   return `
   <article class="cost-row" tabindex="0" data-i="${i}">
@@ -320,6 +321,7 @@ function costRow({ i, power, rent, total }, c, max) {
     </div>
     <div class="cost-parts">
       ${rent ? `<span>Listrik ${rp(power)}</span><span>Sewa baterai ${rp(rent)}</span>` : `<span>Listrik saja, baterai dibeli</span>`}
+      <span>±${perCharge} km/cas · cas ${Math.ceil(c.km / perCharge)}×/bulan</span>
     </div>
     <div class="cost-total">
       <strong>${rp(total)}</strong>

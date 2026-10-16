@@ -30,8 +30,9 @@ assets/fonts/           Plus Jakarta Sans (latin, variable) + OFL.txt
 assets/img/og.jpg       gambar preview link (1200×630)
 assets/img/motor.svg    ilustrasi hero (kanan atas di layar ≥1100px, di atas judul di layar sempit), warna dark mode diatur di dalam svg
 serve.sh                server lokal (python3)
-scripts/check-links.mjs cek semua link sumber di data.js
-.github/workflows/      static.yml (deploy), cek-link.yml (cek link tiap Senin)
+scripts/check-links.mjs cek semua link sumber di data.js (fetch, lalu Brave untuk yang diblokir)
+scripts/cek-link-lokal.sh + .plist  jadwal cek link tiap Senin di Mac mini (launchd)
+.github/workflows/      static.yml (deploy)
 .github/ISSUE_TEMPLATE/ form issue "Data motor"
 ```
 
@@ -67,13 +68,20 @@ Tarif listrik & default kalkulator (harga Pertalite, konsumsi BeAT) ada di input
 
 Isi `null` kalau data tidak ketemu di sumber. Jangan menebak.
 
-Link sumber dicek otomatis tiap Senin 08.00 WIB (`cek-link.yml`). Kalau ada yang
-mati, muncul issue **Link sumber mati** (label `link-mati`) berisi daftar link (cuma yang pasti mati: 404/410/domain hilang; yang diblokir atau timeout tidak dihitung)
-dan statusnya; issue itu diperbarui tiap minggu dan tertutup sendiri kalau semua
-normal lagi. Jalankan manual dari tab Actions, atau lokal:
+Link sumber dicek otomatis tiap Senin 08.00 WIB dari Mac mini (launchd), bukan
+GitHub Actions: banyak situs (Tokopedia, Kontan, situs merek) memblokir IP server
+GitHub. Link yang tetap diblokir dari koneksi rumah dibuka sebentar di tab baru
+Brave, lalu judul halamannya dicek. Kalau ada yang mati (404/410/domain hilang),
+muncul issue **Link sumber mati** (label `link-mati`) berisi daftar link dan
+statusnya; issue itu diperbarui tiap minggu dan tertutup sendiri kalau semua normal lagi.
 
 ```bash
-node scripts/check-links.mjs   # exit 1 kalau ada link mati
+node scripts/check-links.mjs   # cek manual (tiap url unik sekali), exit 1 kalau ada link mati
+./scripts/cek-link-lokal.sh    # sama seperti jadwal: pakai data.js live + update issue
+
+# pasang jadwal (sekali saja), log di ~/Library/Logs/motorlistrik-cek-link.log
+cp scripts/com.ikhwanuddin.motorlistrik.ceklink.plist ~/Library/LaunchAgents/
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.ikhwanuddin.motorlistrik.ceklink.plist
 ```
 
 Cek sintaks setelah edit:

@@ -10,7 +10,7 @@ Live: https://motorlistrik.ikhwanuddin.com/
 - Peta harga vs jarak tempuh (SVG): titik di kiri-atas = murah & jauh, besar titik = kecepatan, klik titik untuk detail (kalau kena beberapa titik berdempetan, muncul daftar pilihan)
 - Filter: cari, budget (slider), jarak tempuh minimal, kecepatan maks minimal, tipe baterai, pasti bisa STNK, harga sudah termasuk baterai
 - Urutkan harga / jarak / kecepatan / daya
-- Klik motor → panel detail: keterangan harga, baterai, garansi, catatan, sumber, link resmi
+- Klik motor → panel detail: keterangan harga, baterai, garansi, catatan, sumber, link resmi, link **Laporkan** (form issue dengan nama motor terisi)
 - Pilih 2–3 motor → panel bandingkan, nilai terbaik ditandai
 - Biaya per bulan: listrik cas di rumah (jarak ÷ jarak tempuh klaim × kWh × tarif) + sewa baterai, dibandingkan motor bensin. Input jarak harian, hari pakai, tarif listrik rumah (dropdown per golongan VA), batas cas (0–100 / 20–100 / 20–80%, mengubah jarak per cas & jumlah cas, bukan biaya per km), harga & konsumsi bensin; ikut filter. Muncul juga di detail & bandingkan
 - Link bisa dibagikan: filter, motor yang dipilih untuk dibandingkan, dan detail yang dibuka tersimpan di URL (`?bandingkan=volta-401,uwinfly-m90e`, `?motor=volta-401`, jarak harian `?km=50`); tombol **Bagikan** di detail & bandingkan. Preview WA/medsos pakai `assets/img/og.jpg`

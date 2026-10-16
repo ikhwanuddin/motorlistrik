@@ -665,6 +665,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .specs dt { color: var(--ink-3); font-weight: 600; font-size: 13px; }
 .specs dd { overflow-wrap: anywhere; }
 
+.report { margin-top: 16px; font-size: 13px; color: var(--ink-3); }
+.report a { color: var(--ink-2); font-weight: 600; text-underline-offset: 2px; }
 .sources { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
 .sources a { color: var(--ink-2); text-underline-offset: 2px; }
 .sources a:hover { color: var(--ink); }

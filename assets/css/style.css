@@ -339,7 +339,7 @@ button { cursor: pointer; }
 }
 .field-label output { color: var(--ink); text-transform: none; letter-spacing: 0; font-variant-numeric: tabular-nums; }
 
-input[type="search"], select {
+select {
   width: 100%;
   height: 40px;
   padding: 0 12px;
@@ -347,7 +347,7 @@ input[type="search"], select {
   border: 1px solid var(--line-2);
   border-radius: 10px;
 }
-input[type="search"]:focus, select:focus { outline: 2px solid var(--ink); outline-offset: -1px; }
+select:focus { outline: 2px solid var(--ink); outline-offset: -1px; }
 
 input[type="range"] { width: 100%; accent-color: var(--accent); }
 
@@ -756,7 +756,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 
   .filters-body { grid-template-columns: 1fr; }
   /* 16px supaya iOS tidak auto-zoom saat input difokus */
-  input[type="search"], select { height: 44px; font-size: 16px; }
+  select { height: 44px; font-size: 16px; }
   .seg span { padding: 10px 4px; }
   .check { min-height: 36px; }
 

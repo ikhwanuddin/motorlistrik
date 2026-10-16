@@ -56,12 +56,20 @@ const NUMBERS = [
 ];
 
 /* ── INIT ─────────────────────────────────────────────────────────────── */
+fillBrands();
 readUrl();
 renderIntro();
 render();
 bindEvents();
 if (matchMedia("(min-width: 960px)").matches) $("filters").open = true;
 openFromUrl();
+
+function fillBrands() {
+  const brands = [...new Set(MOTORS.map((m) => m.brand))].sort();
+  $("brand").innerHTML += brands
+    .map((b) => `<option value="${esc(b)}">${esc(b)} (${MOTORS.filter((m) => m.brand === b).length})</option>`)
+    .join("");
+}
 
 function renderIntro() {
   $("nModels").textContent = MOTORS.length;
@@ -87,7 +95,7 @@ function fact(value, label) {
 
 /* ── FILTER + SORT ────────────────────────────────────────────────────── */
 function visible() {
-  const q = $("q").value.trim().toLowerCase();
+  const brand = $("brand").value;
   const budget = Number($("budget").value) * 1e6;
   const minRange = Number(radio("range"));
   const minSpeed = Number(radio("speed"));
@@ -99,7 +107,7 @@ function visible() {
   return MOTORS.map((m, i) => i)
     .filter((i) => {
       const m = MOTORS[i];
-      if (q && !`${m.brand} ${m.model}`.toLowerCase().includes(q)) return false;
+      if (brand && m.brand !== brand) return false;
       if (m.price > budget) return false;
       if (m.range < minRange) return false;
       if (m.speed < minSpeed) return false;
@@ -114,7 +122,7 @@ function visible() {
 
 function activeFilterCount() {
   let n = 0;
-  if ($("q").value.trim()) n++;
+  if ($("brand").value) n++;
   if ($("budget").value !== "20") n++;
   if (radio("range") !== "0") n++;
   if (radio("speed") !== "0") n++;
@@ -544,7 +552,7 @@ function bindEvents() {
 }
 
 function resetFilters() {
-  $("q").value = "";
+  $("brand").value = "";
   $("budget").value = "20";
   document.querySelector('input[name="range"][value="0"]').checked = true;
   document.querySelector('input[name="speed"][value="0"]').checked = true;
@@ -558,7 +566,7 @@ function resetFilters() {
 /* ── URL: filter, pilihan bandingkan & motor yang dibuka disimpan di query string supaya link bisa dibagikan ── */
 function readUrl() {
   const p = new URLSearchParams(location.search);
-  $("q").value = p.get("cari") || "";
+  if ([...$("brand").options].some((o) => o.value === p.get("merek"))) $("brand").value = p.get("merek");
   $("budget").value = p.get("budget") || "20";
   setRadio("range", p.get("jarak"));
   setRadio("speed", p.get("kecepatan"));
@@ -583,7 +591,7 @@ function openFromUrl() {
 
 function writeUrl() {
   const p = new URLSearchParams();
-  if ($("q").value.trim()) p.set("cari", $("q").value.trim());
+  if ($("brand").value) p.set("merek", $("brand").value);
   if ($("budget").value !== "20") p.set("budget", $("budget").value);
   if (radio("range") !== "0") p.set("jarak", radio("range"));
   if (radio("speed") !== "0") p.set("kecepatan", radio("speed"));

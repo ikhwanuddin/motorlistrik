@@ -30,8 +30,10 @@ assets/fonts/           Plus Jakarta Sans (latin, variable) + OFL.txt
 assets/img/og.jpg       gambar preview link (1200×630)
 assets/img/motor.svg    ilustrasi hero (kanan atas di layar ≥1100px, di atas judul di layar sempit), warna dark mode diatur di dalam svg
 serve.sh                server lokal (python3)
-scripts/check-links.mjs cek semua link sumber di data.js (fetch, lalu Brave untuk yang diblokir)
-scripts/cek-link-lokal.sh + .plist  jadwal cek link tiap Senin di Mac mini (launchd)
+scripts/check-links.mjs  cek semua link sumber di data.js (fetch, lalu Brave untuk yang diblokir)
+scripts/check-prices.mjs cek harga tiap motor masih tertulis di priceUrl (fetch, lalu Brave)
+scripts/brave.mjs        buka url di tab baru Brave, ambil judul/teks, tutup lagi
+scripts/cek-link-lokal.sh + .plist  jadwal cek link & harga tiap Senin di Mac mini (launchd)
 .github/workflows/      static.yml (deploy)
 .github/ISSUE_TEMPLATE/ form issue "Data motor"
 ```
@@ -54,6 +56,7 @@ Tarif listrik & default kalkulator (harga Pertalite, konsumsi BeAT) ada di input
 | `price` | Harga normal (Rp), OTR Jakarta/Jadetabek kalau ada |
 | `priceNote` | Keterangan harga lengkap (sumber, wilayah, promo) — tampil di detail |
 | `priceTag` | Label pendek di bawah harga, mis. `"OTR Jakarta"`, `"Off-the-road"` |
+| `priceUrl` | Halaman yang memuat angka `price` sebagai teks, dicek tiap minggu. `null` kalau harga cuma ada di gambar (situs resmi Uwinfly) |
 | `range`, `speed`, `power` | Jarak tempuh (km), kecepatan maks (km/j), daya maks (W) |
 | `battery`, `batteryType` | Deskripsi baterai; tipe `LFP` / `Li-ion` / `SLA` |
 | `kwh` | Kapasitas baterai (kWh) untuk jarak `range`, angka. Dipakai kalkulator biaya listrik |
@@ -76,9 +79,17 @@ muncul issue **Link sumber mati** (label `link-mati`) berisi daftar link dan
 statusnya; issue itu diperbarui tiap minggu dan tertutup sendiri kalau semua normal lagi.
 Kalau script-nya sendiri gagal (internet mati, node hilang), muncul issue **Cek link gagal**.
 
+Di jadwal yang sama, harga tiap motor dicek: angka `price` harus masih tertulis di
+halaman `priceUrl` (HTML mentah dulu, kalau tidak ketemu teks halaman di Brave). Yang
+tidak ketemu masuk issue **Harga berubah?** (label `harga`) bersama angka Rp yang ada
+di halaman. Data tidak diubah otomatis: bisa saja itu promo atau halaman berubah, jadi
+dicek manual dulu. Baca teks halaman di Brave butuh View → Developer → Allow
+JavaScript from Apple Events.
+
 ```bash
 node scripts/check-links.mjs   # cek manual (tiap url unik sekali), exit 1 kalau ada link mati
-./scripts/cek-link-lokal.sh    # sama seperti jadwal: pakai data.js live + update issue
+node scripts/check-prices.mjs  # cek harga manual, exit 1 kalau ada yang beda
+./scripts/cek-link-lokal.sh    # sama seperti jadwal: link + harga dari data.js live, update issue
 
 # pasang jadwal (sekali saja), log di ~/Library/Logs/motorlistrik-cek-link.log
 cp scripts/com.ikhwanuddin.motorlistrik.ceklink.plist ~/Library/LaunchAgents/

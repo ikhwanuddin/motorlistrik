@@ -4,9 +4,10 @@
    =========================================================
 
    UPDATE DATA: tambah/edit objek di array MOTORS.
-   Field: brand, model, price, priceNote, range, speed, power,
+   Field: brand, model, price, priceNote, priceTag, range, speed, power,
      battery, batteryType, warranty, chargeTime, batteryScheme,
      swapCost, notes, url, sources [{label, url}], stnk, checkedAt
+   priceTag: label pendek di bawah harga (mis. "OTR Jakarta"), detail di priceNote
    stnk: true = bisa STNK/plat, false = tidak bisa, null = belum jelas
    Isi null kalau data tidak ketemu di sumber. Jangan menebak.
    ========================================================= */
@@ -29,6 +30,7 @@ const MOTORS = [
     model: "T80D",
     price: 9699000,
     priceNote: "Situs resmi (Okt 2026), off-the-road (+ biaya STNK)",
+    priceTag: "Off-the-road",
     range: 60,
     speed: 52,
     power: 1000,
@@ -54,6 +56,7 @@ const MOTORS = [
     model: "T85",
     price: 11490000,
     priceNote: "Off-the-road (+ biaya STNK), toko resmi Okt 2026. Promo Rp 10,35 jt",
+    priceTag: "Off-the-road",
     range: 100,
     speed: 50,
     power: 1500,
@@ -79,6 +82,7 @@ const MOTORS = [
     model: "M90E",
     price: 12590000,
     priceNote: "Situs resmi (Okt 2026), off-the-road (+ biaya STNK)",
+    priceTag: "Off-the-road",
     range: 80,
     speed: 70,
     power: 1500,
@@ -105,6 +109,7 @@ const MOTORS = [
     model: "M90G",
     price: 12990000,
     priceNote: "Situs resmi (Okt 2026), off-the-road (+ biaya STNK)",
+    priceTag: "Off-the-road",
     range: 80,
     speed: 70,
     power: 1500,
@@ -129,6 +134,7 @@ const MOTORS = [
     model: "Vito",
     price: 11500000,
     priceNote: "Harga 'mulai' di dealer Otobot (2026); daftar 2025 Rp 12,79 jt",
+    priceTag: "Harga mulai (dealer)",
     range: 60,
     speed: 55,
     power: 1000,
@@ -154,6 +160,7 @@ const MOTORS = [
     price: 8975000,
     priceNote:
       "Toko resmi Selis di Tokopedia (Okt 2026), tanpa surat. Situs resmi masih tulis Rp 13,5 jt (2024)",
+    priceTag: "Off-the-road, tanpa surat",
     range: 40,
     speed: 40,
     power: 1500,
@@ -178,6 +185,7 @@ const MOTORS = [
     model: "QT",
     price: 15000000,
     priceNote: "OTR Jadetabek; Surabaya Rp 16,9 jt",
+    priceTag: "OTR Jadetabek",
     range: 70,
     speed: 60,
     power: 2000,
@@ -202,6 +210,7 @@ const MOTORS = [
     price: 15500000,
     priceNote:
       "Harga situs resmi. Toko resmi Tokopedia: off-the-road Rp 10,48 jt, OTR sesuai domisili KTP. Varian lithium Rp 22 jt",
+    priceTag: "OTR belum jelas",
     range: 40,
     speed: 50,
     power: 1500,
@@ -225,6 +234,7 @@ const MOTORS = [
     model: "MT1500Li",
     price: 16000000,
     priceNote: "OTR Jakarta (situs resmi, Okt 2026)",
+    priceTag: "OTR Jakarta",
     range: 75,
     speed: 70,
     power: 2700,
@@ -248,6 +258,7 @@ const MOTORS = [
     model: "MX-1200",
     price: 16800000,
     priceNote: "OTR Jakarta (situs resmi)",
+    priceTag: "OTR Jakarta",
     range: 60,
     speed: 65,
     power: 2200,
@@ -272,6 +283,7 @@ const MOTORS = [
     model: "eX",
     price: 17850000,
     priceNote: "Situs resmi Volta (Okt 2026); OTR Jakarta (Kontan, Agu 2026)",
+    priceTag: "OTR Jakarta",
     range: 65,
     speed: 55,
     power: 1800,
@@ -298,6 +310,7 @@ const MOTORS = [
     model: "QT Pro",
     price: 18800000,
     priceNote: "OTR Jadetabek; Surabaya Rp 20,7 jt",
+    priceTag: "OTR Jadetabek",
     range: 135,
     speed: 70,
     power: 2000,
@@ -320,6 +333,7 @@ const MOTORS = [
     model: "401",
     price: 18250000,
     priceNote: "Situs resmi Volta (Okt 2026); OTR Jakarta (Kontan, Agu 2026); Jatim Rp 19,5 jt",
+    priceTag: "OTR Jakarta",
     range: 60,
     speed: 60,
     power: 1900,
@@ -346,6 +360,7 @@ const MOTORS = [
     model: "Eagle",
     price: 18850000,
     priceNote: "Situs resmi Volta (Okt 2026)",
+    priceTag: "OTR belum jelas",
     range: 60,
     speed: 60,
     power: 1900,
@@ -371,6 +386,7 @@ const MOTORS = [
     model: "Mandala",
     price: 19950000,
     priceNote: "Situs resmi Volta (Okt 2026)",
+    priceTag: "OTR belum jelas",
     range: 65,
     speed: 55,
     power: 1800,
@@ -397,6 +413,7 @@ const MOTORS = [
     price: 18600000,
     priceNote:
       "Situs resmi Polytron (Okt 2026), OTR Jadetabek, baterai sewa Rp 125 rb/bln. Beli putus Rp 27,6 jt. Promo di situs Rp 12,6 jt",
+    priceTag: "OTR Jadetabek, baterai sewa",
     range: 85,
     speed: 70,
     power: 1500,
@@ -424,6 +441,7 @@ const MOTORS = [
     price: 18500000,
     priceNote:
       "Harga motor saja, baterai disewa (resmi, Sep 2026). Dengan baterai Rp 37,5 jt",
+    priceTag: "Tanpa baterai (sewa)",
     range: 140,
     speed: 80,
     power: 4500,
@@ -449,6 +467,7 @@ const MOTORS = [
     model: "M110G",
     price: 17590000,
     priceNote: "Situs resmi (Okt 2026), off-the-road (+ biaya STNK)",
+    priceTag: "Off-the-road",
     range: 100,
     speed: 85,
     power: 3000,
@@ -471,6 +490,7 @@ const MOTORS = [
     model: "M110F",
     price: 17890000,
     priceNote: "Situs resmi (Okt 2026), off-the-road (+ biaya STNK)",
+    priceTag: "Off-the-road",
     range: 100,
     speed: 85,
     power: 3000,
@@ -498,6 +518,7 @@ const MOTORS = [
     model: "Virgo",
     price: 19100000,
     priceNote: "Situs resmi Volta (Okt 2026); OTR Jakarta (Kontan, Agu 2026); Jatim Rp 20,35 jt",
+    priceTag: "OTR Jakarta",
     range: 65,
     speed: 55,
     power: 1800,
@@ -523,6 +544,7 @@ const MOTORS = [
     model: "GT20",
     price: 15500000,
     priceNote: "Situs resmi Yadea (Okt 2026). Belum jelas OTR atau off-the-road",
+    priceTag: "OTR belum jelas",
     range: 80,
     speed: 51,
     power: 1500,
@@ -546,6 +568,7 @@ const MOTORS = [
     model: "RS20",
     price: 16600000,
     priceNote: "Situs resmi Yadea (Okt 2026). Belum jelas OTR atau off-the-road",
+    priceTag: "OTR belum jelas",
     range: 80,
     speed: 51,
     power: 1200,
@@ -570,6 +593,7 @@ const MOTORS = [
     model: "Velax E",
     price: 19800000,
     priceNote: "Situs resmi Yadea (Okt 2026), OTR Jakarta (media). Velax H Rp 22,8 jt, Velax U Rp 39,8 jt",
+    priceTag: "OTR Jakarta",
     range: 120,
     speed: 60,
     power: 2000,
@@ -664,22 +688,27 @@ function bindEvents() {
     });
   });
 
-  /* row click → open website (skip if clicking the checkbox) */
-  document.getElementById("tableBody").addEventListener("click", (e) => {
-    if (e.target.closest(".compare-check")) return;
-    const tr = e.target.closest("tr[data-url]");
-    if (tr)
-      window.open(safeUrl(tr.dataset.url), "_blank", "noopener,noreferrer");
+  /* sort select (mobile, header tabel disembunyikan) */
+  document.getElementById("selSort").addEventListener("change", (e) => {
+    [sortCol, sortDir] = e.target.value.split(":");
+    render();
   });
 
-  /* row keyboard: Enter/Space opens website */
+  /* row click → open detail panel (skip if clicking the checkbox) */
+  document.getElementById("tableBody").addEventListener("click", (e) => {
+    if (e.target.closest(".td-check")) return;
+    const tr = e.target.closest("tr[data-idx]");
+    if (tr) openDetail(parseInt(tr.dataset.idx, 10));
+  });
+
+  /* row keyboard: Enter/Space opens detail */
   document.getElementById("tableBody").addEventListener("keydown", (e) => {
     if (e.key !== "Enter" && e.key !== " ") return;
     if (e.target.classList.contains("compare-check")) return;
-    const tr = e.target.closest("tr[data-url]");
+    const tr = e.target.closest("tr[data-idx]");
     if (tr) {
       e.preventDefault();
-      window.open(safeUrl(tr.dataset.url), "_blank", "noopener,noreferrer");
+      openDetail(parseInt(tr.dataset.idx, 10));
     }
   });
 
@@ -720,8 +749,16 @@ function bindEvents() {
     if (e.target === document.getElementById("compareOverlay"))
       closeCompareModal();
   });
+  document
+    .getElementById("btnCloseDetail")
+    .addEventListener("click", closeDetail);
+  document.getElementById("detailOverlay").addEventListener("click", (e) => {
+    if (e.target === document.getElementById("detailOverlay")) closeDetail();
+  });
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeCompareModal();
+    if (e.key !== "Escape") return;
+    closeCompareModal();
+    closeDetail();
   });
 }
 
@@ -761,6 +798,8 @@ function render() {
       th.classList.add(sortDir === "asc" ? "sort-asc" : "sort-desc");
   });
 
+  document.getElementById("selSort").value = `${sortCol}:${sortDir}`;
+
   /* count */
   document.getElementById("countLabel").textContent =
     `${data.length} dari ${MOTORS.length} motor ditampilkan`;
@@ -790,9 +829,9 @@ function render() {
       const isDisabled = !isChecked && compareSet.size >= MAX_COMPARE;
 
       return `
-      <tr tabindex="0" data-url="${esc(m.url)}" data-idx="${m._idx}"
+      <tr tabindex="0" data-idx="${m._idx}"
           class="${isChecked ? "row-selected" : ""}"
-          title="Klik untuk buka website resmi ${esc(m.brand)} ${esc(m.model)}">
+          title="Klik untuk lihat detail ${esc(m.brand)} ${esc(m.model)}">
         <td class="td-check">
           <input type="checkbox"
                  class="compare-check"
@@ -814,7 +853,7 @@ function render() {
         </td>
         <td class="td-price ${pCls}">
           ${IDR.format(m.price)}
-          ${m.priceNote ? `<small class="price-note">${esc(m.priceNote)}</small>` : ""}
+          <small class="price-note">${esc(m.priceTag)}</small>
         </td>
         <td class="td-num">
           <div class="range-wrap">
@@ -828,6 +867,11 @@ function render() {
         <td class="td-num">${m.power.toLocaleString("id-ID")}&thinsp;W</td>
         <td>${battTypeBadge(m.batteryType)}</td>
         <td>${esc(m.warranty)}</td>
+        <td class="td-mspecs">
+          <span>${m.range}&thinsp;km</span>
+          <span>${m.speed}&thinsp;km/j</span>
+          ${battTypeBadge(m.batteryType)}
+        </td>
       </tr>`;
     })
     .join("");
@@ -1072,6 +1116,30 @@ function renderCompareModal() {
       <span class="cmp-best-legend">★</span> = terbaik dalam perbandingan ini.
     </p>
   `;
+}
+
+/* ── DETAIL PANEL (klik baris) ───────────────────────────────────────────── */
+function openDetail(idx) {
+  const m = MOTORS[idx];
+  document.getElementById("detailTitle").textContent = `${m.brand} ${m.model}`;
+  const rows = COMPARE_SPECS.map(
+    (spec) => `<dt>${spec.label}</dt><dd>${spec.render(m)}</dd>`,
+  ).join("");
+  document.getElementById("detailBody").innerHTML = `
+    <dl class="detail-list">${rows}</dl>
+    <div class="detail-actions">
+      <a href="${safeUrl(m.url)}" target="_blank" rel="noopener noreferrer"
+         class="btn-website">Buka situs resmi →</a>
+    </div>`;
+  document.getElementById("detailOverlay").hidden = false;
+  document.body.classList.add("modal-open");
+  document.getElementById("btnCloseDetail").focus();
+}
+
+function closeDetail() {
+  document.getElementById("detailOverlay").hidden = true;
+  if (document.getElementById("compareOverlay").hidden)
+    document.body.classList.remove("modal-open");
 }
 
 /* ── HELPERS ─────────────────────────────────────────────────────────────── */

@@ -1,298 +1,368 @@
 /* =========================================================
-   Motor Listrik Rp 6–20 Juta — app.js
-   Data riset ulang Juni 2026 + filter/sort + komparasi
+   Motor Listrik di Bawah Rp 20 Juta — app.js
+   Data audit 16 Oktober 2026 + filter/sort + komparasi
    =========================================================
 
    UPDATE DATA: tambah/edit objek di array MOTORS.
-   Field wajib: brand, model, price, range, speed, power,
-     battery, batteryType, warranty, chargeTime,
-     batteryScheme, swapCost, dealerNetwork, notes,
-     subsidi, url
+   Field: brand, model, price, priceNote, range, speed, power,
+     battery, batteryType, warranty, chargeTime, batteryScheme,
+     swapCost, notes, url, sources [{label, url}], checkedAt
+   Isi null kalau data tidak ketemu di sumber. Jangan menebak.
    ========================================================= */
 
 "use strict";
 
 /* ── DATA ────────────────────────────────────────────────────────────────────
-   Harga OTR Jakarta ~perkiraan pertengahan 2026.
-   Range & top speed = klaim pabrik; di jalanan nyata bisa turun 20–40%.
-   Sumber: situs resmi produsen, Oto.com, GoodCar.id, Blibli, Mega Syariah.
+   price  = harga normal (bukan promo), OTR Jakarta/Jadetabek kalau ada.
+   range  = klaim pabrik; di jalanan nyata bisa turun 20–40%.
+   power  = daya maksimum/puncak sesuai klaim pabrik.
+   Subsidi pemerintah: per 16 Okt 2026 TIDAK ada program aktif (detail +
+   sumber di kartu "Subsidi Pemerintah" di index.html). Semua harga di sini
+   tanpa potongan subsidi.
    ────────────────────────────────────────────────────────────────────────── */
+const CHECKED_AT = "2026-10-16";
+
 const MOTORS = [
-  {
-    brand: "ECGO",
-    model: "2",
-    price: 6900000,
-    range: 50,
-    speed: 50,
-    power: 1200,
-    battery: "Li/SLA (detail tidak publik)",
-    batteryType: "Li/SLA",
-    warranty: "n/a",
-    chargeTime: "4–5 jam",
-    batteryScheme: "Beli",
-    swapCost: null,
-    dealerNetwork: "Terbatas",
-    subsidi: false,
-    notes: "Spesifikasi detail terbatas di sumber publik",
-    url: "https://www.ecgo.co.id",
-  },
-  {
-    brand: "Exotic",
-    model: "Vito",
-    price: 7000000,
-    range: 60,
-    speed: 55,
-    power: 1350,
-    battery: "Li-ion (detail terbatas)",
-    batteryType: "Li-ion",
-    warranty: "n/a",
-    chargeTime: "4–5 jam",
-    batteryScheme: "Beli",
-    swapCost: null,
-    dealerNetwork: "Terbatas",
-    subsidi: false,
-    notes: "Desain retro Eropa/urban; populer karena gaya",
-    url: "https://www.exoticbikes.co.id",
-  },
   {
     brand: "Uwinfly",
     model: "T80",
-    price: 7000000,
+    price: 6750000,
+    priceNote: "Estimasi OTR (Medcom, Apr 2026); dealer lain sampai Rp 9,8 jt",
     range: 55,
-    speed: 55,
+    speed: 50,
     power: 1200,
-    battery: "SLA 60V 25Ah / Li 48V 24Ah",
-    batteryType: "SLA/Li-ion",
-    warranty: "n/a",
-    chargeTime: "Fast charge support",
+    battery: "SLA 60V 20Ah (1,2 kWh)",
+    batteryType: "SLA",
+    warranty: "Baterai 6 bln, kontroler 1 thn",
+    chargeTime: "±6 jam",
     batteryScheme: "Beli",
     swapCost: null,
-    dealerNetwork: "Terbatas",
-    subsidi: false,
-    notes: "Tersedia varian NFC/smart key; banyak varian di Blibli/Shopee",
-    url: "https://uwinfly.co.id",
+    notes:
+      "Model lama (2024), sudah tidak ada di situs resmi (diganti T80C/T80D). Pabrik menyebut T-Series 'semi-motor'; status STNK belum jelas",
+    url: "https://www.uwinflyofficial.id",
+    sources: [
+      { label: "Medcom, Apr 2026", url: "https://www.medcom.id/otomotif/motor/MkM5Gevk-cek-daftar-harga-motor-listrik-uwinfly-april-2026" },
+      { label: "Kumparan, Jun 2024", url: "https://kumparan.com/info-produk/spesifikasi-motor-listrik-uwinfly-t80-dengan-daya-angkut-besar-22uSSohhz9e" },
+      { label: "Metro Semarang, Jan 2026 (garansi)", url: "https://metrosemarang.com/2026/01/31/uwinfly-dorong-motor-listrik-lewat-m-series-perkuat-produksi-lokal-dan-layanan-digital/" },
+    ],
+    checkedAt: CHECKED_AT,
   },
   {
     brand: "Uwinfly",
     model: "M90E",
-    price: 9000000,
+    price: 10199000,
+    priceNote: "OTR Pulau Jawa (JawaPos regional, 2026)",
     range: 90,
     speed: 70,
     power: 1500,
-    battery: "Li-ion 60V 24Ah",
+    battery: "Lithium 60V 24Ah (1,44 kWh), lepas-pasang",
     batteryType: "Li-ion",
-    warranty: "n/a",
-    chargeTime: "1,5 jam (fast charge)",
+    warranty: "Motor & baterai 1 thn (pabrik)",
+    chargeTime: "50% dalam 1,5 jam",
     batteryScheme: "Beli",
     swapCost: null,
-    dealerNetwork: "Terbatas",
-    subsidi: false,
-    notes: "Fast charging; range & performa lebih baik dari T80",
-    url: "https://uwinfly.co.id",
+    notes: "M-Series rakitan lokal, rilis Jan 2026; keyless",
+    url: "https://www.uwinflyofficial.id/m90e",
+    sources: [
+      { label: "Situs resmi + brosur", url: "https://www.uwinflyofficial.id/m90e" },
+      { label: "Radar Tulungagung, Apr 2026", url: "https://radartulungagung.jawapos.com/otomotif/2604010039/uwinfly-m90e-cuma-rp10-jutaan-motor-listrik-terbaik-uwinfly-untuk-anak-muda-ini-punya-keyless-fast-charging-dan-baterai-lepas-pasang" },
+    ],
+    checkedAt: CHECKED_AT,
   },
   {
-    brand: "Uwinfly",
-    model: "M110F",
-    price: 11000000,
-    range: 100,
-    speed: 85,
-    power: 3000,
-    battery: "Li-ion 74V 30Ah",
-    batteryType: "Li-ion",
-    warranty: "n/a",
-    chargeTime: "Fast (50% dalam 1,5 jam)",
-    batteryScheme: "Beli/Swap",
-    swapCost: null,
-    dealerNetwork: "Terbatas",
-    subsidi: false,
-    notes: "TriFast System: swap baterai <10 detik; mendekati kelas menengah",
-    url: "https://uwinfly.co.id",
-  },
-  {
-    brand: "Polytron",
-    model: "Fox-200",
+    brand: "Exotic",
+    model: "Vito",
     price: 11500000,
-    range: 85,
-    speed: 70,
-    power: 1500,
-    battery: "LFP 72V 27Ah (1,94 kWh)",
-    batteryType: "LFP",
-    warranty: "1 tahun (dynamo & controller)",
-    chargeTime: "4–5 jam (onboard 450W)",
+    priceNote: "Harga 'mulai' di dealer Otobot (2026); daftar 2025 Rp 12,79 jt",
+    range: 60,
+    speed: 55,
+    power: 1000,
+    battery: "72V 20,5Ah (1,48 kWh); sumber beda soal SLA vs Li-ion",
+    batteryType: "SLA",
+    warranty: "Baterai 6 bln, motor 2 thn, rangka 5 thn (data 2023)",
+    chargeTime: null,
     batteryScheme: "Beli",
     swapCost: null,
-    dealerNetwork: "Luas",
-    subsidi: true,
-    notes:
-      "Smart Key System, disc brake F&R, 2 mode berkendara; LFP tahan panas & awet",
-    url: "https://2w.polytronev.id",
-  },
-  {
-    brand: "Smoot",
-    model: "Tempur Facelift",
-    price: 13000000,
-    range: 70,
-    speed: 60,
-    power: 1200,
-    battery: "Li-ion (swap system)",
-    batteryType: "Li-ion",
-    warranty: "3 tahun",
-    chargeTime: "Swap instan",
-    batteryScheme: "Swap/Sewa",
-    swapCost: null,
-    dealerNetwork: "Sedang",
-    subsidi: false,
-    notes: "Battery swap praktis; harga mulai ~11 juta tergantung varian",
-    url: "https://smoot.id",
+    notes: "Dapat STNK/BPKB. Tidak ada situs resmi produk; link ke dealer",
+    url: "https://otobotindonesia.com/produk/motor-listrik-exotic-vito",
+    sources: [
+      { label: "Dealer Otobot, 2026", url: "https://otobotindonesia.com/produk/motor-listrik-exotic-vito" },
+      { label: "VIVA, Jun 2025", url: "https://www.viva.co.id/otomotif/motor/1828658-pilihan-motor-listrik-tanpa-subsidi-tetap-ramah-kantong-harga-di-bawah-rp20-jutaan" },
+      { label: "CNBC Indonesia, Jul 2024 (STNK)", url: "https://www.cnbcindonesia.com/news/20240714161054-7-554450/ini-dia-motor-listrik-rp-5-jutaan-di-transmart-dapat-stnk-bpkb-nopol" },
+    ],
+    checkedAt: CHECKED_AT,
   },
   {
     brand: "Selis",
     model: "Neo Scootic",
     price: 13500000,
-    range: 60,
-    speed: 55,
-    power: 1750,
-    battery: "SLA / Li-ion (pilihan varian)",
-    batteryType: "SLA/Li-ion",
-    warranty: "n/a",
-    chargeTime: "4–6 jam",
+    priceNote: "Harga situs resmi; belum jelas OTR atau off-the-road",
+    range: 40,
+    speed: 40,
+    power: 1500,
+    battery: "SLA 60V 20Ah (1,2 kWh)",
+    batteryType: "SLA",
+    warranty: "Baterai 6 bln, dinamo 1 thn, rangka 5 thn",
+    chargeTime: "Maks. 7 jam",
     batteryScheme: "Beli",
     swapCost: null,
-    dealerNetwork: "Sedang",
-    subsidi: false,
-    notes: "Scooter matic style; varian SLA lebih murah, Li-ion lebih baik",
-    url: "https://www.selis.id",
+    notes: "Tidak ada varian Li-ion. Berat 91 kg, tinggi jok 750 mm",
+    url: "https://www.selis.co.id/e-motor/selis-neo-scootic/",
+    sources: [
+      { label: "Situs resmi Selis", url: "https://www.selis.co.id/e-motor/selis-neo-scootic/" },
+    ],
+    checkedAt: CHECKED_AT,
+  },
+  {
+    brand: "Indomobil eMotor",
+    model: "QT",
+    price: 15000000,
+    priceNote: "OTR Jadetabek; Surabaya Rp 16,9 jt",
+    range: 70,
+    speed: 60,
+    power: 2000,
+    battery: "Lithium LMO+LMFP 60V 24Ah (1,44 kWh)",
+    batteryType: "Li-ion",
+    warranty: "Baterai s.d. 3 thn",
+    chargeTime: "±4 jam (klaim media, belum resmi)",
+    batteryScheme: "Beli",
+    swapCost: null,
+    notes: "Rilis IIMS Feb 2026. IP67, berat 82,5 kg, bagasi 27 L. Daya nominal 1,5 kW",
+    url: "https://indomobilemotor.co.id/vehicle/qt--qt-pro",
+    sources: [
+      { label: "Situs resmi Indomobil eMotor", url: "https://indomobilemotor.co.id/vehicle/qt--qt-pro" },
+      { label: "Kompas Otomotif, Feb 2026", url: "https://otomotif.kompas.com/read/2026/02/06/123100815/iims-2026--indomobil-emotor-perkenalkan-qt-dan-qt-pro" },
+    ],
+    checkedAt: CHECKED_AT,
   },
   {
     brand: "Selis",
     model: "E-Max SLA",
     price: 15500000,
-    range: 57,
-    speed: 57,
-    power: 2000,
-    battery: "SLA",
+    priceNote: "Harga situs resmi; varian lithium Rp 22 jt",
+    range: 40,
+    speed: 50,
+    power: 1500,
+    battery: "SLA 60V 20Ah (1,2 kWh)",
     batteryType: "SLA",
-    warranty: "n/a",
-    chargeTime: "5–7 jam",
+    warranty: "Baterai 6 bln, dinamo 1 thn, rangka 5 thn",
+    chargeTime: "Maks. 7 jam",
     batteryScheme: "Beli",
     swapCost: null,
-    dealerNetwork: "Sedang",
-    subsidi: false,
-    notes:
-      "Baterai SLA: biaya awal rendah, tapi lebih berat & umur lebih pendek",
-    url: "https://www.selis.id",
+    notes: "Berat 95 kg, tinggi jok 830 mm, beban maks 200 kg",
+    url: "https://www.selis.co.id/e-motor/selis-e-max/",
+    sources: [
+      { label: "Situs resmi Selis", url: "https://www.selis.co.id/e-motor/selis-e-max/" },
+    ],
+    checkedAt: CHECKED_AT,
   },
   {
-    brand: "Alva",
-    model: "N3 (sewa baterai)",
-    price: 15500000,
-    range: 90,
-    speed: 80,
-    power: 2500,
-    battery: "Li-ion (sewa bulanan)",
+    brand: "United E-Motor",
+    model: "MT1500Li",
+    price: 16000000,
+    priceNote: "OTR Jakarta (situs resmi, Okt 2026)",
+    range: 75,
+    speed: 70,
+    power: 2700,
+    battery: "Lithium 72V 26Ah (1,87 kWh)",
     batteryType: "Li-ion",
-    warranty: "n/a",
-    chargeTime: "n/a",
-    batteryScheme: "Sewa",
-    swapCost: "Sewa bulanan",
-    dealerNetwork: "Sedang",
-    subsidi: false,
-    notes:
-      "Rp 15,5 juta = harga motor saja (skema sewa baterai); full motor Rp 30,5 juta",
-    url: "https://alva.id",
+    warranty: null,
+    chargeTime: "0–80% 2,5 jam (butuh listrik rumah min. 2200 VA)",
+    batteryScheme: "Beli",
+    swapCost: null,
+    notes: "Model baru Okt 2026. Berat 84,4 kg",
+    url: "https://unitedmotor.co.id/product/mt-1500li/",
+    sources: [
+      { label: "Situs resmi United", url: "https://unitedmotor.co.id/product/mt-1500li/" },
+    ],
+    checkedAt: CHECKED_AT,
   },
   {
-    brand: "United Motor",
+    brand: "United E-Motor",
     model: "MX-1200",
     price: 16800000,
-    range: 80,
+    priceNote: "OTR Jakarta (situs resmi)",
+    range: 60,
     speed: 65,
-    power: 2500,
-    battery: "Li-ion",
-    batteryType: "Li-ion",
-    warranty: "2 tahun",
-    chargeTime: "4–5 jam",
+    power: 2200,
+    battery: "72V 20Ah (1,44 kWh), bukan lithium (graphene/SLA)",
+    batteryType: "SLA",
+    warranty: null,
+    chargeTime: "0–80% 5–6,5 jam",
     batteryScheme: "Beli",
     swapCost: null,
-    dealerNetwork: "Luas",
-    subsidi: false,
-    notes: "Desain simpel & andal; nilai bagus di harganya",
-    url: "https://www.unitedmotor.co.id",
-  },
-  {
-    brand: "Indomobil",
-    model: "Emotor QT",
-    price: 17000000,
-    range: 80,
-    speed: 65,
-    power: 2000,
-    battery: "Li-ion",
-    batteryType: "Li-ion",
-    warranty: "n/a",
-    chargeTime: "4–5 jam",
-    batteryScheme: "Beli",
-    swapCost: null,
-    dealerNetwork: "Luas",
-    subsidi: false,
-    notes:
-      "Dari grup otomotif besar Indomobil; kualitas rakitan lebih terjamin",
-    url: "https://www.indomobil.co.id",
+    notes: "Varian lithium dijual terpisah Rp 25 jt. Berat 97 kg",
+    url: "https://unitedmotor.co.id/product/mx-1200/",
+    sources: [
+      { label: "Situs resmi United", url: "https://unitedmotor.co.id/product/mx-1200/" },
+      { label: "detikOto, Feb 2023", url: "https://oto.detik.com/motor/d-6577067/murah-banget-harga-motor-listrik-united-rp-7-jutaan" },
+    ],
+    checkedAt: CHECKED_AT,
   },
   {
     brand: "Volta",
-    model: "401 (eX / Eagle)",
-    price: 17900000,
-    range: 60,
-    speed: 57,
-    power: 1900,
-    battery: "LiFePO4 64V 21Ah (2 slot, maks 120 km)",
+    model: "eX",
+    price: 17850000,
+    priceNote: "OTR Jakarta (situs resmi & Kontan, Agu 2026)",
+    range: 65,
+    speed: 55,
+    power: 1800,
+    battery: "LiFePO4 64V 21Ah (1,34 kWh/baterai), 2 slot",
     batteryType: "LFP",
-    warranty: "n/a",
-    chargeTime: "Swap instan + home charge",
-    batteryScheme: "Swap",
-    swapCost: "Rp 7.500 / 60 km",
-    dealerNetwork: "Luas",
-    subsidi: false,
+    warranty: "Baterai 2 thn/800 siklus; seumur hidup dgn membership",
+    chargeTime: "Swap di SGB + cas di rumah",
+    batteryScheme: "Beli/Swap",
+    swapCost: "Rp 1.000–5.000 per swap (sesuai % isi)",
     notes:
-      "60 km/baterai, hingga 120 km dengan 2 baterai; 400+ titik swap nasional (SGB); payload 150 kg",
+      "Hingga 130 km dengan 2 baterai (65 km = setengahnya). Belum jelas harga termasuk 1 atau 2 baterai. 300+ titik swap",
     url: "https://www.voltaindonesia.com",
+    sources: [
+      { label: "Kontan, Agu 2026", url: "https://nasional.kontan.co.id/news/insentif-motor-listrik-paling-cepat-mulai-september-2026-cek-harga-sebelum-subsidi" },
+      { label: "Volta SGB (tarif swap)", url: "https://www.voltaindonesia.com/sgb" },
+      { label: "Volta garansi baterai", url: "https://www.voltaindonesia.com/battery-volta" },
+    ],
+    checkedAt: CHECKED_AT,
+  },
+  {
+    brand: "Indomobil eMotor",
+    model: "QT Pro",
+    price: 18800000,
+    priceNote: "OTR Jadetabek; Surabaya Rp 20,7 jt",
+    range: 135,
+    speed: 70,
+    power: 2000,
+    battery: "Lithium LMO+LMFP 2× 60V 24Ah (2,88 kWh)",
+    batteryType: "Li-ion",
+    warranty: "Baterai s.d. 3 thn",
+    chargeTime: null,
+    batteryScheme: "Beli",
+    swapCost: null,
+    notes: "IP67, regen braking, hill start assist. Berat 95,7 kg",
+    url: "https://indomobilemotor.co.id/vehicle/qt--qt-pro",
+    sources: [
+      { label: "Situs resmi Indomobil eMotor", url: "https://indomobilemotor.co.id/vehicle/qt--qt-pro" },
+    ],
+    checkedAt: CHECKED_AT,
+  },
+  {
+    brand: "Volta",
+    model: "401",
+    price: 18250000,
+    priceNote: "OTR Jakarta (situs resmi & Kontan, Agu 2026); Jatim Rp 19,5 jt",
+    range: 60,
+    speed: 60,
+    power: 1900,
+    battery: "LiFePO4 64V 21Ah (1,34 kWh/baterai), 2 slot",
+    batteryType: "LFP",
+    warranty: "Baterai 2 thn/800 siklus; seumur hidup dgn membership",
+    chargeTime: "Swap di SGB + cas di rumah",
+    batteryScheme: "Beli/Swap",
+    swapCost: "Rp 1.000–5.000 per swap (sesuai % isi)",
+    notes:
+      "60 km per baterai, hingga 120 km dengan 2 baterai. Belum jelas harga termasuk 1 atau 2 baterai. Beban maks 150 kg",
+    url: "https://www.voltaindonesia.com/volta-reguler/volta-reguler-401",
+    sources: [
+      { label: "Situs resmi Volta", url: "https://www.voltaindonesia.com/volta-reguler/volta-reguler-401" },
+      { label: "Kontan, Agu 2026", url: "https://nasional.kontan.co.id/news/insentif-motor-listrik-paling-cepat-mulai-september-2026-cek-harga-sebelum-subsidi" },
+      { label: "Volta SGB (tarif swap)", url: "https://www.voltaindonesia.com/sgb" },
+    ],
+    checkedAt: CHECKED_AT,
+  },
+  {
+    brand: "Polytron",
+    model: "Fox 200",
+    price: 18500000,
+    priceNote:
+      "OTR Jadetabek, baterai sewa Rp 125 rb/bln. Beli putus Rp 20,5 jt. Promo merek sempat Rp 11,5 jt",
+    range: 85,
+    speed: 70,
+    power: 1500,
+    battery: "LFP 72V 27Ah (1,94 kWh)",
+    batteryType: "LFP",
+    warranty: "Baterai: seumur langganan (sewa) / 3 thn (beli). Dinamo & ECU 1 thn",
+    chargeTime: "4–5 jam (onboard 450 W)",
+    batteryScheme: "Sewa/Beli",
+    swapCost: "Sewa baterai Rp 125.000/bln",
+    notes:
+      "Range 85 km pada kecepatan 40 km/jam. Potongan Rp 7 jt itu promo Polytron, bukan subsidi pemerintah",
+    url: "https://2w.polytronev.id/fox200",
+    sources: [
+      { label: "Situs resmi Polytron", url: "https://2w.polytronev.id/fox200" },
+      { label: "Liputan6, Jan 2026", url: "https://otosia.liputan6.com/otosia/read/6254315/harga-motor-listrik-polytron-2026-lengkap-dengan-spesifikasi-semua-model" },
+      { label: "Kumparan, Agu 2026 (sewa baterai)", url: "https://kumparan.com/kumparanoto/rincian-harga-sewa-baterai-motor-listrik-polytron-mulai-rp-125-ribu-27vty9HlGLI" },
+    ],
+    checkedAt: CHECKED_AT,
+  },
+  {
+    brand: "Alva",
+    model: "N3 Next Gen (BEBAS PAS)",
+    price: 18500000,
+    priceNote:
+      "Harga motor saja, baterai disewa (resmi, Sep 2026). Dengan baterai Rp 37,5 jt",
+    range: 140,
+    speed: 80,
+    power: 4500,
+    battery: "LFP 3,3 kWh (milik Alva, disewa)",
+    batteryType: "LFP",
+    warranty: "Baterai: tanpa batas selama sewa. Motor 2 thn/20.000 km",
+    chargeTime: "4 jam (0–100%); boost 10–50% < 25 mnt",
+    batteryScheme: "Sewa",
+    swapCost: "Rp 125.000/bln + Rp 75–225 rb kalau > 700 km/bln",
+    notes:
+      "Telat bayar sewa: baterai dibatasi lalu dinonaktifkan. Daya 4,5 kW = puncak. Promo merek s.d. Rp 7 jt sering ada",
+    url: "https://www.alvaauto.com/id/product/n3",
+    sources: [
+      { label: "Blog resmi Alva, Sep 2026", url: "https://www.alvaauto.com/blog/harga-motor-listrik-alva/" },
+      { label: "Kontrak BEBAS PAS", url: "https://support.alvaauto.com/hc/id/articles/15097189624207" },
+      { label: "detikOto, Feb 2026", url: "https://oto.detik.com/motor-listrik/d-8344441/alva-n3-next-gen-meluncur-harga-mulai-rp-15-jutaan" },
+    ],
+    checkedAt: CHECKED_AT,
+  },
+  {
+    brand: "Uwinfly",
+    model: "M110F",
+    price: 17890000,
+    priceNote: "InfoEV (Okt 2026); peluncuran Rp 14 jutaan, marketplace Rp 15,8–18,6 jt",
+    range: 100,
+    speed: 85,
+    power: 3000,
+    battery: "Lithium 74V 30Ah (2,22 kWh), swap TriFast",
+    batteryType: "Li-ion",
+    warranty: "Motor & baterai 1 thn (pabrik)",
+    chargeTime: "50% dalam 1,5 jam; swap < 10 detik",
+    batteryScheme: "Beli/Swap",
+    swapCost: null,
+    notes: "Sebagian unit di marketplace dijual 'tanpa surat'; beli di dealer resmi",
+    url: "https://www.uwinflyofficial.id/m110f",
+    sources: [
+      { label: "Situs resmi + brosur", url: "https://www.uwinflyofficial.id/m110f" },
+      { label: "InfoEV", url: "https://www.infoev.id/uwinfly-m110f" },
+      { label: "Medcom, Apr 2026", url: "https://www.medcom.id/otomotif/motor/MkM5Gevk-cek-daftar-harga-motor-listrik-uwinfly-april-2026" },
+    ],
+    checkedAt: CHECKED_AT,
   },
   {
     brand: "Volta",
     model: "Virgo",
     price: 19100000,
+    priceNote: "OTR Jakarta (situs resmi & Kontan, Agu 2026); Jatim Rp 20,35 jt",
     range: 65,
     speed: 55,
-    power: 1900,
-    battery: "LiFePO4 64V 21Ah (2 slot, maks ~130 km)",
+    power: 1800,
+    battery: "LiFePO4 64V 21Ah (1,34 kWh/baterai), 2 slot",
     batteryType: "LFP",
-    warranty: "n/a",
-    chargeTime: "Swap instan + home charge",
-    batteryScheme: "Swap",
-    swapCost: "Rp 7.500 / 60 km",
-    dealerNetwork: "Luas",
-    subsidi: false,
+    warranty: "Baterai 2 thn/800 siklus; seumur hidup dgn membership",
+    chargeTime: "Swap di SGB + cas di rumah",
+    batteryScheme: "Beli/Swap",
+    swapCost: "Rp 1.000–5.000 per swap (sesuai % isi)",
     notes:
-      "Hingga ~130 km dengan 2 baterai; 400+ titik swap nasional; payload 150 kg",
-    url: "https://www.voltaindonesia.com",
-  },
-  {
-    brand: "BF Goodrich",
-    model: "CG",
-    price: 19800000,
-    range: 80,
-    speed: 65,
-    power: 2000,
-    battery: "Li-ion",
-    batteryType: "Li-ion",
-    warranty: "n/a",
-    chargeTime: "4–5 jam",
-    batteryScheme: "Beli",
-    swapCost: null,
-    dealerNetwork: "Sedang",
-    subsidi: false,
-    notes: "Spesifikasi detail belum banyak dipublikasikan",
-    url: "https://www.oto.com/motor-baru/bf-goodrich",
+      "Hingga 130 km dengan 2 baterai (65 km = setengahnya). Belum jelas harga termasuk 1 atau 2 baterai. Beban maks 150 kg",
+    url: "https://www.voltaindonesia.com/volta-reguler/volta-reguler-virgo",
+    sources: [
+      { label: "Situs resmi Volta", url: "https://www.voltaindonesia.com/volta-reguler/volta-reguler-virgo" },
+      { label: "Kontan, Agu 2026", url: "https://nasional.kontan.co.id/news/insentif-motor-listrik-paling-cepat-mulai-september-2026-cek-harga-sebelum-subsidi" },
+    ],
+    checkedAt: CHECKED_AT,
   },
 ];
 
@@ -320,7 +390,6 @@ document.addEventListener("DOMContentLoaded", () => {
 /* ── HERO STATS ──────────────────────────────────────────────────────────── */
 function renderHeroStats() {
   const brands = new Set(MOTORS.map((m) => m.brand)).size;
-  const withSub = MOTORS.filter((m) => m.subsidi).length;
   const minPrice = Math.min(...MOTORS.map((m) => m.price));
 
   document.getElementById("heroStats").innerHTML = `
@@ -333,8 +402,8 @@ function renderHeroStats() {
       <span class="stat-lbl">Merek</span>
     </div>
     <div class="stat-chip">
-      <span class="stat-val">${withSub}</span>
-      <span class="stat-lbl">Eligible Subsidi</span>
+      <span class="stat-val">${formatDate(CHECKED_AT)}</span>
+      <span class="stat-lbl">Data dicek</span>
     </div>
     <div class="stat-chip">
       <span class="stat-val">${IDR.format(minPrice)}</span>
@@ -349,14 +418,14 @@ function bindEvents() {
   document.getElementById("searchInput").addEventListener("input", render);
   document.getElementById("selPrice").addEventListener("change", render);
   document.getElementById("selRange").addEventListener("change", render);
-  document.getElementById("chkSubsidi").addEventListener("change", render);
+  document.getElementById("chkLithium").addEventListener("change", render);
 
   /* reset */
   document.getElementById("btnReset").addEventListener("click", () => {
     document.getElementById("searchInput").value = "";
     document.getElementById("selPrice").value = "20000000";
     document.getElementById("selRange").value = "0";
-    document.getElementById("chkSubsidi").checked = false;
+    document.getElementById("chkLithium").checked = false;
     render();
   });
 
@@ -436,14 +505,14 @@ function render() {
   const q = document.getElementById("searchInput").value.trim().toLowerCase();
   const pMax = Number(document.getElementById("selPrice").value);
   const rMin = Number(document.getElementById("selRange").value);
-  const subOnly = document.getElementById("chkSubsidi").checked;
+  const lithiumOnly = document.getElementById("chkLithium").checked;
 
   /* filter */
   let data = MOTORS.map((m, idx) => ({ ...m, _idx: idx })).filter((m) => {
     if (q && !`${m.brand} ${m.model}`.toLowerCase().includes(q)) return false;
     if (m.price > pMax) return false;
     if (m.range < rMin) return false;
-    if (subOnly && !m.subsidi) return false;
+    if (lithiumOnly && m.batteryType === "SLA") return false;
     return true;
   });
 
@@ -478,7 +547,7 @@ function render() {
   if (data.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="10">
+        <td colspan="9">
           <div class="no-results">
             <div class="no-results-icon">🔍</div>
             <p>Tidak ada motor yang cocok.<br>Coba perluas kriteria pencarian.</p>
@@ -515,13 +584,9 @@ function render() {
           </div>
         </td>
         <td class="td-model">${esc(m.model)}</td>
-        <td class="td-price ${pCls}">${IDR.format(m.price)}</td>
-        <td class="td-ctr">
-          ${
-            m.subsidi
-              ? '<span class="badge-yes">&#11088;&nbsp;Subsidi</span>'
-              : '<span class="badge-no">&#8212;</span>'
-          }
+        <td class="td-price ${pCls}">
+          ${IDR.format(m.price)}
+          ${m.priceNote ? `<small class="price-note">${esc(m.priceNote)}</small>` : ""}
         </td>
         <td class="td-num">
           <div class="range-wrap">
@@ -601,11 +666,16 @@ function updateCompareBar() {
 /* Specs to display in comparison (in order) */
 const COMPARE_SPECS = [
   {
-    label: "Harga OTR*",
+    label: "Harga*",
     render: (m) =>
       `<span class="${priceTierClass(m.price)} fw-bold">${IDR.format(m.price)}</span>`,
     bestKey: "price",
     best: "min",
+  },
+  {
+    label: "Keterangan Harga",
+    render: (m) => `<small class="text-muted">${esc(m.priceNote)}</small>`,
+    best: null,
   },
   {
     label: "Jarak Tempuh",
@@ -620,7 +690,7 @@ const COMPARE_SPECS = [
     best: "max",
   },
   {
-    label: "Daya Motor",
+    label: "Daya Maks",
     render: (m) => `${m.power.toLocaleString("id-ID")} W`,
     bestKey: "power",
     best: "max",
@@ -646,16 +716,8 @@ const COMPARE_SPECS = [
     best: null,
   },
   {
-    label: "Biaya Swap",
-    render: (m) => (m.swapCost ? esc(m.swapCost) : "—"),
-    best: null,
-  },
-  {
-    label: "Subsidi Pemerintah",
-    render: (m) =>
-      m.subsidi
-        ? '<span class="badge-yes">&#11088;&nbsp;Ya</span>'
-        : '<span class="badge-no">&#8212;</span>',
+    label: "Biaya Swap / Sewa",
+    render: (m) => esc(m.swapCost),
     best: null,
   },
   {
@@ -664,13 +726,24 @@ const COMPARE_SPECS = [
     best: null,
   },
   {
-    label: "Jaringan Dealer",
-    render: (m) => dealerBadge(m.dealerNetwork),
+    label: "Catatan",
+    render: (m) => `<small class="text-muted">${esc(m.notes)}</small>`,
     best: null,
   },
   {
-    label: "Catatan",
-    render: (m) => `<small class="text-muted">${esc(m.notes)}</small>`,
+    label: "Sumber",
+    render: (m) =>
+      `<ul class="cmp-sources">${m.sources
+        .map(
+          (s) =>
+            `<li><a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.label)}</a></li>`,
+        )
+        .join("")}</ul>`,
+    best: null,
+  },
+  {
+    label: "Data Dicek",
+    render: (m) => formatDate(m.checkedAt),
     best: null,
   },
 ];
@@ -737,7 +810,7 @@ function renderCompareModal() {
       (m) => `
     <td>
       <a href="${safeUrl(m.url)}" target="_blank" rel="noopener noreferrer"
-         class="btn-website">Website Resmi →</a>
+         class="btn-website">Buka →</a>
     </td>`,
     )
     .join("");
@@ -754,14 +827,15 @@ function renderCompareModal() {
         <tbody>
           ${specRows}
           <tr>
-            <th class="cmp-spec-th">Website Resmi</th>
+            <th class="cmp-spec-th">Halaman Produk</th>
             ${urlCells}
           </tr>
         </tbody>
       </table>
     </div>
     <p class="cmp-note">
-      * Harga OTR Jakarta ~perkiraan 2026. Range = klaim pabrik (di jalanan bisa turun 20–40%).
+      * Harga normal tanpa promo &amp; tanpa subsidi, lihat Keterangan Harga. Range = klaim pabrik (di jalanan bisa turun 20–40%).
+      Daya = daya maksimum klaim pabrik.
       <span class="cmp-best-legend">★</span> = terbaik dalam perbandingan ini.
     </p>
   `;
@@ -788,14 +862,13 @@ function battTypeBadge(type) {
   return `<span class="batt-badge ${cls}">${label}</span>`;
 }
 
-function dealerBadge(level) {
-  const map = {
-    Luas: ["dealer-luas", "Luas ✓"],
-    Sedang: ["dealer-sedang", "Sedang"],
-    Terbatas: ["dealer-terbatas", "Terbatas"],
-  };
-  const [cls, label] = map[level] || ["dealer-terbatas", esc(level)];
-  return `<span class="dealer-badge ${cls}">${label}</span>`;
+/** "2026-10-16" → "16 Okt 2026" */
+function formatDate(iso) {
+  return new Date(iso).toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 /** Generate a color-coded SVG thumbnail data URI for a motor.

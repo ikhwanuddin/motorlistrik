@@ -433,30 +433,16 @@ tbody td {
     text-align: center;
 }
 
-/* Subsidi badges */
-.badge-yes,
-.badge-no {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.22rem;
-    padding: 0.18rem 0.5rem;
-    border-radius: 20px;
-    font-size: 0.71rem;
-    font-weight: 700;
-    letter-spacing: 0.2px;
-    white-space: nowrap;
-}
-
-.badge-yes {
-    background: var(--amber-100);
-    color: #92400e;
-    border: 1px solid #fcd34d;
-}
-
-.badge-no {
-    background: var(--gray-100);
-    color: var(--gray-400);
-    border: 1px solid var(--gray-200);
+/* Keterangan harga di bawah angka harga */
+.price-note {
+    display: block;
+    max-width: 210px;
+    margin-left: auto;
+    font-size: 0.72rem;
+    font-weight: 400;
+    line-height: 1.35;
+    color: var(--muted);
+    white-space: normal;
 }
 
 /* Range mini progress bar */
@@ -511,22 +497,20 @@ tbody td {
 
 /* ── Responsive: hide columns ────────────────────────────── */
 
-/* ≤ 900 px  →  hide Baterai (9) & Garansi (10) */
+/* ≤ 900 px  →  hide Baterai (8) & Garansi (9) */
 @media (max-width: 900px) {
+    thead th:nth-child(8),
     thead th:nth-child(9),
-    thead th:nth-child(10),
-    tbody td:nth-child(9),
-    tbody td:nth-child(10) {
+    tbody td:nth-child(8),
+    tbody td:nth-child(9) {
         display: none;
     }
 }
 
-/* ≤ 640 px  →  also hide Subsidi (5) & Daya Motor (8) */
+/* ≤ 640 px  →  also hide Daya Maks (7) */
 @media (max-width: 640px) {
-    thead th:nth-child(5),
-    tbody td:nth-child(5),
-    thead th:nth-child(8),
-    tbody td:nth-child(8) {
+    thead th:nth-child(7),
+    tbody td:nth-child(7) {
         display: none;
     }
 
@@ -1010,29 +994,17 @@ tbody tr.row-selected {
     border: 1px solid #fcd34d;
 }
 
-/* ── Dealer network badges ── */
-.dealer-badge {
-    display: inline-block;
-    padding: 0.18rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.72rem;
-    font-weight: 700;
+/* ── Daftar sumber (modal) & sumber kartu info ── */
+.cmp-sources {
+    list-style: none;
+    font-size: 0.78rem;
+    line-height: 1.5;
 }
 
-.dealer-luas {
-    background: #dcfce7;
-    color: #14532d;
-    border: 1px solid #86efac;
-}
-.dealer-sedang {
-    background: #fef9c3;
-    color: #713f12;
-    border: 1px solid #fde047;
-}
-.dealer-terbatas {
-    background: #fee2e2;
-    color: #7f1d1d;
-    border: 1px solid #fca5a5;
+.card-source {
+    margin-top: 0.6rem;
+    font-size: 0.75rem;
+    color: var(--muted);
 }
 
 /* ── Body scroll lock when modal open ── */

@@ -6,7 +6,8 @@
    UPDATE DATA: tambah/edit objek di array MOTORS.
    Field: brand, model, price, priceNote, range, speed, power,
      battery, batteryType, warranty, chargeTime, batteryScheme,
-     swapCost, notes, url, sources [{label, url}], checkedAt
+     swapCost, notes, url, sources [{label, url}], stnk, checkedAt
+   stnk: true = bisa STNK/plat, false = tidak bisa, null = belum jelas
    Isi null kalau data tidak ketemu di sumber. Jangan menebak.
    ========================================================= */
 
@@ -45,6 +46,7 @@ const MOTORS = [
       { label: "Kumparan, Jun 2024", url: "https://kumparan.com/info-produk/spesifikasi-motor-listrik-uwinfly-t80-dengan-daya-angkut-besar-22uSSohhz9e" },
       { label: "Metro Semarang, Jan 2026 (garansi)", url: "https://metrosemarang.com/2026/01/31/uwinfly-dorong-motor-listrik-lewat-m-series-perkuat-produksi-lokal-dan-layanan-digital/" },
     ],
+    stnk: null,
     checkedAt: CHECKED_AT,
   },
   {
@@ -67,6 +69,7 @@ const MOTORS = [
       { label: "Situs resmi + brosur", url: "https://www.uwinflyofficial.id/m90e" },
       { label: "Radar Tulungagung, Apr 2026", url: "https://radartulungagung.jawapos.com/otomotif/2604010039/uwinfly-m90e-cuma-rp10-jutaan-motor-listrik-terbaik-uwinfly-untuk-anak-muda-ini-punya-keyless-fast-charging-dan-baterai-lepas-pasang" },
     ],
+    stnk: null,
     checkedAt: CHECKED_AT,
   },
   {
@@ -90,13 +93,15 @@ const MOTORS = [
       { label: "VIVA, Jun 2025", url: "https://www.viva.co.id/otomotif/motor/1828658-pilihan-motor-listrik-tanpa-subsidi-tetap-ramah-kantong-harga-di-bawah-rp20-jutaan" },
       { label: "CNBC Indonesia, Jul 2024 (STNK)", url: "https://www.cnbcindonesia.com/news/20240714161054-7-554450/ini-dia-motor-listrik-rp-5-jutaan-di-transmart-dapat-stnk-bpkb-nopol" },
     ],
+    stnk: true,
     checkedAt: CHECKED_AT,
   },
   {
     brand: "Selis",
     model: "Neo Scootic",
-    price: 13500000,
-    priceNote: "Harga situs resmi; belum jelas OTR atau off-the-road",
+    price: 8975000,
+    priceNote:
+      "Toko resmi Selis di Tokopedia (Okt 2026), tanpa surat. Situs resmi masih tulis Rp 13,5 jt (2024)",
     range: 40,
     speed: 40,
     power: 1500,
@@ -106,11 +111,14 @@ const MOTORS = [
     chargeTime: "Maks. 7 jam",
     batteryScheme: "Beli",
     swapCost: null,
-    notes: "Tidak ada varian Li-ion. Berat 91 kg, tinggi jok 750 mm",
+    notes:
+      "TIDAK bisa STNK/BPKB: menurut toko resmi hanya untuk kota mandiri/kompleks perumahan. Berat 91 kg, tinggi jok 750 mm",
     url: "https://www.selis.co.id/e-motor/selis-neo-scootic/",
     sources: [
+      { label: "Toko resmi Selis (Tokopedia)", url: "https://www.tokopedia.com/selis/selis-sepeda-motor-listrik-tipe-neo-scootic-baterai-sla-off-the-road-1734949878142829696-1734950002110334080" },
       { label: "Situs resmi Selis", url: "https://www.selis.co.id/e-motor/selis-neo-scootic/" },
     ],
+    stnk: false,
     checkedAt: CHECKED_AT,
   },
   {
@@ -133,13 +141,15 @@ const MOTORS = [
       { label: "Situs resmi Indomobil eMotor", url: "https://indomobilemotor.co.id/vehicle/qt--qt-pro" },
       { label: "Kompas Otomotif, Feb 2026", url: "https://otomotif.kompas.com/read/2026/02/06/123100815/iims-2026--indomobil-emotor-perkenalkan-qt-dan-qt-pro" },
     ],
+    stnk: true,
     checkedAt: CHECKED_AT,
   },
   {
     brand: "Selis",
     model: "E-Max SLA",
     price: 15500000,
-    priceNote: "Harga situs resmi; varian lithium Rp 22 jt",
+    priceNote:
+      "Harga situs resmi. Toko resmi Tokopedia: off-the-road Rp 10,48 jt, OTR sesuai domisili KTP. Varian lithium Rp 22 jt",
     range: 40,
     speed: 50,
     power: 1500,
@@ -153,7 +163,9 @@ const MOTORS = [
     url: "https://www.selis.co.id/e-motor/selis-e-max/",
     sources: [
       { label: "Situs resmi Selis", url: "https://www.selis.co.id/e-motor/selis-e-max/" },
+      { label: "Toko resmi Selis (Tokopedia)", url: "https://www.tokopedia.com/selis/selis-motor-listrik-e-max-battery-sla-off-the-road-emotor-1736209726871733376" },
     ],
+    stnk: true,
     checkedAt: CHECKED_AT,
   },
   {
@@ -170,11 +182,12 @@ const MOTORS = [
     chargeTime: "0–80% 2,5 jam (butuh listrik rumah min. 2200 VA)",
     batteryScheme: "Beli",
     swapCost: null,
-    notes: "Model baru Okt 2026. Berat 84,4 kg",
+    notes: "Model baru Okt 2026. Berat 84,4 kg, bagasi 28 L, beban maks 150 kg",
     url: "https://unitedmotor.co.id/product/mt-1500li/",
     sources: [
       { label: "Situs resmi United", url: "https://unitedmotor.co.id/product/mt-1500li/" },
     ],
+    stnk: true,
     checkedAt: CHECKED_AT,
   },
   {
@@ -197,6 +210,7 @@ const MOTORS = [
       { label: "Situs resmi United", url: "https://unitedmotor.co.id/product/mx-1200/" },
       { label: "detikOto, Feb 2023", url: "https://oto.detik.com/motor/d-6577067/murah-banget-harga-motor-listrik-united-rp-7-jutaan" },
     ],
+    stnk: true,
     checkedAt: CHECKED_AT,
   },
   {
@@ -214,13 +228,14 @@ const MOTORS = [
     batteryScheme: "Beli/Swap",
     swapCost: "Rp 1.000–5.000 per swap (sesuai % isi)",
     notes:
-      "Hingga 130 km dengan 2 baterai (65 km = setengahnya). Belum jelas harga termasuk 1 atau 2 baterai. 300+ titik swap",
+      "Hingga 130 km dengan 2 baterai (65 km = setengahnya). Belum jelas harga termasuk 1 atau 2 baterai. 300+ titik swap. Beban maks 180 kg",
     url: "https://www.voltaindonesia.com",
     sources: [
       { label: "Kontan, Agu 2026", url: "https://nasional.kontan.co.id/news/insentif-motor-listrik-paling-cepat-mulai-september-2026-cek-harga-sebelum-subsidi" },
       { label: "Volta SGB (tarif swap)", url: "https://www.voltaindonesia.com/sgb" },
       { label: "Volta garansi baterai", url: "https://www.voltaindonesia.com/battery-volta" },
     ],
+    stnk: true,
     checkedAt: CHECKED_AT,
   },
   {
@@ -242,6 +257,7 @@ const MOTORS = [
     sources: [
       { label: "Situs resmi Indomobil eMotor", url: "https://indomobilemotor.co.id/vehicle/qt--qt-pro" },
     ],
+    stnk: true,
     checkedAt: CHECKED_AT,
   },
   {
@@ -266,6 +282,7 @@ const MOTORS = [
       { label: "Kontan, Agu 2026", url: "https://nasional.kontan.co.id/news/insentif-motor-listrik-paling-cepat-mulai-september-2026-cek-harga-sebelum-subsidi" },
       { label: "Volta SGB (tarif swap)", url: "https://www.voltaindonesia.com/sgb" },
     ],
+    stnk: true,
     checkedAt: CHECKED_AT,
   },
   {
@@ -291,6 +308,7 @@ const MOTORS = [
       { label: "Liputan6, Jan 2026", url: "https://otosia.liputan6.com/otosia/read/6254315/harga-motor-listrik-polytron-2026-lengkap-dengan-spesifikasi-semua-model" },
       { label: "Kumparan, Agu 2026 (sewa baterai)", url: "https://kumparan.com/kumparanoto/rincian-harga-sewa-baterai-motor-listrik-polytron-mulai-rp-125-ribu-27vty9HlGLI" },
     ],
+    stnk: true,
     checkedAt: CHECKED_AT,
   },
   {
@@ -316,6 +334,7 @@ const MOTORS = [
       { label: "Kontrak BEBAS PAS", url: "https://support.alvaauto.com/hc/id/articles/15097189624207" },
       { label: "detikOto, Feb 2026", url: "https://oto.detik.com/motor-listrik/d-8344441/alva-n3-next-gen-meluncur-harga-mulai-rp-15-jutaan" },
     ],
+    stnk: true,
     checkedAt: CHECKED_AT,
   },
   {
@@ -339,6 +358,7 @@ const MOTORS = [
       { label: "InfoEV", url: "https://www.infoev.id/uwinfly-m110f" },
       { label: "Medcom, Apr 2026", url: "https://www.medcom.id/otomotif/motor/MkM5Gevk-cek-daftar-harga-motor-listrik-uwinfly-april-2026" },
     ],
+    stnk: null,
     checkedAt: CHECKED_AT,
   },
   {
@@ -362,6 +382,7 @@ const MOTORS = [
       { label: "Situs resmi Volta", url: "https://www.voltaindonesia.com/volta-reguler/volta-reguler-virgo" },
       { label: "Kontan, Agu 2026", url: "https://nasional.kontan.co.id/news/insentif-motor-listrik-paling-cepat-mulai-september-2026-cek-harga-sebelum-subsidi" },
     ],
+    stnk: true,
     checkedAt: CHECKED_AT,
   },
 ];
@@ -583,7 +604,10 @@ function render() {
             <span class="brand-name-text">${esc(m.brand)}</span>
           </div>
         </td>
-        <td class="td-model">${esc(m.model)}</td>
+        <td class="td-model">
+          ${esc(m.model)}
+          ${m.stnk === true ? "" : stnkBadge(m.stnk)}
+        </td>
         <td class="td-price ${pCls}">
           ${IDR.format(m.price)}
           ${m.priceNote ? `<small class="price-note">${esc(m.priceNote)}</small>` : ""}
@@ -721,6 +745,11 @@ const COMPARE_SPECS = [
     best: null,
   },
   {
+    label: "Bisa STNK/Plat",
+    render: (m) => stnkBadge(m.stnk),
+    best: null,
+  },
+  {
     label: "Garansi",
     render: (m) => esc(m.warranty),
     best: null,
@@ -847,6 +876,12 @@ function priceTierClass(price) {
   if (price < 12e6) return "p-low";
   if (price < 17e6) return "p-mid";
   return "p-high";
+}
+
+function stnkBadge(stnk) {
+  if (stnk === true) return '<span class="stnk-badge stnk-yes">Ya</span>';
+  if (stnk === false) return '<span class="stnk-badge stnk-no">Tanpa STNK</span>';
+  return '<span class="stnk-badge stnk-unknown">STNK belum jelas</span>';
 }
 
 function battTypeBadge(type) {

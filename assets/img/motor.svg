@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 32 480 244" fill="none" stroke-linecap="round" stroke-linejoin="round">
 <style>
 .ink{fill:#15171b}.st{stroke:#15171b}.bg{fill:#f4f3ee}.volt{fill:#d4f53c}.vink{fill:#1f2a00}.mute{fill:#d2cfc4}.smute{stroke:#d2cfc4}.tail{fill:#e8870e}
 @media (prefers-color-scheme:dark){.ink{fill:#eeede6}.st{stroke:#eeede6}.bg{fill:#0e0f12}.mute{fill:#363a45}.smute{stroke:#363a45}}

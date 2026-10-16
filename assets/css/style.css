@@ -13,6 +13,7 @@
 
 /* ── TOKENS ─────────────────────────────────────────────── */
 :root {
+  color-scheme: light;
   --paper: #f4f3ee;
   --card: #ffffff;
   --ink: #15171b;
@@ -43,6 +44,14 @@
   --dot-li: #5c9a0a;
   --dot-sla: #e8870e;
 
+  /* state terpilih (kartu, tombol pilih, checkbox, slider) */
+  --accent: var(--ink);
+  --accent-ink: var(--paper);
+  /* pilihan aktif di segmented control */
+  --seg-on: var(--ink);
+  --seg-on-ink: var(--paper);
+  --tray: #111317;
+
   --radius: 14px;
   --shadow: 0 1px 2px rgb(20 20 20 / .04), 0 4px 16px rgb(20 20 20 / .05);
   --font: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -50,13 +59,14 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #0d0e11;
-    --card: #17191e;
-    --ink: #f1f0ea;
+    color-scheme: dark;
+    --paper: #0e0f12;
+    --card: #181a1f;
+    --ink: #eeede6;
     --ink-2: #b4b8c0;
-    --ink-3: #7d828c;
-    --line: #262930;
-    --line-2: #343843;
+    --ink-3: #8d929c;
+    --line: #272a31;
+    --line-2: #363a45;
 
     --volt-soft: #2a3310;
 
@@ -69,14 +79,21 @@
     --warn: #f5c062;
     --warn-bg: #352a0e;
 
-    --hero: #0d0e11;
-    --hero-2: #17191e;
-    --hero-ink: #f1f0ea;
+    --hero: #0e0f12;
+    --hero-2: #181a1f;
+    --hero-ink: #eeede6;
     --hero-ink-2: #a3a7b0;
-    --hero-line: #262930;
-    --dot-li: #d4f53c;
-    --dot-sla: #ffb547;
-    --shadow: none;
+    --hero-line: #272a31;
+    --dot-li: #c6e83a;
+    --dot-sla: #f5a83c;
+    --shadow: 0 1px 0 rgb(255 255 255 / .03) inset;
+
+    /* di gelap, putih penuh terlalu silau: terpilih pakai volt, segmen pakai abu terangkat */
+    --accent: var(--volt);
+    --accent-ink: var(--volt-ink);
+    --seg-on: #3a3e48;
+    --seg-on-ink: var(--ink);
+    --tray: #1c1f25;
   }
 }
 
@@ -220,7 +237,7 @@ button { cursor: pointer; }
 }
 .pt:hover text, .pt:focus-visible text, .pt.is-picked text { display: block; }
 .pt:hover .dot, .pt:focus-visible .dot { stroke-width: 6; }
-.pt.is-picked .dot { stroke: var(--hero-ink); }
+.pt.is-picked .dot { stroke: var(--hero-ink); stroke-width: 3.5; }
 .pt.is-out { opacity: .16; }
 
 /* ── LAYOUT DAFTAR ──────────────────────────────────────── */
@@ -292,7 +309,7 @@ input[type="search"], select {
 }
 input[type="search"]:focus, select:focus { outline: 2px solid var(--ink); outline-offset: -1px; }
 
-input[type="range"] { width: 100%; accent-color: var(--ink); }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
 
 .seg {
   display: flex;
@@ -313,7 +330,7 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
   color: var(--ink-2);
   cursor: pointer;
 }
-.seg input:checked + span { background: var(--ink); color: var(--paper); }
+.seg input:checked + span { background: var(--seg-on); color: var(--seg-on-ink); }
 .seg input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 1px; }
 
 /* titik kecil di filter kecepatan = ukuran titik di peta */
@@ -323,7 +340,7 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
 .sz-70 { width: 14px; height: 14px; vertical-align: -3px; }
 
 .check { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; cursor: pointer; }
-.check input { width: 18px; height: 18px; margin: 0; accent-color: var(--ink); }
+.check input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
 
 .btn-text {
   justify-self: start;
@@ -359,7 +376,7 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
   transition: border-color .15s, transform .15s;
 }
 .moto:hover { border-color: var(--line-2); transform: translateY(-1px); }
-.moto.is-picked { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+.moto.is-picked { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
 
 .brand { color: var(--ink-3); font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
 .model { font-size: 18px; font-weight: 800; line-height: 1.25; letter-spacing: -.015em; }
@@ -390,7 +407,7 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
 .stat-v small { color: var(--ink-3); font-size: 12px; font-weight: 500; }
 .bar { height: 4px; margin-top: 4px; background: var(--paper); border-radius: 2px; overflow: hidden; }
 .bar i { display: block; height: 100%; background: var(--line-2); border-radius: 2px; }
-.stat.is-sorted .bar i { background: var(--ink); }
+.stat.is-sorted .bar i { background: var(--accent); }
 
 .pick {
   min-width: 128px;
@@ -404,7 +421,7 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
   white-space: nowrap;
 }
 .pick:hover:not(:disabled) { border-color: var(--ink); }
-.pick[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.pick[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .pick:disabled { opacity: .35; cursor: not-allowed; }
 
 .empty { padding: 48px 16px; text-align: center; color: var(--ink-2); background: var(--card); border: 1px dashed var(--line-2); border-radius: var(--radius); }
@@ -429,8 +446,8 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
 
 /* ── TRAY BANDINGKAN ────────────────────────────────────── */
 .tray {
-  --hero: #111317;
-  --hero-2: #1b1e24;
+  --hero: var(--tray);
+  --hero-2: #262a31;
   --hero-ink: #f3f2ec;
   --hero-ink-2: #a3a7b0;
   --hero-line: #2b2f37;
@@ -443,7 +460,7 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
   background: var(--hero);
   color: var(--hero-ink);
   border-top: 1px solid var(--hero-line);
-  box-shadow: 0 -8px 24px rgb(0 0 0 / .15);
+  box-shadow: 0 -8px 24px rgb(0 0 0 / .3);
 }
 .tray-inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .tray-items { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
@@ -571,6 +588,7 @@ input[type="range"] { width: 100%; accent-color: var(--ink); }
   padding: 0 6px;
   margin-left: -6px;
   background: var(--volt-soft);
+  color: var(--li);
   border-radius: 6px;
   font-weight: 800;
 }

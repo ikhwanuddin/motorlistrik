@@ -11,6 +11,9 @@ let near = []; // indeks motor di sekitar titik yang di-tap di peta (kalau lebih
 let chartPts = []; // posisi piksel tiap titik peta, untuk hit-test tap
 
 const NEAR_PX = 22; // radius tap di peta
+const FIRST_N = 12; // daftar & biaya per bulan tampil sekian dulu, sisanya lewat tombol "Tampilkan semua"
+let listAll = false;
+let costAll = false;
 let chartKey = null; // sumbu yang terakhir digambar, untuk tahu kapan garis paling worth it digambar ulang
 
 /* Sumbu tegak peta, key = field di data.js. better: kalimat "lebih unggul" untuk sumbu itu */
@@ -161,7 +164,7 @@ function render() {
   $("showResults").textContent = shown.length ? `Lihat ${shown.length} motor` : "Tidak ada yang cocok";
 
   $("list").innerHTML = shown.length
-    ? shown.map((i) => row(i, sortKey)).join("")
+    ? shown.slice(0, listAll ? shown.length : FIRST_N).map((i) => row(i, sortKey)).join("") + moreBtn(shown.length, listAll)
     : `<div class="empty"><p>Tidak ada motor yang cocok.</p><button type="button" class="btn-text" data-reset>Reset filter</button></div>`;
 
   near = [];
@@ -416,8 +419,12 @@ function renderCost(shown) {
   const rows = shown.map((i) => ({ i, ...monthlyCost(MOTORS[i], c) })).sort((a, b) => a.total - b.total);
   const max = Math.max(c.fuel, ...rows.map((r) => r.total)) || 1;
   $("costList").innerHTML = rows.length
-    ? rows.map((r) => costRow(r, c, max)).join("")
+    ? rows.slice(0, costAll ? rows.length : FIRST_N).map((r) => costRow(r, c, max)).join("") + moreBtn(rows.length, costAll)
     : `<div class="empty"><p>Tidak ada motor yang cocok dengan filter.</p></div>`;
+}
+
+function moreBtn(n, all) {
+  return all || n <= FIRST_N ? "" : `<button type="button" class="btn-secondary more" data-more>Tampilkan semua ${n} motor</button>`;
 }
 
 function costRow({ i, power, rent, total }, c, max) {
@@ -575,6 +582,10 @@ function bindEvents() {
 
   $("list").addEventListener("click", (e) => {
     if (e.target.closest("[data-reset]")) return resetFilters();
+    if (e.target.closest("[data-more]")) {
+      listAll = true;
+      return render();
+    }
     const pick = e.target.closest("[data-pick]");
     if (pick) {
       const i = Number(pick.dataset.pick);
@@ -641,6 +652,10 @@ function bindEvents() {
     writeUrl();
   });
   $("costList").addEventListener("click", (e) => {
+    if (e.target.closest("[data-more]")) {
+      costAll = true;
+      return renderCost(visible());
+    }
     const row = e.target.closest(".cost-row");
     if (row) openDetail(Number(row.dataset.i));
   });

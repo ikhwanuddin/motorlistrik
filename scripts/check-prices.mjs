@@ -2,8 +2,9 @@
 // Pakai: node scripts/check-prices.mjs [path data.js] > laporan.md   (exit 1 kalau ada yang beda)
 //
 // Halaman diambil pakai fetch dulu (HTML mentah). Kalau angkanya tidak ketemu, halaman dibuka di
-// tab baru Brave (banyak situs merender harga pakai JS) lalu teksnya dicek. Yang tidak ketemu di
-// keduanya masuk laporan, bersama angka Rp yang ada di halaman, untuk dicek manual. Data tidak diubah.
+// tab baru Brave (banyak situs merender harga pakai JS) lalu teksnya dicek; untuk host di CLICKS
+// opsinya diklik dulu. Yang tidak ketemu di keduanya masuk laporan, bersama angka Rp yang ada di
+// halaman, untuk dicek manual. Data tidak diubah.
 import fs from "node:fs";
 import { braveOn, braveText } from "./brave.mjs";
 
@@ -32,6 +33,9 @@ function hasPrice(text, price) {
 const rpOnPage = (text) =>
   [...new Set(text.match(/Rp\.? ?\d{1,2}[.,]\d{3}[.,]\d{3}|Rp\.? ?\d{1,2}(,\d+)? ?(juta|jt)/gi) || [])].slice(0, 8);
 
+// harga yang baru muncul setelah opsi diklik (konfigurator): label yang diklik berurutan, per host
+const CLICKS = { "shop.vinfastauto.id": ["2-Battery", "Battery Included"] };
+
 const htmlCache = new Map();
 const braveCache = new Map();
 const bad = [];
@@ -49,7 +53,7 @@ for (const m of list) {
     console.error("tidak bisa dicek (Brave tidak jalan)", name);
     continue;
   }
-  if (!braveCache.has(m.priceUrl)) braveCache.set(m.priceUrl, braveText(m.priceUrl));
+  if (!braveCache.has(m.priceUrl)) braveCache.set(m.priceUrl, braveText(m.priceUrl, CLICKS[new URL(m.priceUrl).host]));
   const text = braveCache.get(m.priceUrl);
   if (!text) {
     unchecked++;

@@ -228,7 +228,9 @@ button { cursor: pointer; }
 .dot-sz.l { width: 15px; height: 15px; margin-left: -2px; }
 
 .line-front { display: inline-block; width: 18px; height: 0; border-top: 2px dashed var(--hero-ink); }
-.map .axes { flex: 0 1 340px; display: grid; gap: 6px; }
+/* dua tab sumbu sebaris; di layar sempit turun jadi bertumpuk */
+.map .axes { flex: 1 1 100%; display: flex; flex-wrap: wrap; gap: 8px; }
+.map .axes .seg { flex: 0 1 340px; }
 .map .axis-note { flex-basis: 100%; margin: -4px 0 0; color: var(--hero-ink-2); font-size: 12.5px; }
 
 .chart { position: relative; margin-top: 8px; }

@@ -239,10 +239,11 @@ function renderChart(shown) {
   chartKey = yKey + xKey;
 
   let grid = "";
+  // garis tiap 2 jt sampai batas 30 jt; label di layar sempit tiap 4 jt saja supaya tidak berdempet
   // garis 20 jt lebih tebal: batas lama situs, patokan buat yang budgetnya segitu
-  for (let p = x0; p <= x1; p += W < 600 ? 4e6 : 2e6) {
+  for (let p = x0; p <= x1; p += 2e6) {
     grid += `<line class="grid${p === 20e6 ? " grid-20" : ""}" x1="${x(p)}" x2="${x(p)}" y1="${pad.t}" y2="${H - pad.b}"/>`;
-    grid += `<text class="axis" x="${x(p)}" y="${H - 12}" text-anchor="middle">${p / 1e6} jt</text>`;
+    if (W >= 600 || (p - x0) % 4e6 === 0) grid += `<text class="axis" x="${x(p)}" y="${H - 12}" text-anchor="middle">${p / 1e6} jt</text>`;
   }
   for (let v = ax.min; v <= ax.max; v += ax.step) {
     grid += `<line class="grid" x1="${pad.l}" x2="${W - pad.r}" y1="${y(v)}" y2="${y(v)}"/>`;
@@ -781,10 +782,14 @@ function shareBtn() {
   return `<button type="button" class="btn-share" data-share>Bagikan</button>`;
 }
 
-/** HP: menu share bawaan (WA dll). Desktop: salin link. */
+/** HP: menu share bawaan (WA dll). Desktop: salin link.
+ *  Dari detail: link halaman statis motor itu (motor/<slug>/, preview WA pakai nama & harganya). Dari bandingkan: link halaman ini. */
 async function shareLink(btn) {
-  if (navigator.share) return navigator.share({ title: document.title, url: location.href }).catch(() => {});
-  await navigator.clipboard.writeText(location.href);
+  const m = btn.closest("#detail") && MOTORS[detailI];
+  const url = m ? `${location.origin}/motor/${SLUGS[detailI]}/` : location.href;
+  const title = m ? `${m.brand} ${m.model}` : document.title;
+  if (navigator.share) return navigator.share({ title, url }).catch(() => {});
+  await navigator.clipboard.writeText(url);
   btn.textContent = "✓ Link disalin";
   setTimeout(() => (btn.textContent = "Bagikan"), 2000);
 }

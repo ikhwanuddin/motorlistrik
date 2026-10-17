@@ -1,4 +1,4 @@
-# ⚡ Motor Listrik Entry Level Indonesia
+# ⚡ Motor Listrik di Bawah Rp 30 Juta
 
 Perbandingan motor listrik di bawah **Rp 30 juta** (harga normal, tanpa promo &
 subsidi) untuk pasar Indonesia, khususnya Pulau Jawa.
@@ -152,7 +152,7 @@ Aturannya:
 - **Batas Rp 30 juta per varian** (harga normal). Varian baterai sewa di bawah 30 jt
   masuk walau varian baterai belinya di atas (Polytron Fox 350). Batas ini sengaja
   tidak dinaikkan: di atas 30 jt pembelinya mencari fitur dan merek, bukan nilai per
-  rupiah, dan kekuatan situs ini data harga & kWh yang rapat di segmen entry. Prioritas
+  rupiah, dan kekuatan situs ini data harga & kWh yang rapat di segmen murah. Prioritas
   sebelum menambah cakupan: melengkapi `null` (STNK, kWh) dan harga resmi yang bisa dicek.
 
 Setiap usulan dicek ulang ke sumbernya sebelum masuk. Kalau sumber tidak bisa

@@ -288,6 +288,7 @@ button { cursor: pointer; }
 .pt.is-near .dot { stroke: var(--hero-ink); stroke-width: 3; }
 
 .front-note { margin: 16px 0 0; padding: 10px 12px; background: var(--paper); border-radius: 10px; font-size: 13.5px; line-height: 1.45; }
+.front-note + .front-note { margin-top: 8px; }
 
 .chart-pick {
   margin: 4px 0 12px;

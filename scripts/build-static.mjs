@@ -84,6 +84,34 @@ function tags(m) {
   return t.join("");
 }
 
+// sama dengan beatsAll() & allSpecText() di app.js
+const SPEC_KEYS = ["kwh", "range", "speed"];
+const isRent = (m) => m.batteryScheme.startsWith("Sewa");
+function priceBasis(m) {
+  if (/^Off-the-road/.test(m.priceTag)) return 0;
+  if (/belum jelas/.test(m.priceTag)) return 1;
+  return /^OTR/.test(m.priceTag) || /^OTR/.test(m.priceNote) ? 2 : 1;
+}
+const tco = (m) => m.price + (m.batteryRent || 0) * 36;
+function beatsAll(o, m) {
+  if (o === m || o.priceStale) return false;
+  if (m.stnk === true && o.stnk !== true) return false;
+  if (m.batteryType !== "SLA" && o.batteryType === "SLA") return false;
+  if (!isRent(m) && isRent(o)) return false;
+  if (priceBasis(o) < priceBasis(m)) return false;
+  if (tco(o) > tco(m) || SPEC_KEYS.some((k) => o[k] < m[k])) return false;
+  return tco(o) < tco(m) || SPEC_KEYS.some((k) => o[k] > m[k]);
+}
+function allSpecText(m) {
+  if (m.priceStale) return "";
+  const b = MOTORS.filter((o) => beatsAll(o, m)).sort((x, y) => tco(x) - tco(y));
+  const rent = isRent(m) || b.some(isRent) ? " Motor baterai sewa dihitung harga + sewa 36 bulan." : "";
+  const fine = " Hanya dibanding motor yang STNK, jenis &amp; kepemilikan baterai, dan status OTR-nya tidak lebih lemah. Belum menghitung jaringan servis/swap, garansi, fitur, dan desain.";
+  if (!b.length) return `<b>Di atas kertas tidak ada lawan:</b> tidak ada motor lain yang harganya sama atau lebih murah dan tidak kalah di baterai, jarak, maupun kecepatan.${rent}${fine}`;
+  const names = b.slice(0, 3).map((o) => `<a href="../${SLUGS[MOTORS.indexOf(o)]}/"><b>${esc(o.brand)} ${esc(o.model)}</b></a> (${jt(tco(o))})`);
+  return `Di atas kertas ada yang harganya sama atau lebih murah dan tidak kalah di baterai, jarak, maupun kecepatan: ${names.join(", ")}${b.length > 3 ? `, dan ${b.length - 3} lagi` : ""}.${rent}${fine}`;
+}
+
 function history(m) {
   if (m.priceHistory) return m.priceHistory.map(([d, p]) => `${day(d)}: ${rp(p)}`).join("<br>");
   return m.priceUrl ? "Belum berubah sejak mulai dipantau (dicek tiap minggu)" : "Tidak dipantau otomatis, harga hanya ada di gambar atau media";
@@ -178,6 +206,7 @@ function page(m, i) {
         <div class="tile"><span>Kecepatan maks</span><strong>${m.speed}<small> km/j</small></strong></div>
         <div class="tile"><span>Daya maks</span><strong>${m.power.toLocaleString("id-ID")}<small> W</small></strong></div>
       </div>
+      ${allSpecText(m) && `<p class="front-note">${allSpecText(m)}</p>`}
       <dl class="specs">${specs.map(([l, v]) => `<dt>${l}</dt><dd>${v}</dd>`).join("")}</dl>
       <div class="page-actions">
         <a class="btn-primary" href="/?motor=${SLUGS[i]}">Lihat di peta &amp; bandingkan</a>

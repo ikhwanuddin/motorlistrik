@@ -3,10 +3,11 @@
    =========================================================
 
    UPDATE DATA: tambah/edit objek di array MOTORS.
-   Field: brand, model, price, priceHistory, priceNote, priceTag, priceUrl, range, speed, power,
+   Field: brand, model, price, priceHistory, priceNote, priceTag, priceStale, priceUrl, range, speed, power,
      battery, kwh, batteryType, warranty, chargeTime, batteryScheme,
      swapCost, batteryRent, rentKmCap, batteryPrice, notes, url, sources [{label, url}], stnk, checkedAt
    priceTag: label pendek di bawah harga (mis. "OTR Jakarta"), detail di priceNote
+   priceStale: true kalau harga dari sumber yang terbukti tidak diperbarui; motor ini tidak ikut perbandingan "tidak kalah di semua spek"
    priceUrl: halaman yang memuat angka price sebagai teks, dicek mingguan (scripts/check-prices.mjs); null kalau harga cuma ada di gambar
    batteryPrice: harga beli baterai baru (pengganti), teks bebas
    priceHistory: [[tanggal, harga], ...] urut lama ke baru, entri terakhir = price. Hanya untuk harga yang
@@ -1329,6 +1330,7 @@ const MOTORS = [
     model: "Retro",
     price: 27000000,
     priceNote: "Harga situs resmi Selis (Okt 2026); OTR/off-the-road tidak disebut. Tidak ada di toko resmi Tokopedia. Harga situs Selis model lain terbukti basi (Agats, E-Max lithium, Go Plus), jadi cek ke dealer",
+    priceStale: true,
     priceTag: "Harga situs resmi",
     priceUrl: "https://www.selis.co.id/e-motor/selis-retro/",
     range: 50,
@@ -1355,6 +1357,7 @@ const MOTORS = [
     model: "Galaxy",
     price: 8700000,
     priceNote: "Harga situs resmi Selis (Okt 2026); OTR/off-the-road tidak disebut. Tidak ada di toko resmi Tokopedia. Harga situs Selis model lain terbukti basi (Agats, E-Max lithium, Go Plus), jadi cek ke dealer",
+    priceStale: true,
     priceTag: "Harga situs resmi",
     priceUrl: "https://www.selis.co.id/e-motor/selis-galaxy/",
     range: 45,
@@ -1381,6 +1384,7 @@ const MOTORS = [
     model: "New Galaxy",
     price: 9650000,
     priceNote: "Harga situs resmi Selis (Okt 2026); OTR/off-the-road tidak disebut. Tidak ada di toko resmi Tokopedia. Harga situs Selis model lain terbukti basi (Agats, E-Max lithium, Go Plus), jadi cek ke dealer",
+    priceStale: true,
     priceTag: "Harga situs resmi",
     priceUrl: "https://www.selis.co.id/e-motor/selis-new-galaxy/",
     range: 45,
@@ -1407,6 +1411,7 @@ const MOTORS = [
     model: "Zoom",
     price: 9000000,
     priceNote: "Harga situs resmi Selis (Okt 2026); OTR/off-the-road tidak disebut. Tidak ada di toko resmi Tokopedia. Harga situs Selis model lain terbukti basi (Agats, E-Max lithium, Go Plus), jadi cek ke dealer",
+    priceStale: true,
     priceTag: "Harga situs resmi",
     priceUrl: "https://www.selis.co.id/e-motor/selis-zoom/",
     range: 45,

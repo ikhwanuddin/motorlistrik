@@ -3,12 +3,14 @@
    =========================================================
 
    UPDATE DATA: tambah/edit objek di array MOTORS.
-   Field: brand, model, price, priceNote, priceTag, priceUrl, range, speed, power,
+   Field: brand, model, price, priceHistory, priceNote, priceTag, priceUrl, range, speed, power,
      battery, kwh, batteryType, warranty, chargeTime, batteryScheme,
      swapCost, batteryRent, rentKmCap, batteryPrice, notes, url, sources [{label, url}], stnk, checkedAt
    priceTag: label pendek di bawah harga (mis. "OTR Jakarta"), detail di priceNote
    priceUrl: halaman yang memuat angka price sebagai teks, dicek mingguan (scripts/check-prices.mjs); null kalau harga cuma ada di gambar
    batteryPrice: harga beli baterai baru (pengganti), teks bebas
+   priceHistory: [[tanggal, harga], ...] urut lama ke baru, entri terakhir = price. Hanya untuk harga yang
+     memang berubah di sumbernya (bukan koreksi data). Isi lewat scripts/catat-harga.mjs
    kwh: kapasitas baterai (kWh) untuk jarak `range`; dipakai kalkulator biaya listrik
    batteryRent: sewa baterai Rp/bulan (angka), null kalau baterai dibeli
    rentKmCap: batas km/bulan sewa baterai, lewat itu kena biaya tambahan (lihat swapCost)

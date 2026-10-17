@@ -5,7 +5,8 @@ import fs from "node:fs";
 
 const htmlPath = process.argv[2] || new URL("../index.html", import.meta.url);
 const { MOTORS, CHECKED_AT } = new Function(`${fs.readFileSync(new URL("../assets/js/data.js", import.meta.url), "utf8")}; return { MOTORS, CHECKED_AT };`)();
-const checked = new Date(CHECKED_AT).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+const day = (iso) => new Date(iso).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+const checked = day(CHECKED_AT);
 
 // sama dengan SLUGS di app.js
 const slug = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -21,9 +22,13 @@ const rows = MOTORS.map((m, i) => i)
   .map((i) => {
     const m = MOTORS[i];
     const rent = m.batteryRent ? `<br><small>+ sewa Rp ${num(m.batteryRent)}/bln</small>` : "";
+    const h = m.priceHistory;
+    if (h && h[h.length - 1][1] !== m.price) throw new Error(`${m.brand} ${m.model}: harga terakhir di priceHistory beda dengan price`);
+    const diff = h ? m.price - h[h.length - 2][1] : 0;
+    const change = h ? `<br><small>${diff < 0 ? "turun" : "naik"} Rp ${num(Math.abs(diff) / 1e6)} jt sejak ${day(h[h.length - 1][0])}</small>` : "";
     return `          <tr>
             <th scope="row"><a href="?motor=${SLUGS[i]}">${esc(m.brand)} ${esc(m.model)}</a></th>
-            <td>Rp ${num(m.price / 1e6)} jt<br><small>${esc(m.priceTag)}</small>${rent}</td>
+            <td>Rp ${num(m.price / 1e6)} jt<br><small>${esc(m.priceTag)}</small>${rent}${change}</td>
             <td>${num(m.kwh)} kWh<br><small>${esc(m.batteryType)}, ${esc(m.batteryScheme)}</small></td>
             <td>${m.range} km</td>
             <td>${m.speed} km/j</td>

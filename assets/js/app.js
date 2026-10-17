@@ -48,6 +48,7 @@ const $ = (id) => document.getElementById(id);
 /* Baris teks di panel detail & bandingkan */
 const DETAILS = [
   ["Keterangan harga", (m) => val(m.priceNote)],
+  ["Riwayat harga", (m) => historyText(m)],
   ["Baterai", (m) => val(m.battery)],
   ["Waktu charge", (m) => val(m.chargeTime)],
   ["Skema baterai", (m) => val(m.batteryScheme)],
@@ -184,6 +185,7 @@ function row(i, sortKey) {
     <div class="moto-price">
       <p class="price">${IDR.format(m.price)}</p>
       <p class="price-tag">${esc(m.priceTag)}</p>
+      ${changeBadge(m)}
     </div>
     <div class="moto-stats">
       ${stat("Jarak", m.range, "km", "range", sortKey)}
@@ -525,6 +527,7 @@ function fillDetail(i) {
     <div class="detail-price">
       <p class="price">${IDR.format(m.price)}</p>
       <p class="price-tag">${esc(m.priceTag)}</p>
+      ${changeText(m)}
       <div class="tags">${tags(m)}</div>
     </div>
     <div class="tiles">
@@ -794,6 +797,34 @@ function rp(n) {
 }
 
 /** 9699000 → "Rp 9,7 jt", 19950000 → "Rp 19,95 jt" */
+/* ── RIWAYAT HARGA (priceHistory di data.js) ─────────────────────────────── */
+// perubahan terakhir: selisih harga sekarang dengan harga sebelumnya, null kalau belum pernah berubah
+function lastChange(m) {
+  const h = m.priceHistory;
+  if (!h) return null;
+  const [date, now] = h[h.length - 1];
+  const before = h[h.length - 2][1];
+  return { date, before, diff: now - before };
+}
+
+function changeBadge(m) {
+  const c = lastChange(m);
+  if (!c) return "";
+  const word = c.diff < 0 ? "Turun" : "Naik";
+  return `<p class="price-change ${c.diff < 0 ? "down" : "up"}" title="${word} sejak ${formatDate(c.date)}, sebelumnya ${jt(c.before)}">${c.diff < 0 ? "↓" : "↑"} ${jt(Math.abs(c.diff))}</p>`;
+}
+
+function changeText(m) {
+  const c = lastChange(m);
+  if (!c) return "";
+  return `<p class="price-change ${c.diff < 0 ? "down" : "up"}">${c.diff < 0 ? "Turun" : "Naik"} ${jt(Math.abs(c.diff))} pada ${formatDate(c.date)}, sebelumnya ${jt(c.before)}</p>`;
+}
+
+function historyText(m) {
+  if (m.priceHistory) return m.priceHistory.map(([date, price]) => `${formatDate(date)}: ${IDR.format(price)}`).join("<br>");
+  return m.priceUrl ? "Belum berubah sejak mulai dipantau (dicek tiap minggu)" : "Tidak dipantau otomatis, harga hanya ada di gambar atau media";
+}
+
 function jt(n) {
   return `Rp ${(n / 1e6).toLocaleString("id-ID", { maximumFractionDigits: 2 })} jt`;
 }

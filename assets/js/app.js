@@ -26,6 +26,8 @@ let yKey = "kwh";
 // sumbu harga: harga beli saja, atau harga + sewa baterai RENT_MONTHS bulan (motor baterai sewa jadi bisa dibandingkan)
 const RENT_MONTHS = 36;
 const SPEC_KEYS = ["kwh", "range", "speed"]; // spek yang dibandingkan di "tidak kalah di semua spek" (allSpecText)
+// klaim jarak di atas ini per kWh baterai dianggap terlalu optimis: tidak ikut garis & pembanding jarak
+const MAX_KM_PER_KWH = 60;
 let xKey = "price";
 let detailI = null; // motor yang sedang dibuka di panel detail
 
@@ -54,6 +56,7 @@ const DETAILS = [
   ["Keterangan harga", (m) => val(m.priceNote)],
   ["Riwayat harga", (m) => historyText(m)],
   ["Baterai", (m) => val(m.battery)],
+  ["Jarak per kWh", (m) => kmPerKwhText(m)],
   ["Waktu charge", (m) => val(m.chargeTime)],
   ["Skema baterai", (m) => val(m.batteryScheme)],
   ["Biaya sewa / swap", (m) => (m.batteryScheme === "Beli" ? "Tidak ada, baterai dibeli" : val(m.swapCost))],
@@ -220,6 +223,7 @@ function tags(m) {
   else if (m.batteryScheme.includes("Swap")) t.push(`<span class="tag">Bisa swap</span>`);
   if (m.stnk === false) t.push(`<span class="tag tag-bad">Tanpa STNK</span>`);
   if (m.stnk === null) t.push(`<span class="tag tag-warn">STNK belum jelas</span>`);
+  if (rangeHigh(m)) t.push(`<span class="tag tag-warn">Klaim jarak tinggi</span>`);
   return t.join("");
 }
 
@@ -296,9 +300,10 @@ function cost(m) {
   return m.price + (xKey === "tco" ? (m.batteryRent || 0) * RENT_MONTHS : 0);
 }
 
-/** Baterai sewa tidak ikut garis paling worth it kalau sumbunya harga beli, karena harganya belum termasuk baterai */
+/** Baterai sewa tidak ikut garis paling worth it kalau sumbunya harga beli, karena harganya belum termasuk baterai.
+ *  Klaim jarak tinggi tidak ikut garis kalau sumbunya jarak. */
 function outOfFront(m) {
-  return xKey === "price" && isRent(m);
+  return (xKey === "price" && isRent(m)) || (yKey === "range" && rangeHigh(m));
 }
 
 /** Indeks motor paling worth it untuk sumbu `key`, urut harga: tidak ada motor lain yang harganya sama atau lebih murah
@@ -349,7 +354,7 @@ function fairRival(o, m) {
   return priceBasis(o) >= priceBasis(m);
 }
 function beatsAll(o, m) {
-  if (!fairRival(o, m)) return false;
+  if (!fairRival(o, m) || rangeHigh(o)) return false;
   if (tco(o) > tco(m) || SPEC_KEYS.some((k) => o[k] < m[k])) return false;
   return tco(o) < tco(m) || SPEC_KEYS.some((k) => o[k] > m[k]);
 }
@@ -358,7 +363,7 @@ function allSpecText(i) {
   if (m.priceStale) return "";
   const b = MOTORS.filter((o) => beatsAll(o, m)).sort((x, y) => tco(x) - tco(y));
   const rent = isRent(m) || b.some(isRent) ? ` Motor baterai sewa dihitung harga + sewa ${RENT_MONTHS} bulan.` : "";
-  const fine = ` Hanya dibanding motor yang STNK, jenis & kepemilikan baterai, dan status OTR-nya tidak lebih lemah. Belum menghitung jaringan servis/swap, garansi, fitur, dan desain.`;
+  const fine = ` Hanya dibanding motor yang klaim jaraknya wajar dan STNK, jenis & kepemilikan baterai, serta status OTR-nya tidak lebih lemah. Belum menghitung jaringan servis/swap, garansi, fitur, dan desain.`;
   if (!b.length) return `<b>Di atas kertas tidak ada lawan:</b> tidak ada motor lain yang harganya sama atau lebih murah dan tidak kalah di baterai, jarak, maupun kecepatan.${rent}${fine}`;
   const names = b.slice(0, 3).map((o) => `<b>${esc(o.brand)} ${esc(o.model)}</b> (${jt(tco(o))})`);
   return `Di atas kertas ada yang harganya sama atau lebih murah dan tidak kalah di baterai, jarak, maupun kecepatan: ${names.join(", ")}${b.length > 3 ? `, dan ${b.length - 3} lagi` : ""}.${rent}${fine}`;
@@ -367,12 +372,13 @@ function allSpecText(i) {
 function frontText(i) {
   const m = MOTORS[i];
   const ax = AXES[yKey];
+  if (yKey === "range" && rangeHigh(m)) return `Klaim jaraknya ${kmPerKwh(m)} km per kWh baterai, di atas ${MAX_KM_PER_KWH} yang jarang tercapai di jalan. Jadi tidak ikut garis paling worth it untuk jarak tempuh.`;
   if (outOfFront(m)) return `Harga belum termasuk baterai (sewa), jadi tidak ikut garis paling worth it di peta. Pilih "+ Sewa baterai 3 thn" di peta untuk membandingkan dengan sewanya.`;
   const rent = xKey === "tco" && isRent(m) ? `Harga + sewa baterai ${RENT_MONTHS} bulan: ${jt(m.price)} + ${IDR.format(m.batteryRent)}/bln = ${jt(cost(m))}. ` : "";
   const b = betterCheaper(i, yKey);
   if (!b.length && frontier(yKey).includes(i)) return `${rent}<b>Paling worth it</b> untuk ${ax.title}: tidak ada motor lain yang harganya sama atau lebih murah sekaligus ${ax.better}.`;
   // di peta ada titik yang lebih murah & unggul, tapi STNK, baterai, atau status OTR-nya lebih lemah
-  if (!b.length) return `${rent}${cap(ax.title)} motor ini ${axisVal(m)}. Tidak ada motor setara yang harganya sama atau lebih murah dan ${ax.better}. Titik di peta yang lebih murah dan lebih unggul STNK, baterai, atau status OTR-nya lebih lemah.`;
+  if (!b.length) return `${rent}${cap(ax.title)} motor ini ${axisVal(m)}. Tidak ada motor setara yang harganya sama atau lebih murah dan ${ax.better}. Titik di peta yang lebih murah dan lebih unggul STNK, baterai, atau status OTR-nya lebih lemah${yKey === "range" ? ", atau klaim jaraknya terlalu tinggi" : ""}.`;
   const names = b.slice(0, 3).map((j) => `<b>${esc(MOTORS[j].brand)} ${esc(MOTORS[j].model)}</b> (${jt(cost(MOTORS[j]))}, ${axisVal(MOTORS[j])})`);
   return `${rent}${cap(ax.title)} motor ini ${axisVal(m)}. Ada yang harganya sama atau lebih murah dan ${ax.better}: ${names.join(", ")}${b.length > 3 ? `, dan ${b.length - 3} lagi` : ""}.`;
 }
@@ -890,6 +896,17 @@ function jt(n) {
 
 function cap(t) {
   return t[0].toUpperCase() + t.slice(1);
+}
+
+function kmPerKwh(m) {
+  return Math.round(m.range / m.kwh);
+}
+function rangeHigh(m) {
+  return kmPerKwh(m) > MAX_KM_PER_KWH;
+}
+function kmPerKwhText(m) {
+  const t = `${kmPerKwh(m)} km per kWh (klaim jarak ÷ kapasitas baterai)`;
+  return rangeHigh(m) ? `${t}. <span class="text-warn">Di atas ${MAX_KM_PER_KWH}, klaim jarak ini kemungkinan diukur di kondisi ringan. Jarak nyata bisa jauh lebih pendek.</span>` : t;
 }
 
 /** 1.15 → "1,15" */

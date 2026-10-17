@@ -571,6 +571,19 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .table-all { padding: 0 0 56px; }
 .table-all h2 { font-size: 28px; font-weight: 800; letter-spacing: -.025em; }
 .table-all > .wrap > p { margin: 6px 0 16px; color: var(--ink-2); }
+/* ── HALAMAN PER MOTOR (motor/<slug>/, ditulis build-static.mjs) ── */
+.page-hero { padding-bottom: 0; }
+.motor-page { max-width: 820px; padding-top: 20px; padding-bottom: 48px; }
+.crumbs { color: var(--ink-3); font-size: 13px; }
+.crumbs a { color: var(--ink-2); font-weight: 600; text-underline-offset: 2px; }
+.motor-card { margin-top: 12px; padding: 24px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
+.motor-card h1.model { font-size: 28px; }
+.page-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+.nearby { margin-top: 32px; }
+.nearby h2 { font-size: 20px; font-weight: 800; letter-spacing: -.02em; }
+.nearby ul { margin: 12px 0 0; padding-left: 18px; display: grid; gap: 6px; }
+.nearby a { color: var(--ink); font-weight: 600; text-underline-offset: 2px; }
+
 .table-toggle summary { display: inline-flex; list-style: none; cursor: pointer; }
 .table-toggle summary::-webkit-details-marker { display: none; }
 .table-toggle[open] summary { margin-bottom: 16px; }
@@ -806,6 +819,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
   body { font-size: 14px; }
   .wrap { padding: 0 16px; }
   .topbar-links { gap: 12px; }
+  .motor-card { padding: 20px 14px; }
   .topbar-links a { font-size: 13px; }
   .hero { padding-bottom: 24px; }
   .hero h1 { margin-top: 12px; }

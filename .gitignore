@@ -13,3 +13,7 @@
 
 # Misc
 Thumbs.db
+
+# ditulis scripts/build-static.mjs saat deploy
+motor/
+sitemap.xml

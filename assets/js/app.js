@@ -25,6 +25,7 @@ const AXES = {
 let yKey = "kwh";
 // sumbu harga: harga beli saja, atau harga + sewa baterai RENT_MONTHS bulan (motor baterai sewa jadi bisa dibandingkan)
 const RENT_MONTHS = 36;
+const SPEC_KEYS = ["kwh", "range", "speed"]; // spek yang dibandingkan di "tidak kalah di semua spek" (allSpecText)
 let xKey = "price";
 let detailI = null; // motor yang sedang dibuka di panel detail
 
@@ -328,6 +329,37 @@ function betterCheaper(i, key) {
 }
 
 /** Kalimat paling worth it di panel detail, ikut sumbu peta yang sedang dipilih */
+/* Motor lain yang harganya (+ sewa baterai 3 thn) sama/lebih murah dan tidak kalah di baterai, jarak, maupun kecepatan.
+   Penantang tidak boleh lebih lemah di STNK, jenis baterai, kepemilikan baterai, dan dasar harga (OTR / belum jelas / off-the-road).
+   Sama dengan beatsAll() di scripts/build-static.mjs */
+function priceBasis(m) {
+  if (/^Off-the-road/.test(m.priceTag)) return 0;
+  if (/belum jelas/.test(m.priceTag)) return 1;
+  return /^OTR/.test(m.priceTag) || /^OTR/.test(m.priceNote) ? 2 : 1;
+}
+function tco(m) {
+  return m.price + (m.batteryRent || 0) * RENT_MONTHS;
+}
+function beatsAll(o, m) {
+  if (o === m || o.priceStale) return false;
+  if (m.stnk === true && o.stnk !== true) return false;
+  if (m.batteryType !== "SLA" && o.batteryType === "SLA") return false;
+  if (!isRent(m) && isRent(o)) return false;
+  if (priceBasis(o) < priceBasis(m)) return false;
+  if (tco(o) > tco(m) || SPEC_KEYS.some((k) => o[k] < m[k])) return false;
+  return tco(o) < tco(m) || SPEC_KEYS.some((k) => o[k] > m[k]);
+}
+function allSpecText(i) {
+  const m = MOTORS[i];
+  if (m.priceStale) return "";
+  const b = MOTORS.filter((o) => beatsAll(o, m)).sort((x, y) => tco(x) - tco(y));
+  const rent = isRent(m) || b.some(isRent) ? ` Motor baterai sewa dihitung harga + sewa ${RENT_MONTHS} bulan.` : "";
+  const fine = ` Hanya dibanding motor yang STNK, jenis & kepemilikan baterai, dan status OTR-nya tidak lebih lemah. Belum menghitung jaringan servis/swap, garansi, fitur, dan desain.`;
+  if (!b.length) return `<b>Di atas kertas tidak ada lawan:</b> tidak ada motor lain yang harganya sama atau lebih murah dan tidak kalah di baterai, jarak, maupun kecepatan.${rent}${fine}`;
+  const names = b.slice(0, 3).map((o) => `<b>${esc(o.brand)} ${esc(o.model)}</b> (${jt(tco(o))})`);
+  return `Di atas kertas ada yang harganya sama atau lebih murah dan tidak kalah di baterai, jarak, maupun kecepatan: ${names.join(", ")}${b.length > 3 ? `, dan ${b.length - 3} lagi` : ""}.${rent}${fine}`;
+}
+
 function frontText(i) {
   const m = MOTORS[i];
   const ax = AXES[yKey];
@@ -544,6 +576,7 @@ function fillDetail(i) {
       ${tile("Daya maks", m.power.toLocaleString("id-ID"), "W")}
     </div>
     <p class="front-note">${frontText(i)}</p>
+    ${allSpecText(i) && `<p class="front-note">${allSpecText(i)}</p>`}
     <dl class="specs">${DETAILS.map(([label, fn]) => `<dt>${label}</dt><dd>${fn(m)}</dd>`).join("")}</dl>
     <p class="report">Data salah atau sudah berubah? <a href="${reportUrl(m)}" target="_blank" rel="noopener noreferrer">Laporkan ↗</a></p>
     <div class="sheet-actions">

@@ -81,6 +81,7 @@ function tags(m) {
   else if (m.batteryScheme.includes("Swap")) t.push(`<span class="tag">Bisa swap</span>`);
   if (m.stnk === false) t.push(`<span class="tag tag-bad">Tanpa STNK</span>`);
   if (m.stnk === null) t.push(`<span class="tag tag-warn">STNK belum jelas</span>`);
+  if (rangeHigh(m)) t.push(`<span class="tag tag-warn">Klaim jarak tinggi</span>`);
   return t.join("");
 }
 
@@ -93,8 +94,11 @@ function priceBasis(m) {
   return /^OTR/.test(m.priceTag) || /^OTR/.test(m.priceNote) ? 2 : 1;
 }
 const tco = (m) => m.price + (m.batteryRent || 0) * 36;
+const MAX_KM_PER_KWH = 60;
+const kmPerKwh = (m) => Math.round(m.range / m.kwh);
+const rangeHigh = (m) => kmPerKwh(m) > MAX_KM_PER_KWH;
 function beatsAll(o, m) {
-  if (o === m || o.priceStale) return false;
+  if (o === m || o.priceStale || rangeHigh(o)) return false;
   if (m.stnk === true && o.stnk !== true) return false;
   if (m.batteryType !== "SLA" && o.batteryType === "SLA") return false;
   if (!isRent(m) && isRent(o)) return false;
@@ -106,7 +110,7 @@ function allSpecText(m) {
   if (m.priceStale) return "";
   const b = MOTORS.filter((o) => beatsAll(o, m)).sort((x, y) => tco(x) - tco(y));
   const rent = isRent(m) || b.some(isRent) ? " Motor baterai sewa dihitung harga + sewa 36 bulan." : "";
-  const fine = " Hanya dibanding motor yang STNK, jenis &amp; kepemilikan baterai, dan status OTR-nya tidak lebih lemah. Belum menghitung jaringan servis/swap, garansi, fitur, dan desain.";
+  const fine = " Hanya dibanding motor yang klaim jaraknya wajar dan STNK, jenis &amp; kepemilikan baterai, serta status OTR-nya tidak lebih lemah. Belum menghitung jaringan servis/swap, garansi, fitur, dan desain.";
   if (!b.length) return `<b>Di atas kertas tidak ada lawan:</b> tidak ada motor lain yang harganya sama atau lebih murah dan tidak kalah di baterai, jarak, maupun kecepatan.${rent}${fine}`;
   const names = b.slice(0, 3).map((o) => `<a href="../${SLUGS[MOTORS.indexOf(o)]}/"><b>${esc(o.brand)} ${esc(o.model)}</b></a> (${jt(tco(o))})`);
   return `Di atas kertas ada yang harganya sama atau lebih murah dan tidak kalah di baterai, jarak, maupun kecepatan: ${names.join(", ")}${b.length > 3 ? `, dan ${b.length - 3} lagi` : ""}.${rent}${fine}`;
@@ -137,6 +141,7 @@ function page(m, i) {
     ["Riwayat harga", history(m)],
     ["Baterai", val(m.battery)],
     ["Kapasitas", `${num(m.kwh)} kWh`],
+    ["Jarak per kWh", `${kmPerKwh(m)} km per kWh (klaim jarak ÷ kapasitas baterai)${rangeHigh(m) ? `. <span class="text-warn">Di atas ${MAX_KM_PER_KWH}, klaim jarak ini kemungkinan diukur di kondisi ringan. Jarak nyata bisa jauh lebih pendek.</span>` : ""}`],
     ["Waktu charge", val(m.chargeTime)],
     ["Skema baterai", val(m.batteryScheme)],
     ["Sewa baterai", m.batteryRent ? `${rp(m.batteryRent)}/bulan${m.rentKmCap ? `, sampai ${num(m.rentKmCap)} km/bulan` : ""}` : "Tidak ada, baterai dibeli"],

@@ -8,7 +8,7 @@ Live: https://motorlistrik.ikhwanuddin.com/
 ## Fitur
 
 - Peta harga vs kapasitas baterai / jarak klaim / kecepatan (SVG, pilih sumbu tegak, default kWh, `?sumbu=`): titik di kiri-atas = murah & unggul, besar titik = kecepatan, garis titik-titik di 20 jt sebagai patokan, klik titik untuk detail (kalau kena beberapa titik berdempetan, muncul daftar pilihan)
-- Garis "paling worth it" (Pareto frontier): motor yang tidak punya lawan dengan harga sama/lebih murah sekaligus nilai lebih tinggi. Motor baterai sewa tidak ikut karena harganya tanpa baterai. Panel detail menyebut motor yang lebih murah sekaligus lebih unggul. Ganti sumbu = titik bergeser dan garis digambar ulang (mati kalau prefers-reduced-motion)
+- Garis "paling worth it" (Pareto frontier): motor yang tidak punya lawan dengan harga sama/lebih murah sekaligus nilai lebih tinggi. Sumbu harga bisa "Harga beli" atau "+ Sewa baterai 3 thn" (`?harga=sewa-3-thn`, harga + `batteryRent` × 36, belum biaya swap). Di harga beli, motor baterai sewa tidak ikut karena harganya tanpa baterai; di harga + sewa mereka ikut dibandingkan. Panel detail menyebut motor yang lebih murah sekaligus lebih unggul. Ganti sumbu = titik bergeser dan garis digambar ulang (mati kalau prefers-reduced-motion)
 - Filter: merek (dropdown), budget (slider), jarak tempuh minimal, kecepatan maks minimal, tipe baterai, pasti bisa STNK, harga sudah termasuk baterai
 - Urutkan harga / jarak / kecepatan / daya
 - Klik motor → panel detail: keterangan harga, baterai, garansi, catatan, sumber, link resmi, link **Laporkan** (form issue dengan nama motor terisi)

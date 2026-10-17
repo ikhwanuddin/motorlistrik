@@ -219,7 +219,7 @@ button { cursor: pointer; }
 
 .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: var(--hero-ink-2); }
 .legend li { display: flex; align-items: center; gap: 6px; }
-.dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; }
+.dot { display: inline-block; flex: none; width: 11px; height: 11px; border-radius: 50%; }
 .dot-li { background: var(--dot-li); }
 .dot-sla { background: var(--dot-sla); }
 .dot-rent { border: 2px solid var(--hero-ink-2); }
@@ -228,7 +228,7 @@ button { cursor: pointer; }
 .dot-sz.l { width: 15px; height: 15px; margin-left: -2px; }
 
 .line-front { display: inline-block; width: 18px; height: 0; border-top: 2px dashed var(--hero-ink); }
-.seg-axis { flex: 0 1 340px; }
+.map .axes { flex: 0 1 340px; display: grid; gap: 6px; }
 .map .axis-note { flex-basis: 100%; margin: -4px 0 0; color: var(--hero-ink-2); font-size: 12.5px; }
 
 .chart { position: relative; margin-top: 8px; }

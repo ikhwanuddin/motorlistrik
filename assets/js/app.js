@@ -20,6 +20,9 @@ const AXES = {
   speed: { title: "kecepatan maks", unit: "km/j", min: 30, max: 105, step: 15, better: "lebih kencang" },
 };
 let yKey = "kwh";
+// sumbu harga: harga beli saja, atau harga + sewa baterai RENT_MONTHS bulan (motor baterai sewa jadi bisa dibandingkan)
+const RENT_MONTHS = 36;
+let xKey = "price";
 let detailI = null; // motor yang sedang dibuka di panel detail
 
 // id motor di URL, mis. "volta-401"
@@ -227,8 +230,8 @@ function renderChart(shown) {
   const x = (p) => pad.l + ((p - x0) / (x1 - x0)) * (W - pad.l - pad.r);
   const y = (v) => H - pad.b - ((v - ax.min) / (ax.max - ax.min)) * (H - pad.t - pad.b);
   const intro = chartPts.length === 0;
-  const newAxis = chartKey !== yKey;
-  chartKey = yKey;
+  const newAxis = chartKey !== yKey + xKey;
+  chartKey = yKey + xKey;
 
   let grid = "";
   // garis 20 jt lebih tebal: batas lama situs, patokan buat yang budgetnya segitu
@@ -243,8 +246,8 @@ function renderChart(shown) {
 
   // garis paling worth it bertangga: naik dari sumbu bawah, tiap motor paling worth it jadi anak tangga, lalu datar sampai kanan
   const fr = frontier(yKey).map((i) => MOTORS[i]);
-  let d = `M${x(fr[0].price)} ${H - pad.b}`;
-  for (const m of fr) d += `H${x(m.price)}V${y(m[yKey])}`;
+  let d = `M${x(cost(fr[0]))} ${H - pad.b}`;
+  for (const m of fr) d += `H${x(cost(m))}V${y(m[yKey])}`;
   d += `H${W - pad.r}`;
   const line = `<path class="front${newAxis ? " is-draw" : ""}" style="animation-delay:${intro ? 0.8 : 0.4}s" d="${d}"/>`;
 
@@ -252,7 +255,7 @@ function renderChart(shown) {
   const prev = new Map(chartPts.map((p) => [p.i, p]));
   const front = (i) => compare.includes(i) || near.includes(i);
   const order = MOTORS.map((m, i) => i).sort((a, b) => front(a) - front(b));
-  chartPts = order.map((i) => ({ i, x: x(MOTORS[i].price), y: y(MOTORS[i][yKey]) }));
+  chartPts = order.map((i) => ({ i, x: x(cost(MOTORS[i])), y: y(MOTORS[i][yKey]) }));
   const points = chartPts.map(({ i, x: px, y: py }) => {
     const m = MOTORS[i];
     const right = px > W - 150;
@@ -267,7 +270,7 @@ function renderChart(shown) {
       near.includes(i) ? "is-near" : "",
     ].join(" ");
     return `
-      <g class="${cls}" data-i="${i}" tabindex="0" aria-label="${esc(m.brand)} ${esc(m.model)}: ${IDR.format(m.price)}, ${dec(m.kwh)} kWh, ${m.range} km, ${m.speed} km/j" style="transform:translate(${from.x.toFixed(1)}px,${from.y.toFixed(1)}px);transition-delay:${delay}ms">
+      <g class="${cls}" data-i="${i}" tabindex="0" aria-label="${esc(m.brand)} ${esc(m.model)}: ${IDR.format(cost(m))}, ${dec(m.kwh)} kWh, ${m.range} km, ${m.speed} km/j" style="transform:translate(${from.x.toFixed(1)}px,${from.y.toFixed(1)}px);transition-delay:${delay}ms">
         <circle class="hit" r="14"/>
         <circle class="dot" r="${dotR(m.speed).toFixed(1)}"/>
         <text x="${right ? -14 : 14}" y="4" text-anchor="${right ? "end" : "start"}">${esc(m.brand)} ${esc(m.model.split(" (")[0])}</text>
@@ -281,11 +284,21 @@ function renderChart(shown) {
   renderChartPick();
 }
 
+/** Harga di sumbu peta: harga beli, atau ditambah sewa baterai RENT_MONTHS bulan */
+function cost(m) {
+  return m.price + (xKey === "tco" ? (m.batteryRent || 0) * RENT_MONTHS : 0);
+}
+
+/** Baterai sewa tidak ikut garis paling worth it kalau sumbunya harga beli, karena harganya belum termasuk baterai */
+function outOfFront(m) {
+  return xKey === "price" && isRent(m);
+}
+
 /** Indeks motor paling worth it untuk sumbu `key`, urut harga: tidak ada motor lain yang harganya sama atau lebih murah
- *  sekaligus nilainya lebih tinggi. Baterai sewa tidak ikut karena harganya belum termasuk baterai. */
+ *  sekaligus nilainya lebih tinggi. */
 function frontier(key) {
-  const own = MOTORS.map((m, i) => i).filter((i) => !isRent(MOTORS[i]));
-  own.sort((a, b) => MOTORS[a].price - MOTORS[b].price || MOTORS[b][key] - MOTORS[a][key]);
+  const own = MOTORS.map((m, i) => i).filter((i) => !outOfFront(MOTORS[i]));
+  own.sort((a, b) => cost(MOTORS[a]) - cost(MOTORS[b]) || MOTORS[b][key] - MOTORS[a][key]);
   const out = [];
   let best = -Infinity;
   for (const i of own) {
@@ -297,26 +310,27 @@ function frontier(key) {
   return out;
 }
 
-/** Motor (bukan baterai sewa) yang harganya sama atau lebih murah dan nilainya lebih tinggi, termurah dulu */
+/** Motor (yang ikut garis paling worth it) yang harganya sama atau lebih murah dan nilainya lebih tinggi, termurah dulu */
 function betterCheaper(i, key) {
   const m = MOTORS[i];
   return MOTORS.map((o, j) => j)
     .filter((j) => {
       const o = MOTORS[j];
-      return j !== i && !isRent(o) && o.price <= m.price && o[key] >= m[key] && (o.price < m.price || o[key] > m[key]);
+      return j !== i && !outOfFront(o) && cost(o) <= cost(m) && o[key] >= m[key] && (cost(o) < cost(m) || o[key] > m[key]);
     })
-    .sort((a, b) => MOTORS[a].price - MOTORS[b].price);
+    .sort((a, b) => cost(MOTORS[a]) - cost(MOTORS[b]));
 }
 
 /** Kalimat paling worth it di panel detail, ikut sumbu peta yang sedang dipilih */
 function frontText(i) {
   const m = MOTORS[i];
   const ax = AXES[yKey];
-  if (isRent(m)) return `Harga belum termasuk baterai (sewa), jadi tidak ikut garis paling worth it di peta.`;
+  if (outOfFront(m)) return `Harga belum termasuk baterai (sewa), jadi tidak ikut garis paling worth it di peta. Pilih "+ Sewa baterai 3 thn" di peta untuk membandingkan dengan sewanya.`;
+  const rent = xKey === "tco" && isRent(m) ? `Harga + sewa baterai ${RENT_MONTHS} bulan: ${jt(m.price)} + ${IDR.format(m.batteryRent)}/bln = ${jt(cost(m))}. ` : "";
   const b = betterCheaper(i, yKey);
-  if (!b.length) return `<b>Paling worth it</b> untuk ${ax.title}: tidak ada motor lain yang harganya sama atau lebih murah sekaligus ${ax.better}.`;
-  const names = b.slice(0, 3).map((j) => `<b>${esc(MOTORS[j].brand)} ${esc(MOTORS[j].model.split(" (")[0])}</b> (${jt(MOTORS[j].price)}, ${axisVal(MOTORS[j])})`);
-  return `${cap(ax.title)} motor ini ${axisVal(m)}. Ada yang harganya sama atau lebih murah dan ${ax.better}: ${names.join(", ")}${b.length > 3 ? `, dan ${b.length - 3} lagi` : ""}.`;
+  if (!b.length) return `${rent}<b>Paling worth it</b> untuk ${ax.title}: tidak ada motor lain yang harganya sama atau lebih murah sekaligus ${ax.better}.`;
+  const names = b.slice(0, 3).map((j) => `<b>${esc(MOTORS[j].brand)} ${esc(MOTORS[j].model)}</b> (${jt(cost(MOTORS[j]))}, ${axisVal(MOTORS[j])})`);
+  return `${rent}${cap(ax.title)} motor ini ${axisVal(m)}. Ada yang harganya sama atau lebih murah dan ${ax.better}: ${names.join(", ")}${b.length > 3 ? `, dan ${b.length - 3} lagi` : ""}.`;
 }
 
 function axisVal(m) {
@@ -329,7 +343,7 @@ function showTip(g) {
   const m = MOTORS[i];
   const p = chartPts.find((q) => q.i === i);
   const tip = $("chartTip");
-  tip.innerHTML = `<b>${esc(m.brand)} ${esc(m.model.split(" (")[0])}</b><span>${jt(m.price)} · ${axisVal(m)}</span>`;
+  tip.innerHTML = `<b>${esc(m.brand)} ${esc(m.model)}</b><span>${jt(cost(m))} · ${axisVal(m)}</span>`;
   tip.hidden = false;
   // di tepi kiri/kanan kotak digeser supaya tidak keluar peta
   const half = tip.offsetWidth / 2;
@@ -353,7 +367,7 @@ function renderChartPick() {
       ${near
         .map((i) => {
           const m = MOTORS[i];
-          return `<button type="button" data-i="${i}"><b>${esc(m.brand)} ${esc(m.model.split(" (")[0])}</b><span>${jt(m.price)} · ${dec(m.kwh)} kWh · ${m.range} km · ${m.speed} km/j</span></button>`;
+          return `<button type="button" data-i="${i}"><b>${esc(m.brand)} ${esc(m.model)}</b><span>${jt(cost(m))} · ${dec(m.kwh)} kWh · ${m.range} km · ${m.speed} km/j</span></button>`;
         })
         .join("")}
     </div>`;
@@ -599,6 +613,13 @@ function bindEvents() {
     renderChart(visible());
     writeUrl();
   });
+  $("xAxis").addEventListener("change", (e) => {
+    xKey = e.target.value;
+    near = [];
+    setXTitles();
+    renderChart(visible());
+    writeUrl();
+  });
   $("chartPick").addEventListener("click", (e) => {
     if (e.target.closest("[data-close-pick]")) {
       near = [];
@@ -693,6 +714,9 @@ function readUrl() {
   if (AXES[p.get("sumbu")]) yKey = p.get("sumbu");
   setRadio("yaxis", yKey);
   $("chartTitle").textContent = AXES[yKey].title;
+  if (p.get("harga") === "sewa-3-thn") xKey = "tco";
+  setRadio("xaxis", xKey);
+  setXTitles();
   const d = SLUGS.indexOf(p.get("motor"));
   if (d >= 0) detailI = d;
 }
@@ -715,10 +739,19 @@ function writeUrl() {
   if ($("sort").value !== "price:1") p.set("urut", $("sort").value);
   if ($("kmDay").value !== "30") p.set("km", $("kmDay").value);
   if (yKey !== "kwh") p.set("sumbu", yKey);
+  if (xKey === "tco") p.set("harga", "sewa-3-thn");
   if (compare.length) p.set("bandingkan", compare.map((i) => SLUGS[i]).join(","));
   if (detailI !== null) p.set("motor", SLUGS[detailI]);
   const q = p.toString().replace(/%2C/g, ",").replace(/%3A/g, ":");
   history.replaceState(null, "", (q ? `?${q}` : location.pathname) + location.hash);
+}
+
+function setXTitles() {
+  $("chartXTitle").textContent = xKey === "tco" ? "harga + sewa baterai 3 thn" : "harga";
+  $("rentLegend").textContent =
+    xKey === "tco"
+      ? `Baterai sewa: harga + sewa ${RENT_MONTHS} bulan (belum biaya swap), ikut garis paling worth it`
+      : "Harga tanpa baterai (sewa), tidak ikut garis paling worth it";
 }
 
 function setRadio(name, v) {

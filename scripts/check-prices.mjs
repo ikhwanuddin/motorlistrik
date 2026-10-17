@@ -72,6 +72,7 @@ if (bad.length) {
   console.log("| Motor | Harga di data | Angka di halaman |\n|---|---|---|");
   for (const b of bad) console.log(`| ${b.name} | ${rp(b.price)} | [${b.found.join(", ") || "tidak ada angka Rp"}](${b.url}) |`);
   console.log(`\nBelum tentu harga naik/turun: bisa juga promo atau halaman berubah. Cek manual dulu sebelum mengubah data.js.`);
+  console.log('Kalau memang berubah, catat: `node scripts/catat-harga.mjs "<Motor>" <harga baru>` (lihat README, Update data).');
   if (unchecked) console.log(`${unchecked} motor tidak bisa dicek, tidak dihitung.`);
 }
 console.error(`${bad.length} beda, ${unchecked} tidak bisa dicek, dari ${list.length} motor (${MOTORS.length - list.length} tanpa priceUrl)`);

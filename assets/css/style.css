@@ -477,6 +477,9 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 
 .price { font-size: 19px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .price-tag { color: var(--ink-3); font-size: 12.5px; line-height: 1.35; }
+.price-change { font-size: 12.5px; font-weight: 700; line-height: 1.35; font-variant-numeric: tabular-nums; }
+.price-change.down { color: var(--li); }
+.price-change.up { color: var(--bad); }
 
 .moto-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .stat { display: grid; gap: 2px; }

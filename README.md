@@ -12,6 +12,7 @@ Live: https://motorlistrik.ikhwanuddin.com/
 - Filter: merek (dropdown), budget (slider), jarak tempuh minimal, kecepatan maks minimal, tipe baterai, pasti bisa STNK, harga sudah termasuk baterai
 - Urutkan harga / jarak / kecepatan / daya
 - Klik motor → panel detail: keterangan harga, baterai, garansi, catatan, sumber, link resmi, link **Laporkan** (form issue dengan nama motor terisi)
+- Riwayat harga: motor yang harganya pernah berubah di sumbernya dapat tanda ↓/↑ di kartu, kalimat "Turun Rp … pada …, sebelumnya …" di detail, baris **Riwayat harga**, dan keterangan di tabel. Dicatat dari cek harga mingguan (`priceHistory`, lihat Update data)
 - Pilih 2–3 motor → panel bandingkan, nilai terbaik ditandai
 - Biaya per bulan: listrik cas di rumah (jarak ÷ jarak tempuh klaim × kWh × tarif) + sewa baterai, dibandingkan motor bensin. Input jarak harian, hari pakai, tarif listrik rumah (dropdown per golongan VA), batas cas (0–100 / 20–100 / 20–80%, mengubah jarak per cas & jumlah cas, bukan biaya per km), harga & konsumsi bensin; ikut filter. Muncul juga di detail & bandingkan
 - Link bisa dibagikan: filter, motor yang dipilih untuk dibandingkan, dan detail yang dibuka tersimpan di URL (`?merek=Volta`, `?bandingkan=volta-401,uwinfly-m90e`, `?motor=volta-401`, jarak harian `?km=50`); tombol **Bagikan** di detail & bandingkan. Preview WA/medsos pakai `assets/img/og.jpg`
@@ -35,6 +36,7 @@ serve.sh                server lokal (python3)
 scripts/check-links.mjs  cek semua link sumber di data.js (fetch, lalu Brave untuk yang diblokir)
 scripts/check-prices.mjs cek harga tiap motor masih tertulis di priceUrl (fetch, lalu Brave)
 scripts/brave.mjs        buka url di tab baru Brave, klik label dulu kalau perlu, ambil judul/teks, tutup lagi
+scripts/catat-harga.mjs  catat harga baru satu motor: ganti price + tambah priceHistory
 scripts/build-table.mjs  tulis tabel semua motor (HTML biasa) ke index.html, dijalankan saat deploy
 robots.txt, sitemap.xml  untuk mesin pencari
 scripts/cek-link-lokal.sh + .plist  jadwal cek link & harga tiap Senin di Mac mini (launchd)
@@ -58,6 +60,7 @@ Tarif listrik & default kalkulator (harga Pertalite, konsumsi BeAT) ada di input
 |-------|-----|
 | `brand`, `model` | Nama merek & model. Id di URL dibuat dari keduanya (`Volta` + `401` → `volta-401`), keterangan dalam kurung dibuang kecuali id jadi kembar (`VinFast Evo (sewa baterai)` → `vinfast-evo-sewa-baterai`). Ganti nama = link lama ke motor itu tidak jalan lagi |
 | `price` | Harga normal (Rp), OTR Jakarta/Jadetabek kalau ada |
+| `priceHistory` | Riwayat harga `[["2026-10-17", 17500000], ["2026-11-03", 16900000]]`, urut lama ke baru, entri terakhir = `price`. Hanya untuk harga yang memang berubah di sumbernya; jangan diisi tangan, pakai `scripts/catat-harga.mjs` |
 | `priceNote` | Keterangan harga lengkap (sumber, wilayah, promo) — tampil di detail |
 | `priceTag` | Label pendek di bawah harga, mis. `"OTR Jakarta"`, `"Off-the-road"` |
 | `priceUrl` | Halaman yang memuat angka `price` sebagai teks, dicek tiap minggu. Harga yang baru muncul setelah opsi diklik (konfigurator VinFast) juga bisa: labelnya di `CLICKS` di `check-prices.mjs`. `null` kalau harga cuma ada di gambar (situs resmi Uwinfly) |
@@ -89,6 +92,18 @@ tidak ketemu masuk issue **Harga berubah?** (label `harga`) bersama angka Rp yan
 di halaman. Data tidak diubah otomatis: bisa saja itu promo atau halaman berubah, jadi
 dicek manual dulu. Baca teks halaman di Brave butuh View → Developer → Allow
 JavaScript from Apple Events.
+
+Kalau harganya memang berubah di sumber, catat pakai nama motor persis seperti di issue:
+
+```bash
+node scripts/catat-harga.mjs "VinFast Evo (sewa baterai)" 16900000   # tanggal default hari ini
+```
+
+Script mengganti `price` dan menambah entri `priceHistory` (harga lama diberi tanggal
+commit terakhir yang mengubah baris price-nya). Lalu cek `priceNote`/`priceTag` kalau
+menyebut angka atau bulan. Koreksi data (salah ketik, ketemu sumber yang lebih tepat)
+bukan perubahan harga: edit `price` langsung, jangan lewat script, supaya riwayatnya
+tidak menampilkan "turun" palsu. Kalau harga normal baru di atas Rp 30 juta, motornya dikeluarkan.
 
 ```bash
 node scripts/check-links.mjs   # cek manual (tiap url unik sekali), exit 1 kalau ada link mati
@@ -127,6 +142,11 @@ Aturannya:
 - **Spesifikasi pakai klaim resmi pabrik.** Hasil tes sendiri boleh ditulis di
   catatan issue, tapi tidak menggantikan angka resmi.
 - **Tidak ketemu di sumber = kosong (`null`).** Jangan menebak.
+- **Batas Rp 30 juta per varian** (harga normal). Varian baterai sewa di bawah 30 jt
+  masuk walau varian baterai belinya di atas (Polytron Fox 350). Batas ini sengaja
+  tidak dinaikkan: di atas 30 jt pembelinya mencari fitur dan merek, bukan nilai per
+  rupiah, dan kekuatan situs ini data harga & kWh yang rapat di segmen entry. Prioritas
+  sebelum menambah cakupan: melengkapi `null` (STNK, kWh) dan harga resmi yang bisa dicek.
 
 Setiap usulan dicek ulang ke sumbernya sebelum masuk. Kalau sumber tidak bisa
 dibuka atau angkanya beda, usulan ditahan sampai jelas. Dengan mengirim data, kamu

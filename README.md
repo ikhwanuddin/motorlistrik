@@ -5,6 +5,12 @@ subsidi) untuk pasar Indonesia, khususnya Pulau Jawa.
 
 Live: https://motorlistrik.ikhwanuddin.com/
 
+Singkatnya:
+
+- 50-an motor dari belasan merek di satu peta harga vs baterai / jarak / kecepatan, dengan garis "paling worth it". Motor baterai sewa bisa dibandingkan adil lewat harga + sewa 3 tahun.
+- Tiap motor dijawab: ada yang lebih murah dan tidak kalah spek? Pembandingnya hanya motor yang STNK, baterai, dan status OTR-nya setara, dan klaim jarak yang kelewat optimis ditandai.
+- Harga dicek tiap minggu ke sumbernya (riwayat turun/naik tercatat), tiap motor punya halaman sendiri, dan biaya per bulan bisa dihitung dibanding motor bensin.
+
 ## Fitur
 
 - Peta harga vs kapasitas baterai / jarak klaim / kecepatan (SVG, pilih sumbu tegak, default kWh, `?sumbu=`): titik di kiri-atas = murah & unggul, besar titik = kecepatan, garis titik-titik di 20 jt sebagai patokan, klik titik untuk detail (kalau kena beberapa titik berdempetan, muncul daftar pilihan)

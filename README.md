@@ -15,6 +15,7 @@ Live: https://motorlistrik.ikhwanuddin.com/
 - Pilih 2–3 motor → panel bandingkan, nilai terbaik ditandai
 - Biaya per bulan: listrik cas di rumah (jarak ÷ jarak tempuh klaim × kWh × tarif) + sewa baterai, dibandingkan motor bensin. Input jarak harian, hari pakai, tarif listrik rumah (dropdown per golongan VA), batas cas (0–100 / 20–100 / 20–80%, mengubah jarak per cas & jumlah cas, bukan biaya per km), harga & konsumsi bensin; ikut filter. Muncul juga di detail & bandingkan
 - Link bisa dibagikan: filter, motor yang dipilih untuk dibandingkan, dan detail yang dibuka tersimpan di URL (`?merek=Volta`, `?bandingkan=volta-401,uwinfly-m90e`, `?motor=volta-401`, jarak harian `?km=50`); tombol **Bagikan** di detail & bandingkan. Preview WA/medsos pakai `assets/img/og.jpg`
+- Tabel semua motor di bawah halaman: HTML biasa (bukan render JS) yang ditulis `scripts/build-table.mjs` saat deploy, supaya terbaca mesin pencari. Di lokal penandanya kosong; jalankan `node scripts/build-table.mjs /tmp/salinan/index.html` kalau mau lihat
 - Responsif (HP: kartu ringkas, filter nempel saat scroll, bottom sheet dengan tombol aksi tetap di bawah) dan dark mode otomatis
 
 Murni HTML + CSS + vanilla JS, tanpa build. Font Plus Jakarta Sans di-host sendiri (tanpa request ke Google).
@@ -34,6 +35,8 @@ serve.sh                server lokal (python3)
 scripts/check-links.mjs  cek semua link sumber di data.js (fetch, lalu Brave untuk yang diblokir)
 scripts/check-prices.mjs cek harga tiap motor masih tertulis di priceUrl (fetch, lalu Brave)
 scripts/brave.mjs        buka url di tab baru Brave, klik label dulu kalau perlu, ambil judul/teks, tutup lagi
+scripts/build-table.mjs  tulis tabel semua motor (HTML biasa) ke index.html, dijalankan saat deploy
+robots.txt, sitemap.xml  untuk mesin pencari
 scripts/cek-link-lokal.sh + .plist  jadwal cek link & harga tiap Senin di Mac mini (launchd)
 .github/workflows/      static.yml (deploy)
 .github/ISSUE_TEMPLATE/ form issue "Data motor"

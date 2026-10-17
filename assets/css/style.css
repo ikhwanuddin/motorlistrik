@@ -556,6 +556,19 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 
 /* ── SEBELUM BELI ───────────────────────────────────────── */
 .guide { padding: 56px 0; border-top: 1px solid var(--line); }
+
+/* tabel semua motor (HTML statis dari scripts/build-table.mjs) */
+.table-all { padding: 0 0 56px; }
+.table-all h2 { font-size: 28px; font-weight: 800; letter-spacing: -.025em; }
+.table-all > .wrap > p { margin: 6px 0 16px; color: var(--ink-2); }
+.table-scroll { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
+.table-scroll table { width: 100%; min-width: 640px; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+.table-scroll caption { padding: 12px 16px; text-align: left; color: var(--ink-2); font-size: 13px; }
+.table-scroll th, .table-scroll td { padding: 10px 16px; border-top: 1px solid var(--line); text-align: left; vertical-align: top; }
+.table-scroll thead th { font-size: 12px; font-weight: 700; color: var(--ink-2); text-transform: uppercase; letter-spacing: .03em; }
+.table-scroll tbody th { font-weight: 600; }
+.table-scroll a { color: var(--ink); }
+.table-scroll small { color: var(--ink-2); font-size: 12px; }
 .guide h2 { font-size: 28px; font-weight: 800; letter-spacing: -.025em; }
 .guide-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 16px; margin-top: 20px; }
 .guide article { padding: 22px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }

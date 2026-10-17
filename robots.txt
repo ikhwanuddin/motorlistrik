@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://motorlistrik.ikhwanuddin.com/sitemap.xml

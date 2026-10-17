@@ -567,7 +567,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 /* ── SEBELUM BELI ───────────────────────────────────────── */
 .guide { padding: 56px 0; border-top: 1px solid var(--line); }
 
-/* tabel semua motor (HTML statis dari scripts/build-table.mjs) */
+/* tabel semua motor (HTML statis dari scripts/build-static.mjs) */
 .table-all { padding: 0 0 56px; }
 .table-all h2 { font-size: 28px; font-weight: 800; letter-spacing: -.025em; }
 .table-all > .wrap > p { margin: 6px 0 16px; color: var(--ink-2); }

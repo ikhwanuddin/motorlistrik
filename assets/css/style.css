@@ -392,10 +392,16 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
   border: 1px solid var(--line-2);
   border-radius: 10px;
 }
-.seg label { flex: 1; }
+.seg label { flex: 1; display: flex; }
 .seg input { position: absolute; opacity: 0; pointer-events: none; }
+/* flex: opsi pendek ("Semua") ikut setinggi opsi yang membungkus (titik + "80+" di kolom sempit) */
 .seg span {
-  display: block;
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2px 4px;
   padding: 6px 4px;
   border-radius: 7px;
   text-align: center;
@@ -408,11 +414,11 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .seg input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 1px; }
 
 /* titik kecil di filter kecepatan = ukuran titik di peta */
-.sz { display: inline-block; margin-right: 4px; border-radius: 50%; background: currentColor; vertical-align: -1px; }
+.sz { display: inline-block; flex: none; border-radius: 50%; background: currentColor; }
 .sz-50 { width: 8px; height: 8px; }
-.sz-60 { width: 11px; height: 11px; vertical-align: -2px; }
-.sz-70 { width: 14px; height: 14px; vertical-align: -3px; }
-.sz-80 { width: 17px; height: 17px; vertical-align: -4px; }
+.sz-60 { width: 11px; height: 11px; }
+.sz-70 { width: 14px; height: 14px; }
+.sz-80 { width: 17px; height: 17px; }
 
 .check { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; cursor: pointer; }
 .check input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }

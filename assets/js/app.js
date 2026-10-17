@@ -317,13 +317,13 @@ function frontier(key) {
   return out;
 }
 
-/** Motor (yang ikut garis paling worth it) yang harganya sama atau lebih murah dan nilainya lebih tinggi, termurah dulu */
+/** Motor setara (fairRival) yang harganya sama atau lebih murah dan nilainya lebih tinggi di sumbu key, termurah dulu. Garis di peta tidak pakai syarat setara */
 function betterCheaper(i, key) {
   const m = MOTORS[i];
   return MOTORS.map((o, j) => j)
     .filter((j) => {
       const o = MOTORS[j];
-      return j !== i && !outOfFront(o) && cost(o) <= cost(m) && o[key] >= m[key] && (cost(o) < cost(m) || o[key] > m[key]);
+      return fairRival(o, m) && !outOfFront(o) && cost(o) <= cost(m) && o[key] >= m[key] && (cost(o) < cost(m) || o[key] > m[key]);
     })
     .sort((a, b) => cost(MOTORS[a]) - cost(MOTORS[b]));
 }
@@ -340,12 +340,16 @@ function priceBasis(m) {
 function tco(m) {
   return m.price + (m.batteryRent || 0) * RENT_MONTHS;
 }
-function beatsAll(o, m) {
+// penantang setara: tidak lebih lemah di STNK, jenis & kepemilikan baterai, dan dasar harga; harga basi tidak dipakai
+function fairRival(o, m) {
   if (o === m || o.priceStale) return false;
   if (m.stnk === true && o.stnk !== true) return false;
   if (m.batteryType !== "SLA" && o.batteryType === "SLA") return false;
   if (!isRent(m) && isRent(o)) return false;
-  if (priceBasis(o) < priceBasis(m)) return false;
+  return priceBasis(o) >= priceBasis(m);
+}
+function beatsAll(o, m) {
+  if (!fairRival(o, m)) return false;
   if (tco(o) > tco(m) || SPEC_KEYS.some((k) => o[k] < m[k])) return false;
   return tco(o) < tco(m) || SPEC_KEYS.some((k) => o[k] > m[k]);
 }
@@ -366,7 +370,9 @@ function frontText(i) {
   if (outOfFront(m)) return `Harga belum termasuk baterai (sewa), jadi tidak ikut garis paling worth it di peta. Pilih "+ Sewa baterai 3 thn" di peta untuk membandingkan dengan sewanya.`;
   const rent = xKey === "tco" && isRent(m) ? `Harga + sewa baterai ${RENT_MONTHS} bulan: ${jt(m.price)} + ${IDR.format(m.batteryRent)}/bln = ${jt(cost(m))}. ` : "";
   const b = betterCheaper(i, yKey);
-  if (!b.length) return `${rent}<b>Paling worth it</b> untuk ${ax.title}: tidak ada motor lain yang harganya sama atau lebih murah sekaligus ${ax.better}.`;
+  if (!b.length && frontier(yKey).includes(i)) return `${rent}<b>Paling worth it</b> untuk ${ax.title}: tidak ada motor lain yang harganya sama atau lebih murah sekaligus ${ax.better}.`;
+  // di peta ada titik yang lebih murah & unggul, tapi STNK, baterai, atau status OTR-nya lebih lemah
+  if (!b.length) return `${rent}${cap(ax.title)} motor ini ${axisVal(m)}. Tidak ada motor setara yang harganya sama atau lebih murah dan ${ax.better}. Titik di peta yang lebih murah dan lebih unggul STNK, baterai, atau status OTR-nya lebih lemah.`;
   const names = b.slice(0, 3).map((j) => `<b>${esc(MOTORS[j].brand)} ${esc(MOTORS[j].model)}</b> (${jt(cost(MOTORS[j]))}, ${axisVal(MOTORS[j])})`);
   return `${rent}${cap(ax.title)} motor ini ${axisVal(m)}. Ada yang harganya sama atau lebih murah dan ${ax.better}: ${names.join(", ")}${b.length > 3 ? `, dan ${b.length - 3} lagi` : ""}.`;
 }

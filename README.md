@@ -33,7 +33,7 @@ assets/img/motor.svg    ilustrasi hero (kanan atas di layar ≥1100px, di atas j
 serve.sh                server lokal (python3)
 scripts/check-links.mjs  cek semua link sumber di data.js (fetch, lalu Brave untuk yang diblokir)
 scripts/check-prices.mjs cek harga tiap motor masih tertulis di priceUrl (fetch, lalu Brave)
-scripts/brave.mjs        buka url di tab baru Brave, ambil judul/teks, tutup lagi
+scripts/brave.mjs        buka url di tab baru Brave, klik label dulu kalau perlu, ambil judul/teks, tutup lagi
 scripts/cek-link-lokal.sh + .plist  jadwal cek link & harga tiap Senin di Mac mini (launchd)
 .github/workflows/      static.yml (deploy)
 .github/ISSUE_TEMPLATE/ form issue "Data motor"
@@ -57,7 +57,7 @@ Tarif listrik & default kalkulator (harga Pertalite, konsumsi BeAT) ada di input
 | `price` | Harga normal (Rp), OTR Jakarta/Jadetabek kalau ada |
 | `priceNote` | Keterangan harga lengkap (sumber, wilayah, promo) — tampil di detail |
 | `priceTag` | Label pendek di bawah harga, mis. `"OTR Jakarta"`, `"Off-the-road"` |
-| `priceUrl` | Halaman yang memuat angka `price` sebagai teks, dicek tiap minggu. `null` kalau harga cuma ada di gambar (situs resmi Uwinfly) |
+| `priceUrl` | Halaman yang memuat angka `price` sebagai teks, dicek tiap minggu. Harga yang baru muncul setelah opsi diklik (konfigurator VinFast) juga bisa: labelnya di `CLICKS` di `check-prices.mjs`. `null` kalau harga cuma ada di gambar (situs resmi Uwinfly) |
 | `range`, `speed`, `power` | Jarak tempuh (km), kecepatan maks (km/j), daya maks (W) |
 | `battery`, `batteryType` | Deskripsi baterai; tipe `LFP` / `Li-ion` / `SLA` |
 | `kwh` | Kapasitas baterai (kWh) untuk jarak `range`, angka. Dipakai kalkulator biaya listrik |

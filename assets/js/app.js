@@ -15,15 +15,18 @@ let chartKey = null; // sumbu yang terakhir digambar, untuk tahu kapan garis pal
 
 /* Sumbu tegak peta, key = field di data.js. better: kalimat "lebih unggul" untuk sumbu itu */
 const AXES = {
-  kwh: { title: "kapasitas baterai", unit: "kWh", min: 1, max: 3.5, step: 0.5, better: "baterainya lebih besar" },
-  range: { title: "jarak tempuh", unit: "km", min: 30, max: 150, step: 30, better: "klaim jaraknya lebih jauh" },
-  speed: { title: "kecepatan maks", unit: "km/j", min: 30, max: 90, step: 15, better: "lebih kencang" },
+  kwh: { title: "kapasitas baterai", unit: "kWh", min: 0.5, max: 4.5, step: 0.5, better: "baterainya lebih besar" },
+  range: { title: "jarak tempuh", unit: "km", min: 30, max: 180, step: 30, better: "klaim jaraknya lebih jauh" },
+  speed: { title: "kecepatan maks", unit: "km/j", min: 30, max: 105, step: 15, better: "lebih kencang" },
 };
 let yKey = "kwh";
 let detailI = null; // motor yang sedang dibuka di panel detail
 
 // id motor di URL, mis. "volta-401"
-const SLUGS = MOTORS.map((m) => `${m.brand} ${m.model.split(" (")[0]}`.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""));
+const slug = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const SHORT = MOTORS.map((m) => slug(`${m.brand} ${m.model.split(" (")[0]}`));
+// keterangan dalam kurung dibuang supaya link tetap pendek, kecuali kalau jadi kembar (varian sewa/beli baterai)
+const SLUGS = MOTORS.map((m, i) => (SHORT.indexOf(SHORT[i]) === SHORT.lastIndexOf(SHORT[i]) ? SHORT[i] : slug(`${m.brand} ${m.model}`)));
 
 const MAX = {
   range: Math.max(...MOTORS.map((m) => m.range)),
@@ -132,7 +135,7 @@ function visible() {
 function activeFilterCount() {
   let n = 0;
   if ($("brand").value) n++;
-  if ($("budget").value !== "20") n++;
+  if ($("budget").value !== "30") n++;
   if (radio("range") !== "0") n++;
   if (radio("speed") !== "0") n++;
   if (radio("batt") !== "all") n++;
@@ -220,7 +223,7 @@ function renderChart(shown) {
   const H = W < 600 ? 300 : 360;
   const pad = { l: 54, r: 12, t: 12, b: 34 };
   const ax = AXES[yKey];
-  const x0 = 8e6, x1 = 20e6;
+  const x0 = 8e6, x1 = 30e6;
   const x = (p) => pad.l + ((p - x0) / (x1 - x0)) * (W - pad.l - pad.r);
   const y = (v) => H - pad.b - ((v - ax.min) / (ax.max - ax.min)) * (H - pad.t - pad.b);
   const intro = chartPts.length === 0;
@@ -228,8 +231,9 @@ function renderChart(shown) {
   chartKey = yKey;
 
   let grid = "";
-  for (let p = x0; p <= x1; p += 2e6) {
-    grid += `<line class="grid" x1="${x(p)}" x2="${x(p)}" y1="${pad.t}" y2="${H - pad.b}"/>`;
+  // garis 20 jt lebih tebal: batas lama situs, patokan buat yang budgetnya segitu
+  for (let p = x0; p <= x1; p += W < 600 ? 4e6 : 2e6) {
+    grid += `<line class="grid${p === 20e6 ? " grid-20" : ""}" x1="${x(p)}" x2="${x(p)}" y1="${pad.t}" y2="${H - pad.b}"/>`;
     grid += `<text class="axis" x="${x(p)}" y="${H - 12}" text-anchor="middle">${p / 1e6} jt</text>`;
   }
   for (let v = ax.min; v <= ax.max; v += ax.step) {
@@ -368,7 +372,7 @@ function pointsNear(px, py) {
 
 /** Jari-jari titik peta dari kecepatan: 40 km/j → 3,5 px, 85 km/j → 10 px */
 function dotR(speed) {
-  return 3.5 + ((speed - 40) / 45) * 6.5;
+  return 3.5 + ((speed - 40) / 65) * 6.5;
 }
 
 /* ── BIAYA PER BULAN ────────────────────────────────────────────────────── */
@@ -660,7 +664,7 @@ function bindEvents() {
 
 function resetFilters() {
   $("brand").value = "";
-  $("budget").value = "20";
+  $("budget").value = "30";
   document.querySelector('input[name="range"][value="0"]').checked = true;
   document.querySelector('input[name="speed"][value="0"]').checked = true;
   document.querySelector('input[name="batt"][value="all"]').checked = true;
@@ -674,7 +678,7 @@ function resetFilters() {
 function readUrl() {
   const p = new URLSearchParams(location.search);
   if ([...$("brand").options].some((o) => o.value === p.get("merek"))) $("brand").value = p.get("merek");
-  $("budget").value = p.get("budget") || "20";
+  $("budget").value = p.get("budget") || "30";
   setRadio("range", p.get("jarak"));
   setRadio("speed", p.get("kecepatan"));
   setRadio("batt", p.get("baterai"));
@@ -702,7 +706,7 @@ function openFromUrl() {
 function writeUrl() {
   const p = new URLSearchParams();
   if ($("brand").value) p.set("merek", $("brand").value);
-  if ($("budget").value !== "20") p.set("budget", $("budget").value);
+  if ($("budget").value !== "30") p.set("budget", $("budget").value);
   if (radio("range") !== "0") p.set("jarak", radio("range"));
   if (radio("speed") !== "0") p.set("kecepatan", radio("speed"));
   if (radio("batt") !== "all") p.set("baterai", radio("batt"));

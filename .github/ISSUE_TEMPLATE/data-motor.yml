@@ -9,7 +9,7 @@ body:
       label: Jenis
       options:
         - Koreksi data motor yang sudah ada
-        - Motor baru (harga normal di bawah Rp 20 juta)
+        - Motor baru (harga normal di bawah Rp 30 juta)
         - Harga berubah
         - Motor tidak dijual lagi
     validations:

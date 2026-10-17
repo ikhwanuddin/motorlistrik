@@ -51,18 +51,24 @@
       <figure class="map">
         <figcaption>
           <div>
-            <h2>Peta harga vs <span id="chartTitle">kapasitas baterai</span></h2>
+            <h2>Peta <span id="chartXTitle">harga</span> vs <span id="chartTitle">kapasitas baterai</span></h2>
             <p>Makin ke kiri-atas, makin murah dan makin unggul. Garis "paling worth it" menghubungkan motor yang tidak punya lawan lebih murah sekaligus lebih unggul. Klik titik untuk detail.</p>
           </div>
-          <div class="seg seg-axis" id="yAxis" role="radiogroup" aria-label="Sumbu tegak peta">
-            <label><input type="radio" name="yaxis" value="kwh" checked /><span>Baterai kWh</span></label>
-            <label><input type="radio" name="yaxis" value="range" /><span>Jarak klaim</span></label>
-            <label><input type="radio" name="yaxis" value="speed" /><span>Kecepatan</span></label>
+          <div class="axes">
+            <div class="seg" id="yAxis" role="radiogroup" aria-label="Sumbu tegak peta">
+              <label><input type="radio" name="yaxis" value="kwh" checked /><span>Baterai kWh</span></label>
+              <label><input type="radio" name="yaxis" value="range" /><span>Jarak klaim</span></label>
+              <label><input type="radio" name="yaxis" value="speed" /><span>Kecepatan</span></label>
+            </div>
+            <div class="seg" id="xAxis" role="radiogroup" aria-label="Sumbu harga peta">
+              <label><input type="radio" name="xaxis" value="price" checked /><span>Harga beli</span></label>
+              <label><input type="radio" name="xaxis" value="tco" /><span>+ Sewa baterai 3 thn</span></label>
+            </div>
           </div>
           <ul class="legend">
             <li><i class="dot dot-li"></i>Lithium</li>
             <li><i class="dot dot-sla"></i>Aki (SLA)</li>
-            <li><i class="dot dot-rent"></i>Harga tanpa baterai (sewa), tidak ikut garis paling worth it</li>
+            <li><i class="dot dot-rent"></i><span id="rentLegend">Harga tanpa baterai (sewa), tidak ikut garis paling worth it</span></li>
             <li><i class="line-front"></i>Paling worth it</li>
             <li><i class="dot dot-sz s"></i><i class="dot dot-sz l"></i>Makin besar = makin kencang</li>
           </ul>

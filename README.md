@@ -1,13 +1,13 @@
 # ⚡ Motor Listrik Entry Level Indonesia
 
-Perbandingan motor listrik di bawah **Rp 20 juta** (harga normal, tanpa promo &
+Perbandingan motor listrik di bawah **Rp 30 juta** (harga normal, tanpa promo &
 subsidi) untuk pasar Indonesia, khususnya Pulau Jawa.
 
 Live: https://motorlistrik.ikhwanuddin.com/
 
 ## Fitur
 
-- Peta harga vs kapasitas baterai / jarak klaim / kecepatan (SVG, pilih sumbu tegak, default kWh, `?sumbu=`): titik di kiri-atas = murah & unggul, besar titik = kecepatan, klik titik untuk detail (kalau kena beberapa titik berdempetan, muncul daftar pilihan)
+- Peta harga vs kapasitas baterai / jarak klaim / kecepatan (SVG, pilih sumbu tegak, default kWh, `?sumbu=`): titik di kiri-atas = murah & unggul, besar titik = kecepatan, garis titik-titik di 20 jt sebagai patokan, klik titik untuk detail (kalau kena beberapa titik berdempetan, muncul daftar pilihan)
 - Garis "paling worth it" (Pareto frontier): motor yang tidak punya lawan dengan harga sama/lebih murah sekaligus nilai lebih tinggi. Motor baterai sewa tidak ikut karena harganya tanpa baterai. Panel detail menyebut motor yang lebih murah sekaligus lebih unggul. Ganti sumbu = titik bergeser dan garis digambar ulang (mati kalau prefers-reduced-motion)
 - Filter: merek (dropdown), budget (slider), jarak tempuh minimal, kecepatan maks minimal, tipe baterai, pasti bisa STNK, harga sudah termasuk baterai
 - Urutkan harga / jarak / kecepatan / daya
@@ -53,7 +53,7 @@ Tarif listrik & default kalkulator (harga Pertalite, konsumsi BeAT) ada di input
 
 | Field | Isi |
 |-------|-----|
-| `brand`, `model` | Nama merek & model. Id di URL dibuat dari keduanya (`Volta` + `401` → `volta-401`), jadi ganti nama = link lama ke motor itu tidak jalan lagi |
+| `brand`, `model` | Nama merek & model. Id di URL dibuat dari keduanya (`Volta` + `401` → `volta-401`), keterangan dalam kurung dibuang kecuali id jadi kembar (`VinFast Evo (sewa baterai)` → `vinfast-evo-sewa-baterai`). Ganti nama = link lama ke motor itu tidak jalan lagi |
 | `price` | Harga normal (Rp), OTR Jakarta/Jadetabek kalau ada |
 | `priceNote` | Keterangan harga lengkap (sumber, wilayah, promo) — tampil di detail |
 | `priceTag` | Label pendek di bawah harga, mis. `"OTR Jakarta"`, `"Off-the-road"` |
@@ -105,7 +105,7 @@ node --check assets/js/data.js
 
 ## Sumbang data
 
-Ada harga berubah, data salah, atau motor baru di bawah Rp 20 juta? Ada dua cara:
+Ada harga berubah, data salah, atau motor baru di bawah Rp 30 juta? Ada dua cara:
 
 1. **Issue** (paling gampang, tanpa coding): buka
    [issue baru → Data motor](https://github.com/ikhwanuddin/motorlistrik/issues/new?template=data-motor.yml),
